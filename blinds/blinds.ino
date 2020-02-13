@@ -7,11 +7,11 @@
 typedef struct {
   // A button is a digital input with the following value: `HIGH` when
   // it's pushed, `LOW` when it's released.
-  int button;
+  const int button;
 
   // A motor is actually a relay. “Motor” must be read as “the relay
   // that enables the motor”.
-  int motor;
+  const int motor;
 } Control;
 
 // Represents the possible states of a blind.
@@ -35,10 +35,10 @@ enum State {
 // Represents a blind.
 typedef struct {
   // The “up” control.
-  Control up;
+  const Control up;
 
   // The “down” control.
-  Control down;
+  const Control down;
 
   // Represents the time of the last event, which is more or less the
   // time where the state has possibly changed.
