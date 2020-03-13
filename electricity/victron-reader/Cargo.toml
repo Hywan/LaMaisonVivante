@@ -1,0 +1,8 @@
+[package]
+name = "victron-reader"
+version = "0.1.0"
+authors = ["Ivan Enderlin <ivan.enderlin@hoa-project.net>"]
+edition = "2018"
+
+[dependencies]
+tokio-modbus = { version = "0.4", default-features = false, features = ["tcp", "sync"] }
