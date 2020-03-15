@@ -1,10 +1,12 @@
 use tokio_modbus::prelude::*;
 
+const DBUS_SERVICE_SYSTEM: u8 = 100;
 const DBUS_SERVICE_BATTERY: u8 = 225;
 const DBUS_SERVICE_PV_INVERTER: u8 = 20;
 const DBUS_SERVICE_VEBUS: u8 = 246;
 
 const BATTERY_VOLTAGE: u16 = 259;
+const BATTERY_STATE: u16 = 844;
 const BATTERY_TEMPERATURE: u16 = 262;
 const BATTERY_STATE_OF_CHARGE: u16 = 266;
 const BATTERY_STATE_OF_HEALTH: u16 = 304;
@@ -83,14 +85,25 @@ pub fn main() {
         .expect("Failed to parse the socket address.");
     let mut context = sync::tcp::connect(socket_addr).expect("Failed to connect to the server.");
 
+    context.set_slave(Slave(DBUS_SERVICE_SYSTEM));
+
+    let battery_state = read_holding_register(&mut context, BATTERY_STATE);
+
     context.set_slave(Slave(DBUS_SERVICE_BATTERY));
 
     println!(
         "Battery:
+    battery_state: {state}
     state of charge: {soc}%
     voltage: {voltage}V
     temperature: {temperature}°C
     state of health: {health}%",
+        state = match battery_state {
+            0 => "idle",
+            1 => "charging",
+            2 => "discharging",
+            _ => unreachable!(),
+        },
         soc = read_holding_register(&mut context, BATTERY_STATE_OF_CHARGE).to_percent(),
         voltage = read_holding_register(&mut context, BATTERY_VOLTAGE).to_volt(),
         temperature = read_holding_register(&mut context, BATTERY_TEMPERATURE).to_degree(),
