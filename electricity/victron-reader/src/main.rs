@@ -1,24 +1,22 @@
+mod command;
 mod dbus;
 mod state;
 mod unit;
 
-use crate::{dbus::*, state::*, unit::*};
-use std::io::Result;
+use crate::{command::*, dbus::*, state::*, unit::*};
+use serde_json::to_string as to_json;
+use std::io;
+use structopt::StructOpt;
 use tokio_modbus::prelude::*;
 
-/*
-battery 272 -> low-SoC alarm (value = 2 for an alarm, 0 otherwise)
-battery 274 -> high temperature alarm (value = 2 for an alarm, 0 otherwise)
-*/
-
-fn read_holding_register(context: &mut sync::Context, address: u16) -> Result<u16> {
+fn read_holding_register(context: &mut sync::Context, address: u16) -> io::Result<u16> {
     Ok(context.read_holding_registers(address, 1)?[0])
 }
 
-pub fn main() -> Result<()> {
-    let socket_addr = "192.168.1.117:502"
-        .parse()
-        .expect("Failed to parse the socket address.");
+pub fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let option = Option::from_args();
+
+    let socket_addr = option.address.parse()?;
     let mut context = sync::tcp::connect(socket_addr)?;
 
     let battery = {
@@ -29,7 +27,7 @@ pub fn main() -> Result<()> {
 
         context.set_slave(Slave(DBUS_SERVICE_BATTERY));
 
-        Result::<Battery>::Ok(Battery {
+        io::Result::<Battery>::Ok(Battery {
             state: match battery_state {
                 0 => BatteryState::Idle,
                 1 => BatteryState::Charging,
@@ -49,7 +47,7 @@ pub fn main() -> Result<()> {
     let pv_inverter = {
         context.set_slave(Slave(DBUS_SERVICE_PV_INVERTER));
 
-        Result::<PvInverter>::Ok(PvInverter {
+        io::Result::<PvInverter>::Ok(PvInverter {
             l1: PvInverterPhase {
                 voltage: read_holding_register(&mut context, PV_INVERTER_L1_VOLTAGE)?.to_volt(),
                 current: read_holding_register(&mut context, PV_INVERTER_L1_CURRENT)?.to_amp(),
@@ -72,27 +70,32 @@ pub fn main() -> Result<()> {
     let vebus = {
         context.set_slave(Slave(DBUS_SERVICE_VEBUS));
 
-        Result::<Vebus>::Ok(Vebus {
+        io::Result::<Vebus>::Ok(Vebus {
             frequency: read_holding_register(&mut context, VEBUS_OUTPUT_FREQUENCY)?.to_hertz(),
         })
     }
     .ok();
 
+    let house = match (&battery, &pv_inverter) {
+        (Some(battery), Some(pv_inverter)) => Some(House {
+            power: pv_inverter.l1.power + pv_inverter.l2.power + pv_inverter.l3.power
+                - battery.ongoing_power,
+        }),
+        _ => None,
+    };
+
     let state = State {
         battery,
         pv_inverter,
         vebus,
+        house,
     };
 
-    println!("{}", state);
-
-    /*
-    println!(
-        "\nHouse:
-    power: {power}W",
-        power = Watt((l1_power.0 + l2_power.0 + l3_power.0) - battery_power.0),
-    );
-    */
+    match &option.format {
+        Format::Text => println!("{}", state),
+        Format::Json => println!("{}", to_json(&state)?),
+        _ => unimplemented!("Format `{}` not implemented yet.", option.format),
+    }
 
     Ok(())
 }

@@ -1,3 +1,4 @@
+use serde::Serialize;
 use std::{fmt, ops};
 
 pub trait Unit {
@@ -42,7 +43,7 @@ impl Unit for u16 {
 
 macro_rules! unit {
     ($name:ident, $display:expr) => {
-        #[derive(Copy, Clone)]
+        #[derive(Copy, Clone, Serialize)]
         pub struct $name(pub f32);
 
         impl fmt::Display for $name {
@@ -54,8 +55,16 @@ macro_rules! unit {
         impl ops::Add for $name {
             type Output = Self;
 
-            fn add(self, other: Self) -> Self {
+            fn add(self, other: Self) -> Self::Output {
                 Self(self.0 + other.0)
+            }
+        }
+
+        impl ops::Sub for $name {
+            type Output = Self;
+
+            fn sub(self, other: Self) -> Self::Output {
+                Self(self.0 - other.0)
             }
         }
     };

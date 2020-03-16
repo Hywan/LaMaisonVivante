@@ -1,12 +1,15 @@
 use crate::unit::*;
+use serde::Serialize;
 use std::fmt;
 
+#[derive(Serialize)]
 pub enum BatteryState {
     Idle,
     Discharging,
     Charging,
 }
 
+#[derive(Serialize)]
 pub struct Battery {
     pub state: BatteryState,
     pub state_of_charge: Percent,
@@ -16,26 +19,36 @@ pub struct Battery {
     pub health: Percent,
 }
 
+#[derive(Serialize)]
 pub struct PvInverterPhase {
     pub voltage: Volt,
     pub current: Amp,
     pub power: Watt,
 }
 
+#[derive(Serialize)]
 pub struct PvInverter {
     pub l1: PvInverterPhase,
     pub l2: PvInverterPhase,
     pub l3: PvInverterPhase,
 }
 
+#[derive(Serialize)]
 pub struct Vebus {
     pub frequency: Hertz,
 }
 
+#[derive(Serialize)]
+pub struct House {
+    pub power: Watt,
+}
+
+#[derive(Serialize)]
 pub struct State {
     pub battery: Option<Battery>,
     pub pv_inverter: Option<PvInverter>,
     pub vebus: Option<Vebus>,
+    pub house: Option<House>,
 }
 
 impl fmt::Display for BatteryState {
@@ -116,19 +129,29 @@ impl fmt::Display for Vebus {
     }
 }
 
+impl fmt::Display for House {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            formatter,
+            "House {{
+    power: {power}
+}}",
+            power = self.power,
+        )
+    }
+}
+
 impl fmt::Display for State {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             formatter,
-            "State {{
+            "{battery}
 
-battery: {battery}
+{pv_inverter}
 
-pv inverter: {pv_inverter}
+{vebus}
 
-vebus: {vebus}
-
-}}",
+{house}",
             battery = match &self.battery {
                 Some(battery) => battery.to_string(),
                 None => "None".to_string(),
@@ -140,7 +163,11 @@ vebus: {vebus}
             vebus = match &self.vebus {
                 Some(vebus) => vebus.to_string(),
                 None => "None".to_string(),
-            }
+            },
+            house = match &self.house {
+                Some(house) => house.to_string(),
+                None => "None".to_string(),
+            },
         )
     }
 }
