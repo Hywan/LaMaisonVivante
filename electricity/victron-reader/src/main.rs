@@ -76,13 +76,16 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     .ok();
 
-    let house = match (&battery, &pv_inverter) {
-        (Some(battery), Some(pv_inverter)) => Some(House {
-            power: pv_inverter.l1.power + pv_inverter.l2.power + pv_inverter.l3.power
-                - battery.ongoing_power,
-        }),
-        _ => None,
-    };
+    let house = {
+        context.set_slave(Slave(DBUS_SERVICE_SYSTEM));
+
+        io::Result::<House>::Ok(House {
+            l1: read_holding_register(&mut context, SYSTEM_AC_CONSUMPTION_L1)?.to_watt(),
+            l2: read_holding_register(&mut context, SYSTEM_AC_CONSUMPTION_L2)?.to_watt(),
+            l3: read_holding_register(&mut context, SYSTEM_AC_CONSUMPTION_L3)?.to_watt(),
+        })
+    }
+    .ok();
 
     let state = State {
         battery,

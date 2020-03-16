@@ -40,7 +40,9 @@ pub struct Vebus {
 
 #[derive(Serialize)]
 pub struct House {
-    pub power: Watt,
+    pub l1: Watt,
+    pub l2: Watt,
+    pub l3: Watt,
 }
 
 #[derive(Serialize)]
@@ -101,7 +103,7 @@ impl fmt::Display for PvInverter {
     L3 voltage: {l3_voltage},
     L3 current: {l3_current},
     L3 power: {l3_power},
-    total power: {power},
+    total power: {total_power},
 }}",
             l1_voltage = self.l1.voltage,
             l1_current = self.l1.current,
@@ -112,7 +114,7 @@ impl fmt::Display for PvInverter {
             l3_voltage = self.l3.voltage,
             l3_current = self.l3.current,
             l3_power = self.l3.power,
-            power = self.l1.power + self.l2.power + self.l3.power,
+            total_power = self.l1.power + self.l2.power + self.l3.power,
         )
     }
 }
@@ -134,9 +136,15 @@ impl fmt::Display for House {
         write!(
             formatter,
             "House {{
-    power: {power}
+    l1: {l1}
+    l2: {l2}
+    l3: {l3}
+    total consumption: {total}
 }}",
-            power = self.power,
+            l1 = self.l1,
+            l2 = self.l2,
+            l3 = self.l3,
+            total = self.l1 + self.l2 + self.l3,
         )
     }
 }

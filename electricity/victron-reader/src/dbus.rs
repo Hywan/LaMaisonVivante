@@ -7,6 +7,10 @@ pub const DBUS_SERVICE_VEBUS: u8 = 246;
 
 // Register addresses.
 
+pub const SYSTEM_AC_CONSUMPTION_L1: u16 = 817;
+pub const SYSTEM_AC_CONSUMPTION_L2: u16 = 818;
+pub const SYSTEM_AC_CONSUMPTION_L3: u16 = 819;
+
 pub const BATTERY_POWER: u16 = 842;
 pub const BATTERY_STATE: u16 = 844;
 pub const BATTERY_VOLTAGE: u16 = 259;
