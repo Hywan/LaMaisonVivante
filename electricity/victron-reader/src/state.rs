@@ -2,14 +2,14 @@ use crate::unit::*;
 use serde::Serialize;
 use std::fmt;
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub enum BatteryState {
     Idle,
     Discharging,
     Charging,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Battery {
     pub state: BatteryState,
     pub state_of_charge: Percent,
@@ -19,33 +19,33 @@ pub struct Battery {
     pub health: Percent,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct PvInverterPhase {
     pub voltage: Volt,
     pub current: Amp,
     pub power: Watt,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct PvInverter {
     pub l1: PvInverterPhase,
     pub l2: PvInverterPhase,
     pub l3: PvInverterPhase,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Vebus {
     pub frequency: Hertz,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct House {
     pub l1: Watt,
     pub l2: Watt,
     pub l3: Watt,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct State {
     pub battery: Option<Battery>,
     pub pv_inverter: Option<PvInverter>,

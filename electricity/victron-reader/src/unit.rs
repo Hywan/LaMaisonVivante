@@ -43,7 +43,7 @@ impl Unit for u16 {
 
 macro_rules! unit {
     ($name:ident, $display:expr) => {
-        #[derive(Copy, Clone, Serialize)]
+        #[derive(Debug, Copy, Clone, Serialize)]
         pub struct $name(pub f32);
 
         impl fmt::Display for $name {
@@ -65,6 +65,18 @@ macro_rules! unit {
 
             fn sub(self, other: Self) -> Self::Output {
                 Self(self.0 - other.0)
+            }
+        }
+
+        impl From<$name> for u16 {
+            fn from(unit: $name) -> Self {
+                unit.0.ceil() as _
+            }
+        }
+
+        impl From<$name> for u64 {
+            fn from(unit: $name) -> Self {
+                unit.0.ceil() as _
             }
         }
     };
