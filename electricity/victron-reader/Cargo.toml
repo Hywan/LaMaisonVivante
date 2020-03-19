@@ -1,0 +1,13 @@
+[package]
+name = "victron-reader"
+version = "0.1.0"
+authors = ["Ivan Enderlin <ivan.enderlin@hoa-project.net>"]
+edition = "2018"
+
+[dependencies]
+tokio-modbus = { version = "0.4", default-features = false, features = ["tcp", "sync"] }
+structopt = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tui = { version = "0.8", default-features = false, features = ["crossterm"] }
+crossterm = "0.16"
