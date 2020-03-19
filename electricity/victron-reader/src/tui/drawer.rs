@@ -1,88 +1,30 @@
-use crate::{
-    reader,
-    state::{BatteryState, State},
-};
-use crossterm::{
-    event::{self, Event as CEvent, KeyCode},
-    execute,
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-};
-use std::{
-    io::{self, Stdout, Write},
-    sync::mpsc,
-    thread,
-    time::Duration,
-};
-use tokio_modbus::prelude::*;
+use crate::{state::*, tui::Application};
+use std::io::Stdout;
 use tui::{
     backend::CrosstermBackend,
-    layout::{Constraint, Direction, Layout},
+    layout::Rect,
+    layout::{Alignment, Constraint, Direction, Layout},
     style::{Color, Style},
     terminal::Frame,
     widgets::{Block, Borders, Gauge, Paragraph, Sparkline, Text, Widget},
-    Terminal,
 };
 
-enum Event<I> {
-    Input(I),
-    Tick,
+pub(crate) trait Drawer {
+    fn draw(
+        application: &Application,
+        frame: &mut Frame<CrosstermBackend<Stdout>>,
+        main_panel: Rect,
+    );
 }
 
-struct Application<'a> {
-    states: Vec<State>,
-    context: &'a mut sync::Context,
-}
+impl Drawer for Battery {
+    fn draw(
+        application: &Application,
+        mut frame: &mut Frame<CrosstermBackend<Stdout>>,
+        battery_panel: Rect,
+    ) {
+        let state = application.last_state();
 
-impl<'a> Application<'a> {
-    fn new(context: &'a mut sync::Context) -> Self {
-        Self {
-            states: vec![],
-            context: context,
-        }
-    }
-
-    fn tick(&mut self) -> io::Result<()> {
-        let new_state = reader::read(self.context)?;
-
-        if self.states.len() == 50 {
-            self.states.remove(0);
-        }
-
-        self.states.push(new_state);
-
-        Ok(())
-    }
-
-    fn last_state(&self) -> &State {
-        assert!(self.states.len() >= 1, "There must always be one state.");
-
-        &self.states[self.states.len() - 1]
-    }
-}
-
-fn draw(application: &Application, mut frame: &mut Frame<CrosstermBackend<Stdout>>) -> () {
-    let state = application.last_state();
-
-    let (battery_panel, pv_inverter_panel, vebus_panel, house_panel) = {
-        let rects = Layout::default()
-            .direction(Direction::Vertical)
-            .margin(1)
-            .constraints(
-                [
-                    Constraint::Percentage(20),
-                    Constraint::Min(13),
-                    Constraint::Percentage(20),
-                    Constraint::Percentage(20),
-                ]
-                .as_ref(),
-            )
-            .split(frame.size());
-
-        (rects[0], rects[1], rects[2], rects[3])
-    };
-
-    // Battery.
-    {
         let mut block = Block::default().title("Battery").borders(Borders::ALL);
         block.render(&mut frame, battery_panel);
 
@@ -118,15 +60,16 @@ fn draw(application: &Application, mut frame: &mut Frame<CrosstermBackend<Stdout
                 .percent(battery.state_of_charge.into())
                 .render(&mut frame, rows[0]);
 
-            Paragraph::new([Text::raw(format!("Power {}", battery.ongoing_power))].iter())
+            Paragraph::new([Text::raw(format!("\npower {}", battery.ongoing_power))].iter())
+                .alignment(Alignment::Center)
                 .wrap(true)
                 .render(&mut frame, rows[1]);
 
-            Paragraph::new([Text::raw(format!("Voltage {}", battery.voltage))].iter())
+            Paragraph::new([Text::raw(format!("\nvoltage {}", battery.voltage))].iter())
                 .wrap(true)
                 .render(&mut frame, rows[2]);
 
-            Paragraph::new([Text::raw(format!("Temperature {}", battery.temperature))].iter())
+            Paragraph::new([Text::raw(format!("\ntemperature {}", battery.temperature))].iter())
                 .wrap(true)
                 .render(&mut frame, rows[3]);
 
@@ -137,9 +80,14 @@ fn draw(application: &Application, mut frame: &mut Frame<CrosstermBackend<Stdout
                 .render(&mut frame, rows[4]);
         }
     }
+}
 
-    // PV Inverter
-    {
+impl Drawer for PvInverter {
+    fn draw(
+        application: &Application,
+        mut frame: &mut Frame<CrosstermBackend<Stdout>>,
+        pv_inverter_panel: Rect,
+    ) {
         let mut block = Block::default().title("PV Inverter").borders(Borders::ALL);
         block.render(&mut frame, pv_inverter_panel);
 
@@ -292,25 +240,38 @@ fn draw(application: &Application, mut frame: &mut Frame<CrosstermBackend<Stdout
             }
         }
     }
+}
 
-    // Vebus
-    {
-        let block = Block::default().title("Vebus").borders(Borders::ALL);
+impl Drawer for Vebus {
+    fn draw(
+        application: &Application,
+        mut frame: &mut Frame<CrosstermBackend<Stdout>>,
+        vebus_panel: Rect,
+    ) {
+        let state = application.last_state();
+        let mut block = Block::default().title("Vebus").borders(Borders::ALL);
+        block.render(&mut frame, vebus_panel);
 
-        Paragraph::new(
-            [Text::raw(match &state.vebus {
-                Some(vebus) => vebus.to_string(),
-                None => "n/a".to_string(),
-            })]
-            .iter(),
-        )
-        .block(block)
-        .wrap(true)
-        .render(&mut frame, vebus_panel);
+        if let Some(vebus) = &state.vebus {
+            let rows = Layout::default()
+                .direction(Direction::Horizontal)
+                .margin(2)
+                .constraints([Constraint::Percentage(100)].as_ref())
+                .split(block.inner(vebus_panel));
+
+            Paragraph::new([Text::raw(format!("frequency {}", vebus.frequency))].iter())
+                .wrap(true)
+                .render(&mut frame, rows[0]);
+        }
     }
+}
 
-    // House
-    {
+impl Drawer for House {
+    fn draw(
+        application: &Application,
+        mut frame: &mut Frame<CrosstermBackend<Stdout>>,
+        house_panel: Rect,
+    ) {
         let mut block = Block::default().title("House").borders(Borders::ALL);
         block.render(&mut frame, house_panel);
 
@@ -387,54 +348,4 @@ fn draw(application: &Application, mut frame: &mut Frame<CrosstermBackend<Stdout
                 .render(&mut frame, columns[3]);
         }
     }
-}
-
-pub fn run(mut context: &mut sync::Context) -> Result<(), Box<dyn std::error::Error>> {
-    enable_raw_mode()?;
-
-    let mut stdout = io::stdout();
-    execute!(stdout, EnterAlternateScreen)?;
-
-    let backend = CrosstermBackend::new(stdout);
-    let mut terminal = Terminal::new(backend)?;
-    terminal.hide_cursor()?;
-
-    let (tx, rx) = mpsc::channel();
-
-    thread::spawn(move || loop {
-        if event::poll(Duration::from_millis(500)).unwrap() {
-            if let CEvent::Key(key) = event::read().unwrap() {
-                tx.send(Event::Input(key)).unwrap();
-            }
-        }
-
-        tx.send(Event::Tick).unwrap();
-    });
-
-    terminal.clear()?;
-
-    let mut application = Application::new(&mut context);
-    application.tick()?;
-
-    loop {
-        terminal.draw(|mut frame| {
-            draw(&application, &mut frame);
-        })?;
-
-        match rx.recv()? {
-            Event::Input(event) => match event.code {
-                KeyCode::Char('q') => {
-                    disable_raw_mode()?;
-                    execute!(terminal.backend_mut(), LeaveAlternateScreen)?;
-                    terminal.show_cursor()?;
-
-                    break;
-                }
-                _ => {}
-            },
-            Event::Tick => application.tick()?,
-        };
-    }
-
-    Ok(())
 }
