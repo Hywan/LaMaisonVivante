@@ -39,7 +39,7 @@ OPTIONS:
     -f, --format <format>      Define the kind of outputs [default: text]  [possible values: Text, Json, Tui]
 ```
 
-Use the `--address` option to specify the adress. That's the only thing
+Use the `--address` option to specify the address. That's the only thing
 you need to know!
 
 ### Format
