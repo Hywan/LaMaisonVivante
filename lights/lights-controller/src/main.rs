@@ -64,7 +64,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let options = Options::from_args();
     let mut stream = TcpStream::connect(options.address)?;
 
-    println!("Sending a {:} to {:?}…", options.action, options.subject);
+    println!("Sending a {:?} to {:?}…", options.action, options.subject);
 
     stream.write(&[options.subject as u8, b'\t', options.action as u8])?;
 
