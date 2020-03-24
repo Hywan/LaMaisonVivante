@@ -13,8 +13,7 @@ use tokio_modbus::prelude::*;
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let option = Option::from_args();
 
-    let socket_addr = option.address.parse()?;
-    let mut context = sync::tcp::connect(socket_addr)?;
+    let mut context = sync::tcp::connect(option.address)?;
 
     match &option.format {
         Format::Text => println!("{}", reader::read(&mut context)?),

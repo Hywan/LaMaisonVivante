@@ -1,3 +1,4 @@
+use std::net::SocketAddr;
 use structopt::{clap::arg_enum, StructOpt};
 
 arg_enum! {
@@ -14,7 +15,7 @@ arg_enum! {
 pub struct Option {
     /// Modbus address of the Victron CCGX, e.g. `192.168.1.142:502`.
     #[structopt(short = "a", long = "address")]
-    pub address: String,
+    pub address: SocketAddr,
 
     /// Define the kind of outputs.
     #[structopt(
