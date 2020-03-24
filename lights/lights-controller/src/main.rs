@@ -8,19 +8,19 @@ arg_enum! {
     #[derive(Debug)]
     #[repr(u8)]
     enum Subject {
-        LaundryRoom = 0,
-        Bathroom = 1,
-        LouiseBedroom = 2,
-        EliBedroom = 3,
-        Hall = 4,
-        LivingRoom = 5,
-        SittingRoom = 6,
-        DiningTable = 7,
-        KitchenIsland = 8,
-        Kitchen = 9,
-        ParentBed = 10,
-        ParentBathroom = 11,
-        ParentBedroom = 12,
+        LaundryRoom ,
+        Bathroom,
+        LouiseBedroom,
+        EliBedroom,
+        Hall,
+        LivingRoom,
+        SittingRoom,
+        DiningTable,
+        KitchenIsland,
+        Kitchen,
+        ParentBed,
+        ParentBathroom,
+        ParentBedroom,
     }
 }
 
