@@ -62,7 +62,6 @@ struct Options {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let options = Options::from_args();
-
     let mut stream = TcpStream::connect(options.address)?;
 
     println!("Sending a {:} to {:?}…", options.action, options.subject);
