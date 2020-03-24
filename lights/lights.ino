@@ -1,4 +1,10 @@
-// To send data to this program:
+// To control this program, use the `lights-controller` program:
+//
+// ```sh
+// $ lights-controller --address 192.168.1.42:23 --subject livingroom --action pulse
+// ```
+//
+// Or alternatively, the hardcore way with `printf` and `netcat`:
 //
 // ```sh
 // $ printf '%b\t%b' '\x05' '\x00' | nc 192.168.1.42 23 -v
