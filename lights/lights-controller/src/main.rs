@@ -1,3 +1,4 @@
+use human_panic::setup_panic;
 use std::{
     io::prelude::*,
     net::{SocketAddr, TcpStream},
@@ -61,6 +62,8 @@ struct Options {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    setup_panic!();
+
     let options = Options::from_args();
     let mut stream = TcpStream::connect(options.address)?;
 
