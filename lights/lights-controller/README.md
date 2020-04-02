@@ -45,7 +45,7 @@ option to specify the group of lights to control. The `--action`
 option defaults to `pulse`, which is also the only possible value for
 the moment, so you can skip it.
 
-A configuration file can be used to read the value of the `--adress`
+A configuration file can be used to read the value of the `--address`
 option. Use `--print-config-path` to get the path to the configuration
 file.
 
