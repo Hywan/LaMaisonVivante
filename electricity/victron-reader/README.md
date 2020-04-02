@@ -25,22 +25,28 @@ The executable binary is located in `./target/release/victron-reader`.
 Use `-h`/`--help` to get help:
 
 ```
-victron-reader 0.1.0
+victron-reader 0.2.0
 
 USAGE:
-    victron-reader [OPTIONS] --address <address>
+    victron-reader [FLAGS] [OPTIONS]
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help                 Prints help information
+    -c, --print-config-path    Print the configuration path and exit
+    -V, --version              Prints version information
 
 OPTIONS:
-    -a, --address <address>    Modbus address of the Victron CCGX, e.g. `192.168.1.142:502`
-    -f, --format <format>      Define the kind of outputs [default: text]  [possible values: Text, Json, Tui]
+    -a, --address <address>    Modbus address of the Victron CCGX, e.g. `192.168.1.142:502`. This option overwrites the
+                               value read from the configuration file
+    -f, --format <format>      Define the kind of outputs [default: Text]  [possible values: Text, Json, Tui]
 ```
 
 Use the `--address` option to specify the address. That's the only thing
 you need to know!
+
+A configuration file can be used to read the value of the `--address`
+option. Use `--print-config-path` to get the path to the configuration
+file.
 
 ### Format
 

@@ -12,10 +12,12 @@ arg_enum! {
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "victron-reader")]
-pub struct Option {
-    /// Modbus address of the Victron CCGX, e.g. `192.168.1.142:502`.
+pub struct Options {
+    /// Modbus address of the Victron CCGX,
+    /// e.g. `192.168.1.142:502`. This option overwrites the value
+    /// read from the configuration file.
     #[structopt(short = "a", long = "address")]
-    pub address: SocketAddr,
+    pub address: Option<SocketAddr>,
 
     /// Define the kind of outputs.
     #[structopt(
@@ -23,7 +25,11 @@ pub struct Option {
         long = "format",
         possible_values = &Format::variants(),
         case_insensitive = true,
-        default_value = "text",
+        default_value = "Text",
     )]
     pub format: Format,
+
+    /// Print the configuration path and exit.
+    #[structopt(short = "c", long)]
+    pub print_config_path: bool,
 }

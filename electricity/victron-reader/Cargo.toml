@@ -1,6 +1,6 @@
 [package]
 name = "victron-reader"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Ivan Enderlin <ivan.enderlin@hoa-project.net>"]
 edition = "2018"
 
@@ -12,3 +12,5 @@ serde_json = "1.0"
 tui = { version = "0.8", default-features = false, features = ["crossterm"] }
 crossterm = "0.16"
 human-panic = "1.0"
+confy = "0.4"
+directories = "2.0"
