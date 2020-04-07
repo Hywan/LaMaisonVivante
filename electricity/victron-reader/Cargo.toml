@@ -1,7 +1,7 @@
 [package]
 name = "victron-reader"
 version = "0.2.0"
-authors = ["Ivan Enderlin <ivan.enderlin@hoa-project.net>"]
+authors = ["Ivan Enderlin <ivan.enderlin@mnt.io>"]
 edition = "2018"
 
 [dependencies]

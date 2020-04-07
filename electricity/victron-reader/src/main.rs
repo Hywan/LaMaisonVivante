@@ -6,7 +6,7 @@ mod state;
 mod tui;
 mod unit;
 
-use crate::{command::*, configuration::Configuration};
+use crate::command::*;
 use human_panic::setup_panic;
 use serde_json::to_string as to_json;
 use structopt::StructOpt;
@@ -16,7 +16,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     setup_panic!();
 
     let configuration_path = configuration::get_path()?;
-    let configuration: Configuration = configuration::load(&configuration_path)?;
+    let configuration = configuration::load(&configuration_path)?;
 
     let options = Options::from_args();
 
