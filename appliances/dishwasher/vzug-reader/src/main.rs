@@ -6,6 +6,7 @@ mod unit;
 use crate::{
     command::{Format, Options},
     state::{Consumption, State},
+    unit::*,
 };
 use human_panic::setup_panic;
 use regex::Regex;
@@ -46,16 +47,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         address = address
     );
 
-    let total_consumption = reqwest::get(&total_consumption_url)
-        .await?
-        .json::<HashMap<String, String>>()
-        .await?;
-    let average_consumption = reqwest::get(&average_consumption_url)
-        .await?
-        .json::<HashMap<String, String>>()
-        .await?;
+    let total_consumption = reqwest::get(&total_consumption_url);
+    let average_consumption = reqwest::get(&average_consumption_url);
 
-    dbg!(&average_consumption);
+    let total_consumption = total_consumption
+        .await?
+        .json::<HashMap<String, String>>()
+        .await?;
+    let average_consumption = average_consumption
+        .await?
+        .json::<HashMap<String, String>>()
+        .await?;
 
     let regex = Regex::new("(?P<kwh>[0-9,]+) kWh.+?(?P<l>[0-9]+) ℓ").unwrap();
     let captured = regex
@@ -63,8 +65,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .expect("Failed to capture the total consumption data.");
 
     let total_consumption = Consumption {
-        power: f64::from_str(&captured["kwh"].replace(",", "."))?,
-        water: f64::from_str(&captured["l"])?,
+        power: Kwh(f64::from_str(&captured["kwh"].replace(",", "."))?),
+        water: Liter(f64::from_str(&captured["l"])?),
     };
 
     let captured = regex
@@ -72,13 +74,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .expect("Failed to capture the average consumption data.");
 
     let average_consumption = Consumption {
-        power: f64::from_str(&captured["kwh"].replace(",", "."))?,
-        water: f64::from_str(&captured["l"])?,
+        power: Kwh(f64::from_str(&captured["kwh"].replace(",", "."))?),
+        water: Liter(f64::from_str(&captured["l"])?),
     };
 
     let state = State {
-        average: average_consumption,
-        total: total_consumption,
+        average_consumption,
+        total_consumption,
     };
 
     match &options.format {

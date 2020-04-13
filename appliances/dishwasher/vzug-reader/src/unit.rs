@@ -1,2 +1,7 @@
-pub type Kwh = f64;
-pub type Liter = f64;
+use serde::Serialize;
+
+#[derive(Debug, Serialize)]
+pub struct Kwh(pub f64);
+
+#[derive(Debug, Serialize)]
+pub struct Liter(pub f64);

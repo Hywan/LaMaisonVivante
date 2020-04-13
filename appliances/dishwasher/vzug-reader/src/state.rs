@@ -9,6 +9,6 @@ pub struct Consumption {
 
 #[derive(Debug, Serialize)]
 pub struct State {
-    pub average: Consumption,
-    pub total: Consumption,
+    pub average_consumption: Consumption,
+    pub total_consumption: Consumption,
 }
