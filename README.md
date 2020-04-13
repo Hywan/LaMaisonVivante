@@ -30,3 +30,9 @@ Batteries, PV inverter, and house are monitored with the
 Lights are controlled by the `lights.ino` program, that lands in a
 Controllino, along with its companion `lights-controller`. [Learn
 more](lights/).
+
+## Domestic Appliances
+
+Domestic Appliances are used for thiner monitoring. For the moment,
+only the diswwasher is supported with the `vzug-reader`
+program. [Learn more](appliances/dishwasher/vzug-reader/).
