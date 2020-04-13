@@ -40,19 +40,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let total_consumption = reqwest::get(&total_consumption_url).await?.json::<HashMap<String, String>>().await?;
     let average_consumption = reqwest::get(&average_consumption_url).await?.json::<HashMap<String, String>>().await?;
 
-    let regex = Regex::new("(?P<kwh>[0-9]+) kWh.+?(?P<l>[0-9]+) ℓ").unwrap();
+    dbg!(&average_consumption);
+
+    let regex = Regex::new("(?P<kwh>[0-9,]+) kWh.+?(?P<l>[0-9]+) ℓ").unwrap();
     let captured = regex.captures(total_consumption.get("value").unwrap()).expect("Failed to capture the total consumption data.");
 
     let total_consumption = Consumption {
-        power: u64::from_str(&captured["kwh"])?,
-        water: u64::from_str(&captured["l"])?,
+        power: f64::from_str(&captured["kwh"].replace(",", "."))?,
+        water: f64::from_str(&captured["l"])?,
     };
 
     let captured = regex.captures(average_consumption.get("value").unwrap()).expect("Failed to capture the average consumption data.");
 
     let average_consumption = Consumption {
-        power: u64::from_str(&captured["kwh"])?,
-        water: u64::from_str(&captured["l"])?,
+        power: f64::from_str(&captured["kwh"].replace(",", "."))?,
+        water: f64::from_str(&captured["l"])?,
     };
 
     let state = State {

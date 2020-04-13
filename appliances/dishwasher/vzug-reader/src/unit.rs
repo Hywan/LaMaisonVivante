@@ -1,2 +1,2 @@
-pub type Kwh = u64;
-pub type Liter = u64;
+pub type Kwh = f64;
+pub type Liter = f64;
