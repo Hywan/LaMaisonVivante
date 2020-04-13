@@ -3,7 +3,10 @@ mod configuration;
 mod state;
 mod unit;
 
-use crate::{command::{Format, Options}, state::{Consumption, State}};
+use crate::{
+    command::{Format, Options},
+    state::{Consumption, State},
+};
 use human_panic::setup_panic;
 use regex::Regex;
 use reqwest;
@@ -34,23 +37,39 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let address = options.address.unwrap_or(configuration.address);
 
-    let total_consumption_url = format!("http://{address}/hh?command=getCommand&value=cmdTotalverbrauch", address = address);
-    let average_consumption_url = format!("http://{address}/hh?command=getCommand&value=cmdDurchschnittverbrauch", address = address);
+    let total_consumption_url = format!(
+        "http://{address}/hh?command=getCommand&value=cmdTotalverbrauch",
+        address = address
+    );
+    let average_consumption_url = format!(
+        "http://{address}/hh?command=getCommand&value=cmdDurchschnittverbrauch",
+        address = address
+    );
 
-    let total_consumption = reqwest::get(&total_consumption_url).await?.json::<HashMap<String, String>>().await?;
-    let average_consumption = reqwest::get(&average_consumption_url).await?.json::<HashMap<String, String>>().await?;
+    let total_consumption = reqwest::get(&total_consumption_url)
+        .await?
+        .json::<HashMap<String, String>>()
+        .await?;
+    let average_consumption = reqwest::get(&average_consumption_url)
+        .await?
+        .json::<HashMap<String, String>>()
+        .await?;
 
     dbg!(&average_consumption);
 
     let regex = Regex::new("(?P<kwh>[0-9,]+) kWh.+?(?P<l>[0-9]+) ℓ").unwrap();
-    let captured = regex.captures(total_consumption.get("value").unwrap()).expect("Failed to capture the total consumption data.");
+    let captured = regex
+        .captures(total_consumption.get("value").unwrap())
+        .expect("Failed to capture the total consumption data.");
 
     let total_consumption = Consumption {
         power: f64::from_str(&captured["kwh"].replace(",", "."))?,
         water: f64::from_str(&captured["l"])?,
     };
 
-    let captured = regex.captures(average_consumption.get("value").unwrap()).expect("Failed to capture the average consumption data.");
+    let captured = regex
+        .captures(average_consumption.get("value").unwrap())
+        .expect("Failed to capture the average consumption data.");
 
     let average_consumption = Consumption {
         power: f64::from_str(&captured["kwh"].replace(",", "."))?,
