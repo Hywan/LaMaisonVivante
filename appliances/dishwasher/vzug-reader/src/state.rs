@@ -19,9 +19,43 @@ pub struct Consumption {
     pub water: Liter,
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Option<T> {
+    set: T,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Duration {
+    act: u32,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum Program {
+    Active {
+        status: String,
+        id: u32,
+        name: String,
+        #[serde(rename(deserialize = "activeStepIndex"))]
+        current_step: u32,
+        #[serde(rename(deserialize = "stepIds"))]
+        steps: Vec<u32>,
+        #[serde(rename(deserialize = "eco"))]
+        echo_option: Option<String>,
+        #[serde(rename(deserialize = "steamfinish"))]
+        steam_finish: Option<bool>,
+        #[serde(rename(deserialize = "partialload"))]
+        partial_load: Option<bool>,
+    },
+    Idle {
+        status: String,
+    },
+}
+
 #[derive(Debug, Serialize)]
 pub struct State {
     pub device: Device,
     pub average_consumption: Consumption,
     pub total_consumption: Consumption,
+    pub current_program: Program,
 }

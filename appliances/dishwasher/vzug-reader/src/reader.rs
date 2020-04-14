@@ -1,5 +1,5 @@
 use crate::{
-    state::{Consumption, Device, State},
+    state::{Consumption, Device, Program, State},
     unit::*,
 };
 use regex::Regex;
@@ -16,14 +16,21 @@ pub async fn read(address: &SocketAddr) -> Result<State, Box<dyn std::error::Err
         "http://{address}/hh?command=getCommand&value=cmdTotalverbrauch",
         address = address
     );
+
     let average_consumption_url = format!(
         "http://{address}/hh?command=getCommand&value=cmdDurchschnittverbrauch",
+        address = address
+    );
+
+    let current_program_url = format!(
+        "http://{address}/hh?command=getProgram",
         address = address
     );
 
     let device_info = reqwest::get(&device_info_url);
     let total_consumption = reqwest::get(&total_consumption_url);
     let average_consumption = reqwest::get(&average_consumption_url);
+    let current_program = reqwest::get(&current_program_url);
 
     let device = device_info
         .await?
@@ -36,6 +43,10 @@ pub async fn read(address: &SocketAddr) -> Result<State, Box<dyn std::error::Err
     let average_consumption = average_consumption
         .await?
         .json::<HashMap<String, String>>()
+        .await?;
+    let current_program = current_program
+        .await?
+        .json::<Vec<Program>>()
         .await?;
 
     let regex = Regex::new("(?P<kwh>[0-9,]+) kWh.+?(?P<l>[0-9]+) ℓ").unwrap();
@@ -61,5 +72,6 @@ pub async fn read(address: &SocketAddr) -> Result<State, Box<dyn std::error::Err
         device,
         average_consumption,
         total_consumption,
+        current_program: current_program[0].clone(),
     })
 }
