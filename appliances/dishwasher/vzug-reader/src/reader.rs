@@ -1,5 +1,5 @@
 use crate::{
-    state::{Consumption, State},
+    state::{Consumption, Device, State},
     unit::*,
 };
 use regex::Regex;
@@ -7,6 +7,11 @@ use reqwest;
 use std::{collections::HashMap, net::SocketAddr, str::FromStr};
 
 pub async fn read(address: &SocketAddr) -> Result<State, Box<dyn std::error::Error>> {
+    let device_info_url = format!(
+        "http://{address}/hh?command=getDeviceInfo",
+        address = address
+    );
+
     let total_consumption_url = format!(
         "http://{address}/hh?command=getCommand&value=cmdTotalverbrauch",
         address = address
@@ -16,9 +21,14 @@ pub async fn read(address: &SocketAddr) -> Result<State, Box<dyn std::error::Err
         address = address
     );
 
+    let device_info = reqwest::get(&device_info_url);
     let total_consumption = reqwest::get(&total_consumption_url);
     let average_consumption = reqwest::get(&average_consumption_url);
 
+    let device = device_info
+        .await?
+        .json::<Device>()
+        .await?;
     let total_consumption = total_consumption
         .await?
         .json::<HashMap<String, String>>()
@@ -48,6 +58,7 @@ pub async fn read(address: &SocketAddr) -> Result<State, Box<dyn std::error::Err
     };
 
     Ok(State {
+        device,
         average_consumption,
         total_consumption,
     })
