@@ -59,6 +59,13 @@ By default, the text format is selected.
 
 ```text
 State {
+    device: Device {
+        model: "GS-ASLWP",
+        description: "Adora SL-WP",
+        serial_number: "41134 000054",
+        article_number: "4113400055",
+        api_version: "1.6.0",
+    },
     average_consumption: Consumption {
         power: Kwh(
             0.7,
@@ -86,6 +93,13 @@ json.tool`):
 
 ```json
 {
+    "device": {
+        "model": "GS-ASLWP",
+        "description": "Adora SL-WP",
+        "serial_number": "41134 000054",
+        "article_number": "4113400055",
+        "api_version": "1.6.0"
+    },
     "average_consumption": {
         "power": 0.7,
         "water": 13.0
