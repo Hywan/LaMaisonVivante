@@ -62,14 +62,11 @@ pub enum Program {
         current_step: u32,
         #[serde(rename(deserialize = "stepIds"))]
         steps: Vec<u32>,
-        #[serde(rename(deserialize = "eco"))]
-        #[serde(deserialize_with = "parse_option")]
+        #[serde(rename(deserialize = "eco"), deserialize_with = "parse_option")]
         eco: bool,
-        #[serde(rename(deserialize = "steamfinish"))]
-        #[serde(deserialize_with = "parse_option")]
+        #[serde(rename(deserialize = "steamfinish"), deserialize_with = "parse_option")]
         steam_finish: bool,
-        #[serde(rename(deserialize = "partialload"))]
-        #[serde(deserialize_with = "parse_option")]
+        #[serde(rename(deserialize = "partialload"), deserialize_with = "parse_option")]
         partial_load: bool,
     },
     Idle {
