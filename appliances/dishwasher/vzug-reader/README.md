@@ -86,6 +86,9 @@ State {
         status: "active",
         id: 50,
         name: "Pogramme Eco",
+        duration: Duration {
+            act: 13307,
+        },
         current_step: 2,
         steps: [
             79,
@@ -136,6 +139,9 @@ json.tool`):
         "status": "active",
         "id": 50,
         "name": "Pogramme Eco",
+        "duration": {
+            "act": 13307,
+        },
         "current_step": 2,
         "steps": [
             79,

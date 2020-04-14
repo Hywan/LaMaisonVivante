@@ -36,6 +36,7 @@ pub enum Program {
         status: String,
         id: u32,
         name: String,
+        duration: Duration,
         #[serde(rename(deserialize = "activeStepIndex"))]
         current_step: u32,
         #[serde(rename(deserialize = "stepIds"))]
