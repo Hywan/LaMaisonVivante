@@ -1,5 +1,6 @@
 use crate::unit::*;
-use serde::{Deserialize, Serialize};
+use serde::{de::Deserializer, Deserialize, Serialize};
+use serde_json::Value;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Device {
@@ -20,13 +21,33 @@ pub struct Consumption {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Option<T> {
-    set: T,
+struct Option {
+    #[serde(deserialize_with = "parse_str_option")]
+    set: bool,
+}
+
+fn parse_str_option<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Deserialize::deserialize(deserializer).map(|v: Value| match v {
+        Value::Bool(v) => v,
+        Value::String(string) => string != "none",
+        _ => false,
+    })
+}
+
+fn parse_option<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Deserialize::deserialize(deserializer).map(|o: Option| o.set)
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Duration {
-    act: u32,
+    #[serde(rename(deserialize = "act"))]
+    remaining_seconds: u32,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -42,11 +63,14 @@ pub enum Program {
         #[serde(rename(deserialize = "stepIds"))]
         steps: Vec<u32>,
         #[serde(rename(deserialize = "eco"))]
-        eco: Option<String>,
+        #[serde(deserialize_with = "parse_option")]
+        eco: bool,
         #[serde(rename(deserialize = "steamfinish"))]
-        steam_finish: Option<bool>,
+        #[serde(deserialize_with = "parse_option")]
+        steam_finish: bool,
         #[serde(rename(deserialize = "partialload"))]
-        partial_load: Option<bool>,
+        #[serde(deserialize_with = "parse_option")]
+        partial_load: bool,
     },
     Idle {
         status: String,
