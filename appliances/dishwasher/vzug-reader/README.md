@@ -82,6 +82,30 @@ State {
             930.0,
         ),
     },
+    current_program: Active {
+        status: "active",
+        id: 50,
+        name: "Pogramme Eco",
+        current_step: 2,
+        steps: [
+            79,
+            82,
+            79,
+            78,
+            74,
+            75,
+            72,
+        ],
+        echo_option: Option {
+            set: "none",
+        },
+        steam_finish: Option {
+            set: false,
+        },
+        partial_load: Option {
+            set: true,
+        },
+    },
 }
 ```
 
@@ -107,6 +131,30 @@ json.tool`):
     "total_consumption": {
         "power": 42.0,
         "water": 930.0
+    },
+    "current_program": {
+        "status": "active",
+        "id": 50,
+        "name": "Pogramme Eco",
+        "current_step": 2,
+        "steps": [
+            79,
+            82,
+            79,
+            78,
+            74,
+            75,
+            72
+        ],
+        "echo_option": {
+            "set": "none"
+        },
+        "steam_finish": {
+            "set": false
+        },
+        "partial_load": {
+            "set": true
+        }
     }
 }
 ```
