@@ -1,18 +1,12 @@
 mod command;
 mod configuration;
+mod reader;
 mod state;
 mod unit;
 
-use crate::{
-    command::{Format, Options},
-    state::{Consumption, State},
-    unit::*,
-};
+use crate::command::{Format, Options};
 use human_panic::setup_panic;
-use regex::Regex;
-use reqwest;
 use serde_json::to_string as to_json;
-use std::{collections::HashMap, str::FromStr};
 use structopt::StructOpt;
 
 #[tokio::main]
@@ -37,51 +31,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let address = options.address.unwrap_or(configuration.address);
-
-    let total_consumption_url = format!(
-        "http://{address}/hh?command=getCommand&value=cmdTotalverbrauch",
-        address = address
-    );
-    let average_consumption_url = format!(
-        "http://{address}/hh?command=getCommand&value=cmdDurchschnittverbrauch",
-        address = address
-    );
-
-    let total_consumption = reqwest::get(&total_consumption_url);
-    let average_consumption = reqwest::get(&average_consumption_url);
-
-    let total_consumption = total_consumption
-        .await?
-        .json::<HashMap<String, String>>()
-        .await?;
-    let average_consumption = average_consumption
-        .await?
-        .json::<HashMap<String, String>>()
-        .await?;
-
-    let regex = Regex::new("(?P<kwh>[0-9,]+) kWh.+?(?P<l>[0-9]+) ℓ").unwrap();
-    let captured = regex
-        .captures(total_consumption.get("value").unwrap())
-        .expect("Failed to capture the total consumption data.");
-
-    let total_consumption = Consumption {
-        power: Kwh(f64::from_str(&captured["kwh"].replace(",", "."))?),
-        water: Liter(f64::from_str(&captured["l"])?),
-    };
-
-    let captured = regex
-        .captures(average_consumption.get("value").unwrap())
-        .expect("Failed to capture the average consumption data.");
-
-    let average_consumption = Consumption {
-        power: Kwh(f64::from_str(&captured["kwh"].replace(",", "."))?),
-        water: Liter(f64::from_str(&captured["l"])?),
-    };
-
-    let state = State {
-        average_consumption,
-        total_consumption,
-    };
+    let state = reader::read(&address).await?;
 
     match &options.format {
         Format::Text => println!("{:#?}", state),
