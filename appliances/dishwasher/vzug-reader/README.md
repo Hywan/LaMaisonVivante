@@ -79,7 +79,7 @@ State {
             42.0,
         ),
         water: Liter(
-            930.0,
+            941.0,
         ),
     },
     current_program: Active {
@@ -87,9 +87,9 @@ State {
         id: 50,
         name: "Pogramme Eco",
         duration: Duration {
-            act: 13307,
+            remaining_seconds: 1715,
         },
-        current_step: 2,
+        current_step: 6,
         steps: [
             79,
             82,
@@ -99,15 +99,9 @@ State {
             75,
             72,
         ],
-        eco: Option {
-            set: "none",
-        },
-        steam_finish: Option {
-            set: false,
-        },
-        partial_load: Option {
-            set: true,
-        },
+        eco: false,
+        steam_finish: false,
+        partial_load: true,
     },
 }
 ```
@@ -133,16 +127,16 @@ json.tool`):
     },
     "total_consumption": {
         "power": 42.0,
-        "water": 930.0
+        "water": 941.0
     },
     "current_program": {
         "status": "active",
         "id": 50,
         "name": "Pogramme Eco",
         "duration": {
-            "act": 13307,
+            "remaining_seconds": 1671
         },
-        "current_step": 2,
+        "current_step": 6,
         "steps": [
             79,
             82,
@@ -152,15 +146,9 @@ json.tool`):
             75,
             72
         ],
-        "eco": {
-            "set": "none"
-        },
-        "steam_finish": {
-            "set": false
-        },
-        "partial_load": {
-            "set": true
-        }
+        "eco": false,
+        "steam_finish": false,
+        "partial_load": true
     }
 }
 ```
