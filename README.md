@@ -34,5 +34,5 @@ more](lights/).
 ## Domestic Appliances
 
 Domestic Appliances are used for thiner monitoring. For the moment,
-only the diswwasher is supported with the `vzug-reader`
+only the dishwasher is supported with the `vzug-reader`
 program. [Learn more](appliances/dishwasher/vzug-reader/).
