@@ -96,7 +96,7 @@ State {
             75,
             72,
         ],
-        echo_option: Option {
+        eco: Option {
             set: "none",
         },
         steam_finish: Option {
@@ -146,7 +146,7 @@ json.tool`):
             75,
             72
         ],
-        "echo_option": {
+        "eco": {
             "set": "none"
         },
         "steam_finish": {

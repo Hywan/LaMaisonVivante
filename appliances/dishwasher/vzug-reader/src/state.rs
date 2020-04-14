@@ -41,7 +41,7 @@ pub enum Program {
         #[serde(rename(deserialize = "stepIds"))]
         steps: Vec<u32>,
         #[serde(rename(deserialize = "eco"))]
-        echo_option: Option<String>,
+        eco: Option<String>,
         #[serde(rename(deserialize = "steamfinish"))]
         steam_finish: Option<bool>,
         #[serde(rename(deserialize = "partialload"))]
