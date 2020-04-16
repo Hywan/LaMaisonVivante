@@ -2,7 +2,7 @@ use std::net::SocketAddr;
 use structopt::{clap::arg_enum, StructOpt};
 
 arg_enum! {
-    #[derive(Debug)]
+    #[derive(Debug, Copy, Clone)]
     #[repr(u8)]
     pub enum Subject {
         LaundryRoom ,
@@ -18,6 +18,31 @@ arg_enum! {
         ParentBed,
         ParentBathroom,
         ParentBedroom,
+    }
+}
+
+pub trait ToString {
+    fn to_string(&self) -> String;
+}
+
+impl ToString for Subject {
+    fn to_string(&self) -> String {
+        match self {
+            Self::LaundryRoom => "Buanderie",
+            Self::Bathroom => "Salle de bain",
+            Self::LouiseBedroom => "Chambre Louise",
+            Self::EliBedroom => "Chambre Éli",
+            Self::Hall => "Entrée",
+            Self::LivingRoom => "Espace de vie",
+            Self::SittingRoom => "Canapé",
+            Self::DiningTable => "Table à manger",
+            Self::KitchenIsland => "Îlot",
+            Self::Kitchen => "Cuisine",
+            Self::ParentBed => "Lit parentale",
+            Self::ParentBathroom => "Salle de bain parents",
+            Self::ParentBedroom => "Suite parentale",
+        }
+        .to_string()
     }
 }
 
@@ -58,7 +83,16 @@ pub struct Options {
     )]
     pub action: Action,
 
-    /// Print the configuration path and exit.
+    /// Prints the configuration path and exit.
     #[structopt(short = "c", long)]
     pub print_config_path: bool,
+
+    /// Turns this program into a Thing, i.e. a new Web of Things
+    /// device.
+    #[structopt(short = "t", long)]
+    pub into_thing: bool,
+
+    /// Port of the Thing. Requires `--into-thing` to be effective.
+    #[structopt(short = "p", long)]
+    pub thing_port: Option<u16>,
 }

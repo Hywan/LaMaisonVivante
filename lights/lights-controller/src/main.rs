@@ -1,9 +1,11 @@
 mod command;
 mod configuration;
+mod thing;
+mod writer;
 
 use crate::command::Options;
 use human_panic::setup_panic;
-use std::{io::prelude::*, net::TcpStream};
+use std::net::TcpStream;
 use structopt::StructOpt;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -26,12 +28,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    let mut stream = TcpStream::connect(options.address.unwrap_or(configuration.address))?;
+    let address = options.address.unwrap_or(configuration.address);
 
-    println!("Sending a {:?} to {:?}…", options.action, options.subject);
+    if options.into_thing {
+        thing::run(address, options.thing_port);
+    } else {
+        println!("Sending a {:?} to {:?}…", options.action, options.subject);
 
-    // The real piece of code.
-    stream.write(&[options.subject as u8, b'\t', options.action as u8])?;
+        let stream = TcpStream::connect(address)?;
+        writer::send(&stream, options.subject, options.action)?;
+    }
 
     Ok(())
 }
