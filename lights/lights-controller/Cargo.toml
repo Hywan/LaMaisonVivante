@@ -1,6 +1,6 @@
 [package]
 name = "lights-controller"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Ivan Enderlin <ivan.enderlin@mnt.io>"]
 edition = "2018"
 
