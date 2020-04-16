@@ -108,7 +108,7 @@ where
     things.push(make_light(address, Subject::ParentBedroom));
 
     println!(
-        "Starting the Thing server (port {})…",
+        "Starting the Things server (port {})…",
         port.map(|p| p.to_string())
             .unwrap_or_else(|| "[default]".to_string())
     );
