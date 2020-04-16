@@ -21,23 +21,27 @@ The executable binary is located in
 Use `-h`/`--help` to get help:
 
 ```
-lights-controller 0.2.0
+lights-controller 0.3.0
 
 USAGE:
     lights-controller [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help                 Prints help information
-    -c, --print-config-path    Print the configuration path and exit
+    -t, --into-thing           Turns this program into a Thing, i.e. a new Web of Things device
+    -c, --print-config-path    Prints the configuration path and exit
     -V, --version              Prints version information
 
 OPTIONS:
-    -x, --action <action>      Type of signal/event to send on the light [default: Pulse]  [possible values: Pulse]
-    -a, --address <address>    Address of the Controllino; see `lights.ino` to see the port; e.g. `192.168.1.42:23`.
-                               This option overwrites the value read from the configuration file
-    -s, --subject <subject>    Light to control [default: LivingRoom]  [possible values: LaundryRoom, Bathroom,
-                               LouiseBedroom, EliBedroom, Hall, LivingRoom, SittingRoom, DiningTable, KitchenIsland,
-                               Kitchen, ParentBed, ParentBathroom, ParentBedroom]
+    -x, --action <action>            Type of signal/event to send on the light [default: Pulse]  [possible values:
+                                     Pulse]
+    -a, --address <address>          Address of the Controllino; see `lights.ino` to see the port; e.g.
+                                     `192.168.1.42:23`. This option overwrites the value read from the configuration
+                                     file
+    -s, --subject <subject>          Light to control [default: LivingRoom]  [possible values: LaundryRoom, Bathroom,
+                                     LouiseBedroom, EliBedroom, Hall, LivingRoom, SittingRoom, DiningTable,
+                                     KitchenIsland, Kitchen, ParentBed, ParentBathroom, ParentBedroom]
+    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective
 ```
 
 Use the `--address` option to specify the address, and the `--subject`
@@ -51,9 +55,26 @@ file.
 
 ## Example
 
+### Basic usage
+
 To turn the group of lights in the living room (a set of 5 lights):
 
 ```sh
 $ /target/release/lights-controller -a 192.168.1.125:23 -s livingroom
 Sending a Pulse to LivingRoom…
+```
+
+### [Web of Things](https://www.w3.org/WoT/)
+
+To turn all the lights into standardized connected things, use the
+`--into-thing` option: It will start a local Things server. The
+`--thing-port` is useful to set the server's port.
+
+Once the Things server is running, use a gateway like the [WebThings
+Gateway](https://iot.mozilla.org/gateway/) to interact with the
+lights. Enjoy!
+
+```sh
+$ ./target/release/lights-controller --address 192.168.1.125:23 --into-thing --thing-port 8081
+Starting the Things server (port 8081)…
 ```
