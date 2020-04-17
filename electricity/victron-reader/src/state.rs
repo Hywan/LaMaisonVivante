@@ -9,7 +9,13 @@ pub enum BatteryState {
     Charging,
 }
 
-#[derive(Debug, Serialize)]
+impl Default for BatteryState {
+    fn default() -> Self {
+        Self::Idle
+    }
+}
+
+#[derive(Debug, Default, Serialize)]
 pub struct Battery {
     pub state: BatteryState,
     pub state_of_charge: Percent,
@@ -19,26 +25,26 @@ pub struct Battery {
     pub health: Percent,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Default, Serialize)]
 pub struct PvInverterPhase {
     pub voltage: Volt,
     pub current: Amp,
     pub power: Watt,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Default, Serialize)]
 pub struct PvInverter {
     pub l1: PvInverterPhase,
     pub l2: PvInverterPhase,
     pub l3: PvInverterPhase,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Default, Serialize)]
 pub struct Vebus {
     pub frequency: Hertz,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Default, Serialize)]
 pub struct House {
     pub l1: Watt,
     pub l2: Watt,

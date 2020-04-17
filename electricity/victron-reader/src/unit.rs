@@ -52,6 +52,12 @@ macro_rules! unit {
             }
         }
 
+        impl Default for $name {
+            fn default() -> Self {
+                Self(0.0)
+            }
+        }
+
         impl ops::Add for $name {
             type Output = Self;
 
