@@ -3,6 +3,7 @@ mod configuration;
 mod dbus;
 mod reader;
 mod state;
+mod thing;
 mod tui;
 mod unit;
 
@@ -34,10 +35,14 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut context = sync::tcp::connect(options.address.unwrap_or(configuration.address))?;
 
-    match &options.format {
-        Format::Text => println!("{}", reader::read(&mut context)?),
-        Format::Json => println!("{}", to_json(&reader::read(&mut context)?)?),
-        Format::Tui => tui::run(&mut context)?,
+    if options.into_thing {
+        thing::run(context, options.thing_port);
+    } else {
+        match &options.format {
+            Format::Text => println!("{}", reader::read(&mut context)?),
+            Format::Json => println!("{}", to_json(&reader::read(&mut context)?)?),
+            Format::Tui => tui::run(&mut context)?,
+        }
     }
 
     Ok(())
