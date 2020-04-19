@@ -1,6 +1,6 @@
 [package]
 name = "nilan-reader"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Ivan Enderlin <ivan@mnt.io>"]
 edition = "2018"
 
@@ -12,3 +12,4 @@ structopt = "0.3"
 human-panic = "1.0"
 confy = "0.4"
 directories = "2.0"
+webthing = "0.12"
