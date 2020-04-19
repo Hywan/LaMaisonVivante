@@ -55,7 +55,7 @@ The executable binary is located in `./target/release/nilan-reader`.
 
 Use `-h`/`--help` to get help:
 
-```sh
+```
 nilan-reader 0.2.0
 
 USAGE:
@@ -89,7 +89,7 @@ The `nilan-reader` tool is designed to work in multiple environments.
 
 By default, the text format is selected.
 
-``` text
+```text
 State {
     ventilation: Ventilation {
         state: Auto,
