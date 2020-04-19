@@ -25,20 +25,22 @@ The executable binary is located in `./target/release/victron-reader`.
 Use `-h`/`--help` to get help:
 
 ```
-victron-reader 0.2.0
+victron-reader 0.3.0
 
 USAGE:
     victron-reader [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help                 Prints help information
+    -t, --into-thing           Turns this program into a Thing, i.e. a new Web of Things device
     -c, --print-config-path    Print the configuration path and exit
     -V, --version              Prints version information
 
 OPTIONS:
-    -a, --address <address>    Modbus address of the Victron CCGX, e.g. `192.168.1.142:502`. This option overwrites the
-                               value read from the configuration file
-    -f, --format <format>      Define the kind of outputs [default: Text]  [possible values: Text, Json, Tui]
+    -a, --address <address>          Modbus address of the Victron CCGX, e.g. `192.168.1.142:502`. This option
+                                     overwrites the value read from the configuration file
+    -f, --format <format>            Define the kind of outputs [default: Text]  [possible values: Text, Json, Tui]
+    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective
 ```
 
 Use the `--address` option to specify the address. That's the only thing
@@ -144,3 +146,24 @@ TUI is just the fancy mode to show off with your friends. Example with
 ![TUI example](./doc/tui.png)
 
 The refresh rate is every 500ms.
+
+### [Web of Things](https://www.w3.org/WoT/)
+
+To turn the Victron device into standardized connected things, use the
+`--into-thing` option: It will start a local Things server. The
+`--thing-port` is useful to set the server's port.
+
+Once the Things server is running, use a gateway like the [WebThings
+Gateway](https://iot.mozilla.org/gateway/) to interact with the Victron
+device. Enjoy!
+
+```sh
+$ ./target/release/victron-reader --address 192.168.1.117:502 --into-thing --thing-port 8082
+Starting the Things server (port 8082)…
+```
+
+Here is how it displays in the WebThings Gateway once registered:
+
+<img src="./doc/webthings_gateway/battery.png" alt="The Battery Thing" width="350px" />
+<img src="./doc/webthings_gateway/pv_inverter.png" alt="The PV Inverter Thing" width="350px" />
+<img src="./doc/webthings_gateway/house.png" alt="The House Thing" width="350px" />
