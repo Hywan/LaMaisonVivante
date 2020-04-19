@@ -2479,7 +2479,7 @@ checksum = "078775d0255232fb988e6fccf26ddc9d1ac274299aaedcedce21c6f72cc533ce"
 
 [[package]]
 name = "victron-reader"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "confy",
  "crossterm 0.16.0",
