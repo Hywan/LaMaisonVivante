@@ -55,21 +55,23 @@ The executable binary is located in `./target/release/nilan-reader`.
 
 Use `-h`/`--help` to get help:
 
-```shell
-nilan-reader 0.1.0
+```sh
+nilan-reader 0.2.0
 
 USAGE:
     nilan-reader [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help                 Prints help information
+    -t, --into-thing           Turns this program into a Thing, i.e. a new Web of Things device
     -c, --print-config-path    Print the configuration path and exit
     -V, --version              Prints version information
 
 OPTIONS:
-    -a, --address <address>    Modbus address of the Nilan, e.g. `192.168.1.142:502`. This option overwrites the value
-                               read from the configuration file
-    -f, --format <format>      Define the kind of outputs [default: Text]  [possible values: Text, Json]
+    -a, --address <address>          Modbus address of the Nilan, e.g. `192.168.1.142:502`. This option overwrites the
+                                     value read from the configuration file
+    -f, --format <format>            Define the kind of outputs [default: Text]  [possible values: Text, Json]
+    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective
 ```
 
 Use the `--address` option to specify the address. That's the only
@@ -182,3 +184,23 @@ json.tool`):
     }
 }
 ```
+
+### [Web of Things](https://www.w3.org/WoT/)
+
+To turn the Nilan device into standardized connected things, use the
+`--into-thing` option: It will start a local Things server. The
+`--thing-port` is useful to set the server's port.
+
+Once the Things server is running, use a gateway like the [WebThings
+Gateway](https://iot.mozilla.org/gateway/) to interact with the Nilan
+device. Enjoy!
+
+```sh
+$ ./target/release/nilan-reader --address 192.168.1.122:502 --into-thing --thing-port 8083
+Starting the Things server (port 8083)…
+```
+
+Here is how it displays in the WebThings Gateway once registered:
+
+<img src="./doc/webthings_gateway/ventilation.png" alt="The Ventilation Thing" width="350px" />
+<img src="./doc/webthings_gateway/domestic_hot_water.png" alt="The Domestic Hot Water Thing" width="350px" />
