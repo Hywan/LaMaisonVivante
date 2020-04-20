@@ -2,6 +2,7 @@ mod command;
 mod configuration;
 mod reader;
 mod state;
+mod thing;
 mod unit;
 
 use crate::command::{Format, Options};
@@ -31,11 +32,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let address = options.address.unwrap_or(configuration.address);
-    let state = reader::read(&address).await?;
 
-    match &options.format {
-        Format::Text => println!("{:#?}", state),
-        Format::Json => println!("{}", to_json(&state)?),
+    if options.into_thing {
+        thing::run(address, options.thing_port);
+    } else {
+        let state = reader::read(&address).await?;
+
+        match &options.format {
+            Format::Text => println!("{:#?}", state),
+            Format::Json => println!("{}", to_json(&state)?),
+        }
     }
 
     Ok(())
