@@ -97,6 +97,7 @@ NodeJS, then clone the repository and install it:
 ```sh
 $ curl -sL https://deb.nodesource.com/setup_13.x | sudo bash -
 $ sudo apt-get install nodejs
+$ npm config set prefix $HOME
 $ cd $HOME/development
 $ git clone https://github.com/mozilla-iot/gateway mozilla-iot
 $ cd mozilla-iot
