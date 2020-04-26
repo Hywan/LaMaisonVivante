@@ -38,7 +38,7 @@ impl ToString for Subject {
             Self::DiningTable => "Table à manger",
             Self::KitchenIsland => "Îlot",
             Self::Kitchen => "Cuisine",
-            Self::ParentBed => "Lit parentale",
+            Self::ParentBed => "Lit parental",
             Self::ParentBathroom => "Salle de bain parents",
             Self::ParentBedroom => "Suite parentale",
         }
