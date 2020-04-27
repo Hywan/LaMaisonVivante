@@ -1,4 +1,11 @@
 #include <Controllino.h>
+#include <Ethernet.h>
+
+// A MAC address for the Controllino.
+const byte mac[] = {0x50, 0xD7, 0x53, 0x00, 0x05, 0x06};
+
+// Use telnet port to send and receive data, because why not!
+EthernetServer server = EthernetServer(23);
 
 #define MS_TO_S(ms) (ms) / 1000
 
@@ -15,21 +22,23 @@ typedef struct {
 } Control;
 
 // Represents the possible states of a blind.
-enum State {
+enum State: uint8_t {
   // The blind is not moving.
-  Unmoving,
+  Unmoving = 0,
 
   // The blind is moving up, just one step.
-  Moving_Up,
+  Moving_Up = 1,
 
   // The blind is moving down, just one step.
-  Moving_Down,
+  Moving_Down = 2,
 
   // The blind is opening, i.e. moving up until fully opened.
-  Opening,
+  Opening = 3,
 
   // The blind is closing, i.e. moving down until fully closed.
-  Closing,
+  Closing = 4,
+
+  STATE_LAST,
 };
 
 // Represents a blind.
@@ -147,6 +156,8 @@ const unsigned int LONG_PRESS = 1;
 
 // Initializes the system.
 void setup() {
+  Serial.begin(9600);
+
   for (unsigned int i = 0; i < NUMBER_OF_BLINDS; ++i) {
     Blind blind = BLINDS[i];
 
@@ -156,10 +167,95 @@ void setup() {
     pinMode(blind.down.button, INPUT);
     pinMode(blind.down.motor, OUTPUT);
   }
+
+  // Use the MAC address only, and let the DHCP server assign an IP
+  // address.
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println(F("No IP assigned by the DHCP server"));
+
+    for (;;)
+      ;
+  }
+
+  Serial.print(F("Local IP: "));
+  Serial.println(Ethernet.localIP());
 }
 
 // Here we are.
 void loop() {
+  EthernetClient client = server.available();
+
+  if (client) {
+    Serial.println(F("New connection"));
+
+    char bytes[] = {0, 0, 0};
+    size_t result = client.readBytes(bytes, 3);
+
+    // Invalid payload.
+    if (result < 3) {
+      client.stop();
+
+      return;
+    }
+
+    // Invalid separator.
+    if (bytes[1] != '\t') {
+      client.stop();
+
+      return;
+    }
+
+    uint8_t blind_b = (uint8_t) bytes[0];
+    uint8_t state_b = (uint8_t) bytes[2];
+
+    // Invalid blind or state.
+    if (blind_b >= NUMBER_OF_BLINDS || state_b >= STATE_LAST) {
+      client.stop();
+
+      return;
+    }
+
+    Blind *blind = &BLINDS[blind_b];
+    State state = static_cast<State>(state_b);
+
+    Serial.print(F("Blind: "));
+    Serial.println(blind_b);
+
+    Serial.print(F("State: "));
+    Serial.println(state);
+
+    unsigned long current_time = millis();
+
+    blind->time_of_last_event = current_time;
+
+    switch (state) {
+      case Opening: {
+        digitalWrite(blind->up.motor, HIGH);
+        digitalWrite(blind->down.motor, LOW);
+        blind->state = state;
+
+        break;
+      }
+
+      case Closing: {
+        digitalWrite(blind->up.motor, LOW);
+        digitalWrite(blind->down.motor, HIGH);
+        blind->state = state;
+
+        break;
+      }
+
+      default:
+        digitalWrite(blind->up.motor, LOW);
+        digitalWrite(blind->down.motor, LOW);
+        blind->state = Unmoving;
+    }
+
+    client.stop();
+
+    return;
+  }
+
   for (unsigned int i = 0; i < NUMBER_OF_BLINDS; ++i) {
     Blind *blind = &BLINDS[i];
 
