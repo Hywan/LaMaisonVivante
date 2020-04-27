@@ -33,8 +33,8 @@ $ ssh pi@192.168.1.xxx
 Once connected, run:
 
 ```sh
-$ sudo apt-get update
-$ sudo apt-get upgrade
+$ sudo apt update
+$ sudo apt upgrade
 ```
 
 ## Change the root password
@@ -52,7 +52,7 @@ Retype new password:
 To install Zsh, use the following command:
 
 ```sh
-$ sudo apt-get install zsh
+$ sudo apt install zsh
 ```
 
 ## Rust
@@ -70,7 +70,7 @@ $ export PATH="$HOME/.cargo/bin:$PATH"
 To install Git, use the following command:
 
 ```sh
-$ sudo apt-get install git
+$ sudo apt install git
 ```
 
 ## LaMaisonVivante
@@ -78,7 +78,7 @@ $ sudo apt-get install git
 To install various programs for our house:
 
 ```sh
-$ sudo apt-get install libssl-dev
+$ sudo apt install libssl-dev
 $ cd $HOME
 $ mkdir development
 $ git clone https://github.com/Hywan/LaMaisonVivante
@@ -92,11 +92,12 @@ Now build various programs by following the `README.md`s (likely with
 
 To install the [Mozilla IoT
 Gateway](https://github.com/mozilla-iot/gateway), first install
-NodeJS, then clone the repository and install it:
+NodeJS and Python, then clone the repository and install it:
 
 ```sh
 $ curl -sL https://deb.nodesource.com/setup_13.x | sudo bash -
-$ sudo apt-get install nodejs
+$ sudo apt install nodejs
+$ sudo apt install python3-pip
 $ npm config set prefix $HOME
 $ cd $HOME/development
 $ git clone https://github.com/mozilla-iot/gateway mozilla-iot
