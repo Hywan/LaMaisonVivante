@@ -65,6 +65,15 @@ $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 $ export PATH="$HOME/.cargo/bin:$PATH"
 ```
 
+## Python
+
+To install Python, use the following commands:
+
+```sh
+$ sudo apt install python3-pip
+$ pip3 install virtualenv
+```
+
 ## Git
 
 To install Git, use the following command:
@@ -92,12 +101,11 @@ Now build various programs by following the `README.md`s (likely with
 
 To install the [Mozilla IoT
 Gateway](https://github.com/mozilla-iot/gateway), first install
-NodeJS and Python, then clone the repository and install it:
+NodeJS, then clone the repository and install it:
 
 ```sh
 $ curl -sL https://deb.nodesource.com/setup_13.x | sudo bash -
 $ sudo apt install nodejs
-$ sudo apt install python3-pip
 $ npm config set prefix $HOME
 $ cd $HOME/development
 $ git clone https://github.com/mozilla-iot/gateway mozilla-iot
