@@ -24,7 +24,6 @@ const byte mac[] = {0x50, 0xD7, 0x53, 0x00, 0x05, 0x05};
 
 // Use telnet port to send and receive data, because why not!
 EthernetServer server = EthernetServer(23);
-EthernetClient client;
 
 // Represents a subject that can receive an action.
 enum Subject: uint8_t {
@@ -119,7 +118,7 @@ void setup() {
 
 // Here we are.
 void loop() {
-  client = server.available();
+  EthernetClient client = server.available();
 
   if (client) {
     Serial.println(F("New connection"));

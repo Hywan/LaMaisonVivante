@@ -1,7 +1,9 @@
 use crate::reader;
 use serde_json::{json, Value};
-use std::sync::{Arc, RwLock, Weak};
-use std::{thread, time};
+use std::{
+    sync::{Arc, RwLock, Weak},
+    thread, time,
+};
 use tokio_modbus::prelude::*;
 use webthing::{
     server, Action as ThingAction, BaseProperty, BaseThing, Thing, ThingsType, WebThingServer,

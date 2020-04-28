@@ -1,17 +1,14 @@
 mod command;
 mod configuration;
-mod reader;
-mod state;
-mod thing;
-mod unit;
+//mod thing;
+mod writer;
 
-use crate::command::{Format, Options};
+use crate::command::Options;
 use human_panic::setup_panic;
-use serde_json::to_string as to_json;
+use std::net::TcpStream;
 use structopt::StructOpt;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     setup_panic!();
 
     let configuration_path = configuration::get_path()?;
@@ -33,16 +30,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let address = options.address.unwrap_or(configuration.address);
 
+    /*
     if options.into_thing {
         thing::run(address, options.thing_port);
     } else {
-        let state = reader::read(&address).await?;
+    */
+    println!("Sending a {:?} to {:?}…", options.action, options.subject);
 
-        match &options.format {
-            Format::Text => println!("{:#?}", state),
-            Format::Json => println!("{}", to_json(&state)?),
-        }
+    let stream = TcpStream::connect(address)?;
+    writer::send(&stream, options.subject, options.action)?;
+    /*
     }
+    */
 
     Ok(())
 }
