@@ -8,7 +8,7 @@ Open the `boot` partition, and create an empty `ssh` file. In
 addition, create a `wpa_supplicant.conf` file with the following
 content:
 
-```sh
+```
 country=fr
 update_config=1
 ctrl_interface=/var/run/wpa_supplicant
@@ -19,6 +19,15 @@ network={
  psk="WiFi password"
 }
 ```
+
+Edit the `config.txt` file to add:
+
+```
+arm_64bit=1
+```
+
+to boot Raspbian in 64-bit mode ([learn
+more](https://www.raspberrypi.org/forums/viewtopic.php?t=250730)).
 
 ## Boot
 
