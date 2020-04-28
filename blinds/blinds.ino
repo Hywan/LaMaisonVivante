@@ -1,3 +1,21 @@
+// To control this program remotely, use the `blinds-controller` program:
+//
+// ```sh
+// $ blinds-controller --address 192.168.1.42:23 --subject livingroom --action closing
+// ```
+//
+// Or alternatively, the hardcore way with `printf` and `netcat`:
+//
+// ```sh
+// $ printf '%b\t%b' '\x02' '\x04' | nc 192.168.1.42 23 -v
+// #                  ^~~~   ^~~~       ^~~~~~~~~~~~ ^~
+// #                  |      |          |            |
+// #                  |      |          |            the port
+// #                  |      |          the IP
+// #                  |      the action
+// #                  the subject
+// ```
+
 #include <Controllino.h>
 #include <Ethernet.h>
 
