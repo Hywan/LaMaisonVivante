@@ -12,7 +12,8 @@ that are used for the home automation, monitoring etc.
 ## Blinds
 
 Blinds are controlled by the `blinds.ino` program, that lands in a
-Controllino. [Learn more](blinds/).
+Controllino, along with its companion `blinds-controller`. [Learn
+more](blinds/).
 
 ## Domestic Hot Water/Ventilation
 
