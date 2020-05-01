@@ -14,6 +14,7 @@
 
 #include <SPI.h>
 #include <WiFiNINA.h>
+#include <ArduinoLowPower.h>
 
 // Set up WiFi data.
 #include "tank_level_secrets.h"
@@ -115,8 +116,10 @@ void loop() {
     Serial.println(F("Client disconnected."));
   }
 
-  // Delay for 5 seconds to save battery.
-  delay(5000);
+  // Enter deep sleep for 5 seconds to save battery.
+  if (!Serial) {
+    LowPower.deepSleep(5000);
+  }
 }
 
 float compute_distance() {
