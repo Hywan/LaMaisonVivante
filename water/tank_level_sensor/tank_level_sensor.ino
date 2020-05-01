@@ -114,6 +114,9 @@ void loop() {
 
     Serial.println(F("Client disconnected."));
   }
+
+  // Delay for 5 seconds to save battery.
+  delay(5000);
 }
 
 float compute_distance() {
