@@ -37,3 +37,10 @@ more](lights/).
 Domestic Appliances are used for thiner monitoring. For the moment,
 only the dishwasher is supported with the `vzug-reader`
 program. [Learn more](appliances/dishwasher/vzug-reader/).
+
+## Water
+
+The house uses rain for everything. Rain is collected inside 2 water
+tanks. The `tank-level-sensor` program runs in an Arduino to calculate
+the remaining water in the tanks. [Learn
+more](water/tank-level-sensor/).
