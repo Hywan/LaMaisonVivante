@@ -34,7 +34,7 @@ const uint8_t NUMBER_OF_TRY = 5;
 void setup() {
   Serial.begin(9600);
 
-  while (!Serial) {}
+  delay(2000);
 
   // Set up pins for the HC-SR04 sensor.
   pinMode(trigger_pin, OUTPUT); 
