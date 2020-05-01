@@ -1,9 +1,11 @@
 #include <SPI.h>
 #include <WiFiNINA.h>
+
+// Set up WiFi data.
 #include "tank_level_secrets.h"
 
 // HC-SR04 has 2 pins (in addition to Vcc and Ground): Trig and Echo.
-// It is connceted to an Arduino Nano 33 IoT.
+// It is connected to an Arduino Nano 33 IoT.
 //
 // In our context, Trig is connected to D5, and Echo is connected to D6.
 const int trigger_pin = 5; 
@@ -11,6 +13,9 @@ const int echo_pin = 6;
 
 // Use HTTP port to send and receive data.
 WiFiServer server = WiFiServer(80);
+
+// Number of try when calculating the distance.
+const uint8_t NUMBER_OF_TRY = 5;
 
 void setup() {
   Serial.begin(9600);
@@ -28,14 +33,15 @@ void setup() {
     while(true);
   }
 
-  if (WiFi.firmwareVersion() < WIFI_FIRMWARE_LATEST_VERSION) {
-    Serial.print("Firmware is outdated, need to update it.");
+  if (strcmp(WiFi.firmwareVersion(), WIFI_FIRMWARE_LATEST_VERSION) < 0) {
+    Serial.print(F("Firmware is outdated, need to update it."));
 
     while(true);
   }
 
   int wifi_status = WL_IDLE_STATUS;
 
+  // Connect to the WiFi network.
   while (wifi_status != WL_CONNECTED) {
     Serial.print(F("Try to connect to WiFi network: "));
     Serial.println(WIFI_SSID);
@@ -47,47 +53,52 @@ void setup() {
 
   server.begin();
 
-  Serial.println(F("Connected to WiFi"));
+  Serial.println(F("Connected to WiFi!"));
   Serial.println(F("Setup OK!"));
 }
 
 void loop() {
   WiFiClient client = server.available();
 
+  // A new client connects.
   if (client && client.connected()) {
-    Serial.println(F("New client"));
-
-    float distances[3] = {0.0, 0.0, 0.0};
-
-    distances[0] = compute_distance();
-    delay(500);
-
-    distances[1] = compute_distance();
-    delay(500);
-
-    distances[2] = compute_distance();
-
+    Serial.println(F("New client."));
     Serial.println(F("Computed distances: "));
-    Serial.println(distances[0]);
-    Serial.println(distances[1]);
-    Serial.println(distances[2]);
 
+    // Gather some distances.
+    float distances[NUMBER_OF_TRY];
+
+    for (uint8_t i = 0; i < NUMBER_OF_TRY; ++i) {
+      distances[i] = compute_distance();
+      Serial.println(distances[i]);
+
+      delay(500);
+    }
+
+    // Compute the average.
+    float average_distance = 0.0;
+
+    for (uint8_t i = 0; i < NUMBER_OF_TRY; ++i) {
+      average_distance += distances[i];
+    }
+
+    average_distance = average_distance / NUMBER_OF_TRY;
+
+    // Write the response, as an JSON payload.
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: application/json");
     client.println("Connection: close");
     client.println();
-    client.print("{\"distance\": [");
-    client.print(distances[0]);
-    client.print(", ");
-    client.print(distances[1]);
-    client.print(", ");
-    client.print(distances[1]);
-    client.println("]}");
+    client.print("{\"average_distance\": ");
+    client.print(average_distance);
+    client.print(", \"number_of_try\": ");
+    client.print(NUMBER_OF_TRY);
+    client.println("}");
 
     delay(100);
     client.stop();
 
-    Serial.println(F("Client disconnected"));
+    Serial.println(F("Client disconnected."));
   }
 }
 
