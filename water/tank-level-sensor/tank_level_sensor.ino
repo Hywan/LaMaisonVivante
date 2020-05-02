@@ -8,7 +8,7 @@
 // $ curl 192.168.1.42 | python -m json.tool
 // {
 //     "average_distance": 153.42,
-//     "number_of_try": 5
+//     "number_of_samples": 5
 // }
 // ```
 
@@ -29,8 +29,8 @@ const int echo_pin = 6;
 // Use HTTP port to send and receive data.
 WiFiServer server = WiFiServer(80);
 
-// Number of try when calculating the distance.
-const uint8_t NUMBER_OF_TRY = 5;
+// Number of samples when calculating the distance.
+const uint8_t NUMBER_OF_SAMPLES = 5;
 
 void setup() {
   Serial.begin(9600);
@@ -81,9 +81,9 @@ void loop() {
     Serial.println(F("Computed distances: "));
 
     // Gather some distances.
-    float distances[NUMBER_OF_TRY];
+    float distances[NUMBER_OF_SAMPLES];
 
-    for (uint8_t i = 0; i < NUMBER_OF_TRY; ++i) {
+    for (uint8_t i = 0; i < NUMBER_OF_SAMPLES; ++i) {
       distances[i] = compute_distance();
       Serial.println(distances[i]);
 
@@ -93,11 +93,11 @@ void loop() {
     // Compute the average.
     float average_distance = 0.0;
 
-    for (uint8_t i = 0; i < NUMBER_OF_TRY; ++i) {
+    for (uint8_t i = 0; i < NUMBER_OF_SAMPLES; ++i) {
       average_distance += distances[i];
     }
 
-    average_distance = average_distance / NUMBER_OF_TRY;
+    average_distance = average_distance / NUMBER_OF_SAMPLES;
 
     // Write the response, as an JSON payload.
     client.println("HTTP/1.1 200 OK");
@@ -106,8 +106,8 @@ void loop() {
     client.println();
     client.print("{\"average_distance\": ");
     client.print(average_distance);
-    client.print(", \"number_of_try\": ");
-    client.print(NUMBER_OF_TRY);
+    client.print(", \"number_of_samples\": ");
+    client.print(NUMBER_OF_SAMPLES);
     client.println("}");
 
     delay(100);

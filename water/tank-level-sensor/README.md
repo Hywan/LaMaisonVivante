@@ -15,7 +15,7 @@ water in the tank (or any distance to a surface).
 $ curl 192.168.1.42 | python -m json.tool
 {
     "average_distance": 153.42,
-    "number_of_try": 5
+    "number_of_samples": 5
 }
 ```
 
