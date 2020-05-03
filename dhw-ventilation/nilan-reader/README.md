@@ -1,4 +1,3 @@
-B
 # Nilan Reader
 
 This program aims at reading information from a [Nilan Compact P
