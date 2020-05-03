@@ -58,10 +58,25 @@ file.
 To close the living room blind:
 
 ```sh
-$ /target/release/lights-controller -a 192.168.1.125:23 -s livingroom -x closing
+$ /target/release/blinds-controller -a 192.168.1.42:23 -s livingroom -x closing
 Sending a Closing to LivingRoom…
 ```
 
 ### [Web of Things](https://www.w3.org/WoT/)
 
-_Coming_
+To turn all the blinds into standardized connected things, use the
+`--into-thing` option: It will start a local Things server. The
+`--thing-port` is useful to set the server's port.
+
+Once the Things server is running, use a gateway like the [WebThings
+Gateway](https://iot.mozilla.org/gateway/) to interact with the
+blinds. Enjoy!
+
+```sh
+$ ./target/release/blinds-controller --address 192.168.1.42:23 --into-thing --thing-port 8085
+Starting the Things server (port 8085)…
+```
+
+Here is how it displays in the WebThings Gateway once registered:
+
+<img src="./doc/webthings_gateway/blind.png" alt="The Blind Thing" width="350px" />
