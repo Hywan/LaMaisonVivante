@@ -14,6 +14,19 @@ arg_enum! {
     }
 }
 
+impl From<u8> for Subject {
+    fn from(value: u8) -> Self {
+        match value {
+            v if v == Self::Kitchen as u8 => Self::Kitchen,
+            v if v == Self::LivingRoom as u8 => Self::LivingRoom,
+            v if v == Self::ParentBedroom as u8 => Self::ParentBedroom,
+            v if v == Self::EliBedroom as u8 => Self::EliBedroom,
+            v if v == Self::LouiseBedroom as u8 => Self::LouiseBedroom,
+            _ => Self::Bathroom,
+        }
+    }
+}
+
 pub trait ToString {
     fn to_string(&self) -> String;
 }
@@ -33,7 +46,7 @@ impl ToString for Subject {
 }
 
 arg_enum! {
-    #[derive(Debug)]
+    #[derive(Debug, Copy, Clone)]
     #[repr(u8)]
     pub enum Action {
         Unmoving = 0,

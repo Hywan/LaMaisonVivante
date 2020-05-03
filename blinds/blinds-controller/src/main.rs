@@ -1,6 +1,6 @@
 mod command;
 mod configuration;
-//mod thing;
+mod thing;
 mod writer;
 
 use crate::command::Options;
@@ -30,18 +30,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let address = options.address.unwrap_or(configuration.address);
 
-    /*
     if options.into_thing {
         thing::run(address, options.thing_port);
     } else {
-    */
-    println!("Sending a {:?} to {:?}…", options.action, options.subject);
+        println!("Sending a {:?} to {:?}…", options.action, options.subject);
 
-    let stream = TcpStream::connect(address)?;
-    writer::send(&stream, options.subject, options.action)?;
-    /*
+        let stream = TcpStream::connect(address)?;
+        writer::send(&stream, options.subject, options.action)?;
     }
-    */
 
     Ok(())
 }
