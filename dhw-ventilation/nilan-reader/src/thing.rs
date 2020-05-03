@@ -274,7 +274,7 @@ pub fn run(mut context: sync::Context, port: Option<u16>) {
         thread::sleep(time::Duration::from_secs(2));
 
         // Reading the current state.
-        let state = reader::read(&mut context).unwrap();
+        let state = reader::read(&mut context).unwrap_or_else(|_| Default::default());
 
         // Domestic Hot Water
         {
