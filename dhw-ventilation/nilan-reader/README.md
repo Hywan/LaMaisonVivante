@@ -1,3 +1,4 @@
+B
 # Nilan Reader
 
 This program aims at reading information from a [Nilan Compact P
@@ -71,7 +72,8 @@ OPTIONS:
     -a, --address <address>          Modbus address of the Nilan, e.g. `192.168.1.142:502`. This option overwrites the
                                      value read from the configuration file
     -f, --format <format>            Define the kind of outputs [default: Text]  [possible values: Text, Json]
-    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective
+    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective. This option overwrites
+                                     the value read from the configuration file
 ```
 
 Use the `--address` option to specify the address. That's the only

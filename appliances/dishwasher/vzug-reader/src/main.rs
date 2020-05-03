@@ -34,7 +34,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let address = options.address.unwrap_or(configuration.address);
 
     if options.into_thing {
-        thing::run(address, options.thing_port);
+        thing::run(address, options.thing_port.or(configuration.thing_port));
     } else {
         let state = reader::read(&address).await?;
 

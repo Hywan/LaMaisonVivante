@@ -33,13 +33,16 @@ USAGE:
 
 FLAGS:
     -h, --help                 Prints help information
+    -t, --into-thing           Turns this program into a Thing, i.e. a new Web of Things device
     -c, --print-config-path    Print the configuration path and exit
     -V, --version              Prints version information
 
 OPTIONS:
-    -a, --address <address>    HTTP address of the VZug adora diswhwasher, e.g. `192.168.1.142:80`. This option
-                               overwrites the value read from the configuration file
-    -f, --format <format>      Define the kind of outputs [default: Text]  [possible values: Text, Json]
+    -a, --address <address>          HTTP address of the VZug adora diswhwasher, e.g. `192.168.1.142:80`. This option
+                                     overwrites the value read from the configuration file
+    -f, --format <format>            Define the kind of outputs [default: Text]  [possible values: Text, Json]
+    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective. This option overwrites
+                                     the value read from the configuration file
 ```
 
 Use the `--address` option to specify the address. That's the only

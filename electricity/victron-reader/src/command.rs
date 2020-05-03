@@ -38,7 +38,9 @@ pub struct Options {
     #[structopt(short = "t", long)]
     pub into_thing: bool,
 
-    /// Port of the Thing. Requires `--into-thing` to be effective.
+    /// Port of the Thing. Requires `--into-thing` to be
+    /// effective. This option overwrites the value read from the
+    /// configuration file.
     #[structopt(short = "p", long)]
     pub thing_port: Option<u16>,
 }

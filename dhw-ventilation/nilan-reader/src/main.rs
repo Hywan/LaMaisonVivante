@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut context = sync::tcp::connect(options.address.unwrap_or(configuration.address))?;
 
     if options.into_thing {
-        thing::run(context, options.thing_port);
+        thing::run(context, options.thing_port.or(configuration.thing_port));
     } else {
         match &options.format {
             Format::Text => println!("{:#?}", reader::read(&mut context)?),

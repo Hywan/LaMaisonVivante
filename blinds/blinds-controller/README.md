@@ -40,7 +40,8 @@ OPTIONS:
                                      file
     -s, --subject <subject>          Blind to control [default: LivingRoom]  [possible values: Kitchen, LivingRoom,
                                      ParentBedroom, EliBedroom, LouiseBedroom, Bathroom]
-    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective
+    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective. This option overwrites
+                                     the value read from the configuration file
 ```
 
 Use the `--address` option to specify the address, and the `--subject`

@@ -40,7 +40,8 @@ OPTIONS:
     -a, --address <address>          Modbus address of the Victron CCGX, e.g. `192.168.1.142:502`. This option
                                      overwrites the value read from the configuration file
     -f, --format <format>            Define the kind of outputs [default: Text]  [possible values: Text, Json, Tui]
-    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective
+    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective. This option overwrites
+                                     the value read from the configuration file
 ```
 
 Use the `--address` option to specify the address. That's the only thing

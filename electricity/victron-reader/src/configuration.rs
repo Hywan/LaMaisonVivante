@@ -10,12 +10,14 @@ use std::{
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Configuration {
     pub address: SocketAddr,
+    pub thing_port: Option<u16>,
 }
 
 impl Default for Configuration {
     fn default() -> Self {
         Self {
             address: "127.0.0.1:502".parse().unwrap(),
+            thing_port: None,
         }
     }
 }
