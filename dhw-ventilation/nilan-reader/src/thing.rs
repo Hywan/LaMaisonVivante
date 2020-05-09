@@ -1,7 +1,10 @@
 use crate::{reader, state::VentilationState};
 use serde_json::{json, Value};
-use std::sync::{Arc, RwLock, Weak};
-use std::{thread, time};
+use std::{
+    net::SocketAddr,
+    sync::{Arc, RwLock, Weak},
+    thread, time,
+};
 use tokio_modbus::prelude::*;
 use webthing::{
     server, Action as ThingAction, BaseProperty, BaseThing, Thing, ThingsType, WebThingServer,
@@ -261,7 +264,7 @@ macro_rules! update_property(
     };
 );
 
-pub fn run(mut context: sync::Context, port: Option<u16>) {
+pub fn run(address: SocketAddr, port: Option<u16>) {
     let mut things: Vec<Arc<RwLock<Box<dyn Thing + 'static>>>> = Vec::with_capacity(1);
 
     let domestic_hot_water = make_domestic_hot_water();
@@ -271,7 +274,12 @@ pub fn run(mut context: sync::Context, port: Option<u16>) {
     things.push(ventilation.clone());
 
     thread::spawn(move || loop {
-        thread::sleep(time::Duration::from_secs(2));
+        thread::sleep(time::Duration::from_secs(60));
+
+        let mut context = match sync::tcp::connect(address) {
+            Ok(e) => e,
+            _ => return, // silently fail
+        };
 
         // Reading the current state.
         let state = reader::read(&mut context).unwrap_or_else(|_| Default::default());
