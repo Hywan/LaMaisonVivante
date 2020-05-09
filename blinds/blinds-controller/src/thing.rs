@@ -45,11 +45,21 @@ fn make_blind(subject: Subject) -> Arc<RwLock<Box<dyn Thing + 'static>>> {
         .unwrap()
         .clone(),
     );
+    thing.add_available_action(
+        "stop".to_owned(),
+        json!({
+            "title": "Stop",
+            "description": "Stop the blind",
+        })
+        .as_object()
+        .unwrap()
+        .clone(),
+    );
 
     Arc::new(RwLock::new(Box::new(thing)))
 }
 
-struct OpenCloseAction<A>
+struct BlindAction<A>
 where
     A: 'static + ToSocketAddrs + Copy + Clone + Send + Sync,
 {
@@ -58,7 +68,7 @@ where
     action: Action,
 }
 
-impl<A> OpenCloseAction<A>
+impl<A> BlindAction<A>
 where
     A: 'static + ToSocketAddrs + Copy + Clone + Send + Sync,
 {
@@ -77,7 +87,7 @@ where
     }
 }
 
-impl<A> ThingAction for OpenCloseAction<A>
+impl<A> ThingAction for BlindAction<A>
 where
     A: 'static + ToSocketAddrs + Copy + Clone + Send + Sync,
 {
@@ -187,19 +197,26 @@ where
             .and_then(|v| Some(v.clone()));
 
         match name.as_str() {
-            "open" => Some(Box::new(OpenCloseAction::new(
+            "open" => Some(Box::new(BlindAction::new(
                 input,
                 thing,
                 "open".to_string(),
                 self.address,
                 Action::Opening,
             ))),
-            "close" => Some(Box::new(OpenCloseAction::new(
+            "close" => Some(Box::new(BlindAction::new(
                 input,
                 thing,
                 "close".to_string(),
                 self.address,
                 Action::Closing,
+            ))),
+            "stop" => Some(Box::new(BlindAction::new(
+                input,
+                thing,
+                "stop".to_string(),
+                self.address,
+                Action::Unmoving,
             ))),
             _ => None,
         }
