@@ -15,14 +15,15 @@ fn read_battery(mut context: &mut sync::Context) -> Result<Battery> {
         2 => BatteryState::Discharging,
         v @ _ => unreachable!("Unrecognized battery state (`{}`).", v),
     };
-    let battery_power = read_holding_register(&mut context, BATTERY_POWER)?.to_watt();
+    let battery_power = read_holding_register(&mut context, BATTERY_POWER)?;
 
     context.set_slave(Slave(DBUS_SERVICE_BATTERY));
 
     Ok(Battery {
         ongoing_power: match &battery_state {
             BatteryState::Idle => 0u16.to_watt(),
-            _ => battery_power,
+            BatteryState::Charging => battery_power.to_watt(),
+            BatteryState::Discharging => (-((1 << 16) - battery_power as i32)).to_watt(),
         },
         state: battery_state,
         state_of_charge: read_holding_register(&mut context, BATTERY_STATE_OF_CHARGE)?.to_percent(),
