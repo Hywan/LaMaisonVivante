@@ -1,4 +1,4 @@
-// Once the Arduino Nano 33 IoT is running, it will automatically
+// Once the ESP32 is running, it will automatically
 // connect to a WiFi network (WPA Personal encryption). Immediately, a
 // primitive HTTP server will run. Getting `/` will reply with a JSON
 // payload representing the distance of the water in the tank (or any
@@ -12,19 +12,17 @@
 // }
 // ```
 
-#include <SPI.h>
-#include <WiFiNINA.h>
-#include <ArduinoLowPower.h>
+#include <WiFi.h>
 
 // Set up WiFi data.
 #include "tank_level_secrets.h"
 
 // HC-SR04 has 2 pins (in addition to Vcc and Ground): Trig and Echo.
-// It is connected to an Arduino Nano 33 IoT.
+// It is connected to an ESP32.
 //
-// In our context, Trig is connected to D5, and Echo is connected to D6.
-const int trigger_pin = 5; 
-const int echo_pin = 6;
+// In our context, Trig is connected to D16, and Echo is connected to D17.
+const int trigger_pin = 16; 
+const int echo_pin = 17;
 
 // Use HTTP port to send and receive data.
 WiFiServer server = WiFiServer(80);
@@ -37,23 +35,13 @@ void setup() {
 
   delay(2000);
 
+  Serial.println("Hello");
+
   // Set up pins for the HC-SR04 sensor.
   pinMode(trigger_pin, OUTPUT); 
   pinMode(echo_pin, INPUT);
 
   // Set up the WiFi.
-  if (WiFi.status() == WL_NO_MODULE) {
-    Serial.println(F("WiFi failed to connect."));
-
-    while(true);
-  }
-
-  if (strcmp(WiFi.firmwareVersion(), WIFI_FIRMWARE_LATEST_VERSION) < 0) {
-    Serial.print(F("Firmware is outdated, need to update it."));
-
-    while(true);
-  }
-
   int wifi_status = WL_IDLE_STATUS;
 
   // Connect to the WiFi network.
@@ -69,6 +57,16 @@ void setup() {
   server.begin();
 
   Serial.println(F("Connected to WiFi!"));
+  Serial.print(F("WiFi SSID: "));
+  Serial.println(WiFi.SSID());
+
+  Serial.print(F("WiFi IP Address: "));
+  Serial.println(WiFi.localIP());;
+
+  Serial.print(F("WiFi signal strength (RSSI): "));
+  Serial.print(WiFi.RSSI());
+  Serial.println(F(" dBm"));
+
   Serial.println(F("Setup OK!"));
 }
 
@@ -78,7 +76,7 @@ void loop() {
   // A new client connects.
   if (client && client.connected()) {
     Serial.println(F("New client."));
-    Serial.println(F("Computed distances: "));
+    Serial.println(F("Computing distances…"));
 
     // Gather some distances.
     float distances[NUMBER_OF_SAMPLES];
@@ -110,15 +108,10 @@ void loop() {
     client.print(NUMBER_OF_SAMPLES);
     client.println("}");
 
-    delay(100);
+    delay(1000);
     client.stop();
 
     Serial.println(F("Client disconnected."));
-  }
-
-  // Enter deep sleep for 5 seconds to save battery.
-  if (!Serial) {
-    LowPower.deepSleep(5000);
   }
 }
 
