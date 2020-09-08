@@ -24,21 +24,34 @@
 const int trigger_pin = 16; 
 const int echo_pin = 17;
 
-// Use HTTP port to send and receive data.
-WiFiServer server = WiFiServer(80);
+// The ESP32 sends measures to a server. Let's define its port.
+const uint16_t SERVER_PORT = 1234;
 
 // Number of samples when calculating the distance.
 const uint8_t NUMBER_OF_SAMPLES = 5;
+
+// Factor to convert second.
+#define S_TO_uS 1000000ULL
+
+// Deep sleep duration (in seconds).
+const uint16_t TIME_TO_SLEEP = 60 * 60 * 12;
+
+RTC_DATA_ATTR int number_of_runs = 0;
 
 void setup() {
   Serial.begin(9600);
 
   delay(2000);
 
-  Serial.println("Hello");
+  Serial.println(F("\n\nStarting"));
+
+  ++number_of_runs;
+
+  Serial.print(F("Run number: "));
+  Serial.println(number_of_runs);
 
   // Set up pins for the HC-SR04 sensor.
-  pinMode(trigger_pin, OUTPUT); 
+  pinMode(trigger_pin, OUTPUT);
   pinMode(echo_pin, INPUT);
 
   // Set up the WiFi.
@@ -54,8 +67,6 @@ void setup() {
     delay(5000);
   }
 
-  server.begin();
-
   Serial.println(F("Connected to WiFi!"));
   Serial.print(F("WiFi SSID: "));
   Serial.println(WiFi.SSID());
@@ -67,16 +78,15 @@ void setup() {
   Serial.print(WiFi.RSSI());
   Serial.println(F(" dBm"));
 
-  Serial.println(F("Setup OK!"));
-}
+  Serial.println(F("Try to connect the client"));
 
-void loop() {
-  WiFiClient client = server.available();
+  IPAddress server(192, 168, 1, 128);
+  WiFiClient client;
 
-  // A new client connects.
-  if (client && client.connected()) {
-    Serial.println(F("New client."));
-    Serial.println(F("Computing distances…"));
+  if (client.connect(server, SERVER_PORT)) {
+    Serial.println(F("Setup OK!"));
+
+    Serial.println(F("Computing distances"));
 
     // Gather some distances.
     float distances[NUMBER_OF_SAMPLES];
@@ -97,22 +107,40 @@ void loop() {
 
     average_distance = average_distance / NUMBER_OF_SAMPLES;
 
+    Serial.println(F("Sending data"));
+
     // Write the response, as an JSON payload.
-    client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: application/json");
-    client.println("Connection: close");
-    client.println();
-    client.print("{\"average_distance\": ");
+    client.print(F("{\"average_distance\": "));
     client.print(average_distance);
-    client.print(", \"number_of_samples\": ");
+    client.print(F(", \"number_of_samples\": "));
     client.print(NUMBER_OF_SAMPLES);
-    client.println("}");
+    client.print(F(", \"number_of_runs\": "));
+    client.print(number_of_runs);
+    client.println(F("}"));
+    client.println();
+    client.flush();
 
-    delay(1000);
+    // Disconnecting the client.
+    Serial.println(F("Disconnecting client"));
+    delay(2000);
     client.stop();
-
-    Serial.println(F("Client disconnected."));
   }
+
+  // Disconnecting and disabling WiFi.
+  Serial.println(F("Disconnecting WiFi"));
+  WiFi.disconnect();
+
+  // Configure the wake up source.
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * S_TO_uS);
+
+  // Sleep.
+  Serial.println(F("Going to deep sleep now"));
+  Serial.flush();
+  esp_deep_sleep_start();
+}
+
+void loop() {
+  // Never executed.
 }
 
 float compute_distance() {

@@ -113,7 +113,7 @@ Gateway](https://github.com/mozilla-iot/gateway), first install
 NodeJS, then clone the repository and install it:
 
 ```sh
-$ curl -sL https://deb.nodesource.com/setup_13.x | sudo bash -
+$ curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
 $ sudo apt install nodejs
 $ npm config set prefix $HOME
 $ cd $HOME/development

@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "appliances/dishwasher/vzug-reader/",
+    "blinds/blinds-controller/",
+    "dhw-ventilation/nilan-reader/",
+    "electricity/victron-reader/",
+    "lights/lights-controller/",
+    "tanks/tanks-controller/",
+]
