@@ -1,7 +1,13 @@
 [package]
-name = "tank-level-controller"
+name = "tanks-controller"
 version = "0.1.0"
 authors = ["Ivan Enderlin <ivan.enderlin@mnt.io>"]
 edition = "2018"
 
 [dependencies]
+structopt = "0.3"
+human-panic = "1.0"
+confy = "0.4"
+directories = "2.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

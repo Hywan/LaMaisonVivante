@@ -1,25 +1,34 @@
-use std::{
-    io::{self, BufRead, BufReader},
-    net::{TcpListener, TcpStream},
-};
+mod command;
+mod configuration;
+mod reader;
 
-fn handle_client(stream: TcpStream) -> io::Result<()> {
-    dbg!(&stream);
-    let mut reader = BufReader::new(stream);
-    let mut buffer = String::new();
-    reader.read_line(&mut buffer)?;
+use crate::command::Options;
+use human_panic::setup_panic;
+use structopt::StructOpt;
 
-    dbg!(buffer);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    setup_panic!();
 
-    Ok(())
-}
+    let configuration_path = configuration::get_path()?;
+    let configuration = configuration::load(&configuration_path)?;
 
-fn main() -> io::Result<()> {
-    let listener = TcpListener::bind("localhost:1234")?;
+    let options = Options::from_args();
 
-    for stream in listener.incoming() {
-        handle_client(stream?);
+    if options.print_config_path {
+        println!(
+            "{}",
+            configuration_path
+                .into_os_string()
+                .into_string()
+                .unwrap_or_else(|e| format!("{:?}", e))
+        );
+
+        return Ok(());
     }
+
+    let address = options.address.unwrap_or(configuration.address);
+
+    reader::start_listening(address)?;
 
     Ok(())
 }

@@ -2322,8 +2322,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "tank-level-controller"
+name = "tanks-controller"
 version = "0.1.0"
+dependencies = [
+ "confy",
+ "directories",
+ "human-panic",
+ "serde",
+ "serde_json",
+ "structopt",
+]
 
 [[package]]
 name = "tempfile"
