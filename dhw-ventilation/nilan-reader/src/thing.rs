@@ -256,7 +256,7 @@ macro_rules! update_property(
 
             let property_name = $property_name.to_string();
             let mut thing = $thing.write().unwrap();
-            let property = thing.find_property(property_name.clone()).unwrap();
+            let property = thing.find_property(&property_name).unwrap();
             property.set_cached_value(new_value.clone()).unwrap();
 
             thing.property_notify(property_name, new_value);

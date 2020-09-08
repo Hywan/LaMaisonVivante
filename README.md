@@ -38,9 +38,20 @@ Domestic Appliances are used for thiner monitoring. For the moment,
 only the dishwasher is supported with the `vzug-reader`
 program. [Learn more](appliances/dishwasher/vzug-reader/).
 
-## Water
+## Tanks
 
 The house uses rain for everything. Rain is collected inside 2 water
-tanks. The `tank-level-sensor` program runs in an Arduino to calculate
-the remaining water in the tanks. [Learn
-more](water/tank-level-sensor/).
+tanks. The `tanks` program runs in an ESP to calculate the remaining
+water in the tanks. [Learn more](tanks/).
+
+# Install
+
+To compile all Rust programs (readers or controllers), run the
+following:
+
+```sh
+$ cargo build --release --workspace
+```
+
+The other `.ino` programs must be installed manually for the
+moment. Check respective `README.md`s.
