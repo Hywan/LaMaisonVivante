@@ -1,5 +1,5 @@
 use confy;
-use directories::ProjectDirs;
+use directories_next::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use std::{
     default::Default,

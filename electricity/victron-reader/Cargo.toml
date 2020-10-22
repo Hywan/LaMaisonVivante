@@ -13,5 +13,5 @@ tui = { version = "0.8", default-features = false, features = ["crossterm"] }
 crossterm = "0.16"
 human-panic = "1.0"
 confy = "0.4"
-directories = "2.0"
+directories-next = "2.0"
 webthing = "0.12"
