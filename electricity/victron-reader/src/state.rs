@@ -25,14 +25,14 @@ pub struct Battery {
     pub health: Percent,
 }
 
-#[derive(Debug, Default, Serialize)]
+#[derive(Debug, Copy, Clone, Default, Serialize)]
 pub struct PvInverterPhase {
     pub voltage: Volt,
     pub current: Amp,
     pub power: Watt,
 }
 
-#[derive(Debug, Default, Serialize)]
+#[derive(Debug, Copy, Clone, Default, Serialize)]
 pub struct PvInverter {
     pub l1: PvInverterPhase,
     pub l2: PvInverterPhase,

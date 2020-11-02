@@ -252,6 +252,9 @@ pub fn run(mut context: sync::Context, port: Option<u16>) {
     let pv_inverter_3 = make_pv_inverter(3);
     things.push(pv_inverter_3.clone());
 
+    let pv_inverter_all = make_pv_inverter(0);
+    things.push(pv_inverter_all.clone());
+
     let house = make_house();
     things.push(house.clone());
 
@@ -305,6 +308,23 @@ pub fn run(mut context: sync::Context, port: Option<u16>) {
             update_property!(pv_inverter, "power", pv_inverter_state.power);
             update_property!(pv_inverter, "voltage", pv_inverter_state.voltage);
             update_property!(pv_inverter, "current", pv_inverter_state.current);
+            update_property!(pv_inverter, "frequency", vebus_state.frequency);
+        }
+
+        // PV Inverter (all)
+        {
+            let pv_inverter_state = pv_inverter_state.clone();
+            let pv_inverter = pv_inverter_all.clone();
+
+            update_property!(
+                pv_inverter,
+                "power",
+                pv_inverter_state.l1.power
+                    + pv_inverter_state.l2.power
+                    + pv_inverter_state.l3.power
+            );
+            update_property!(pv_inverter, "voltage", pv_inverter_state.l1.voltage);
+            update_property!(pv_inverter, "current", pv_inverter_state.l1.current);
             update_property!(pv_inverter, "frequency", vebus_state.frequency);
         }
 
