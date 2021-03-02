@@ -15,7 +15,7 @@
 #include <WiFi.h>
 
 // Set up WiFi data.
-#include "tank_level_secrets.h"
+#include "tanks_secrets.h"
 
 // HC-SR04 has 2 pins (in addition to Vcc and Ground): Trig and Echo.
 // It is connected to an ESP32.
