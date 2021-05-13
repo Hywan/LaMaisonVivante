@@ -1,9 +1,14 @@
 mod aggregator;
 mod command;
 mod configuration;
+mod database;
 mod thing;
 
+#[macro_use]
+extern crate diesel;
+
 use crate::command::Options;
+use diesel::{pg::PgConnection, prelude::*};
 use human_panic::setup_panic;
 use structopt::StructOpt;
 
@@ -31,8 +36,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     addresses.extend(&configuration.addresses);
 
     let refresh_rate = options.refresh_rate.unwrap_or(configuration.refresh_rate);
+    let database_url = options.database_url.unwrap_or(configuration.database_url);
 
-    aggregator::aggregate(addresses.to_vec(), refresh_rate);
+    if database_url.is_empty() {
+        panic!(
+            "The database URL is empty, use `--database-url` or the configuration file to set it"
+        );
+    }
+
+    let database_connection = PgConnection::establish(&database_url).expect(&format!(
+        "Failed to connect to database at `{}`",
+        database_url
+    ));
+
+    aggregator::aggregate(addresses.to_vec(), refresh_rate, database_connection);
 
     Ok(())
 }

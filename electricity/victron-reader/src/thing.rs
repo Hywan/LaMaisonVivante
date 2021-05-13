@@ -205,6 +205,60 @@ fn make_house() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
             .clone(),
         ),
     )));
+    thing.add_property(Box::new(BaseProperty::new(
+        "l1_power".to_owned(),
+        json!(0),
+        None,
+        Some(
+            json!({
+                "@type": "InstantaneousPowerProperty",
+                "title": "Power",
+                "type": "integer",
+                "description": "The house power consumption (phase 1)",
+                "unit": "watt",
+                "readOnly": true
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        ),
+    )));
+    thing.add_property(Box::new(BaseProperty::new(
+        "l2_power".to_owned(),
+        json!(0),
+        None,
+        Some(
+            json!({
+                "@type": "InstantaneousPowerProperty",
+                "title": "Power",
+                "type": "integer",
+                "description": "The house power consumption (phase 2)",
+                "unit": "watt",
+                "readOnly": true
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        ),
+    )));
+    thing.add_property(Box::new(BaseProperty::new(
+        "l3_power".to_owned(),
+        json!(0),
+        None,
+        Some(
+            json!({
+                "@type": "InstantaneousPowerProperty",
+                "title": "Power",
+                "type": "integer",
+                "description": "The house power consumption (phase 3)",
+                "unit": "watt",
+                "readOnly": true
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        ),
+    )));
 
     Arc::new(RwLock::new(Box::new(thing)))
 }
@@ -338,6 +392,9 @@ pub fn run(mut context: sync::Context, port: Option<u16>) {
                 "power",
                 house_state.l1 + house_state.l2 + house_state.l3
             );
+            update_property!(house, "l1_power", house_state.l1);
+            update_property!(house, "l2_power", house_state.l2);
+            update_property!(house, "l3_power", house_state.l3);
         }
     });
 

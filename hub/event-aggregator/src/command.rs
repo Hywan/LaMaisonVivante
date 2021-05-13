@@ -13,6 +13,10 @@ pub struct Options {
     #[structopt(short = "r", long)]
     pub refresh_rate: Option<NonZeroU64>,
 
+    /// The database URL.
+    #[structopt(short = "d", long)]
+    pub database_url: Option<String>,
+
     /// Prints the configuration path and exit.
     #[structopt(short = "c", long)]
     pub print_config_path: bool,

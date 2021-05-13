@@ -12,6 +12,7 @@ use std::{
 pub struct Configuration {
     pub addresses: Vec<SocketAddr>,
     pub refresh_rate: NonZeroU64,
+    pub database_url: String,
 }
 
 impl Default for Configuration {
@@ -19,6 +20,7 @@ impl Default for Configuration {
         Self {
             addresses: vec![],
             refresh_rate: unsafe { NonZeroU64::new_unchecked(10) },
+            database_url: String::new(),
         }
     }
 }

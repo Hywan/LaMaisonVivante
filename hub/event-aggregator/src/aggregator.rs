@@ -1,18 +1,28 @@
-use crate::thing::{
-    generic::{PropertyValue, Thing},
-    identified,
+use crate::{
+    database,
+    thing::{generic, identified::*},
 };
+use diesel::{pg::PgConnection, prelude::*};
 use std::{
-    collections::HashMap, convert::TryInto, net::SocketAddr, num::NonZeroU64, sync::mpsc::channel,
-    thread, time::Duration,
+    collections::HashMap,
+    convert::TryInto,
+    net::SocketAddr,
+    num::NonZeroU64,
+    sync::mpsc::channel,
+    thread,
+    time::{Duration, SystemTime},
 };
 
 #[derive(Debug)]
 struct Message {
-    things: Vec<Thing>,
+    things: Vec<generic::Thing>,
 }
 
-pub fn aggregate(addresses: Vec<SocketAddr>, refresh_rate: NonZeroU64) {
+pub fn aggregate(
+    addresses: Vec<SocketAddr>,
+    refresh_rate: NonZeroU64,
+    database_connection: PgConnection,
+) {
     let (tx, rx) = channel();
 
     for address in addresses.iter().cloned() {
@@ -21,13 +31,13 @@ pub fn aggregate(addresses: Vec<SocketAddr>, refresh_rate: NonZeroU64) {
         thread::spawn(move || loop {
             let mut things = reqwest::blocking::get(format!("http://{}", address))
                 .unwrap()
-                .json::<Vec<Thing>>()
+                .json::<Vec<generic::Thing>>()
                 .unwrap();
 
             for thing in things.iter_mut() {
                 let property_values = reqwest::blocking::get(format!("{}/properties", thing.base))
                     .unwrap()
-                    .json::<HashMap<String, PropertyValue>>()
+                    .json::<HashMap<String, generic::PropertyValue>>()
                     .unwrap();
 
                 for (property_name, property_value) in thing.properties.iter_mut() {
@@ -50,9 +60,31 @@ pub fn aggregate(addresses: Vec<SocketAddr>, refresh_rate: NonZeroU64) {
                 .unwrap()
                 .iter()
                 .map(TryInto::try_into)
-                .collect::<Result<Vec<identified::Thing>, _>>()
+                .collect::<Result<Vec<Thing>, _>>()
                 .unwrap();
-            dbg!(message);
+            dbg!(&message);
+
+            let now = SystemTime::now();
+
+            for thing in message {
+                match thing {
+                    Thing::Battery(battery) => {
+                        let new_battery = database::models::ElectricityStorage {
+                            time: &now,
+                            ongoing_power: battery.ongoing_power,
+                            temperature: battery.temperature,
+                            state_of_charge: battery.state_of_charge,
+                            voltage: battery.voltage,
+                        };
+
+                        diesel::insert_into(database::schema::electricity_storage::table)
+                            .values(&new_battery)
+                            .execute(&database_connection)
+                            .unwrap();
+                    }
+                    _ => (),
+                }
+            }
         }
     }
 }

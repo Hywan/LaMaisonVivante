@@ -91,6 +91,9 @@ impl TryFrom<&generic::Thing> for Thing {
 
             "urn:dev:ops:house-power" => Thing::HousePower(HousePower {
                 power: property!(HousePower.power from generic as_f64),
+                l1_power: property!(HousePower.l1_power from generic as_f64),
+                l2_power: property!(HousePower.l2_power from generic as_f64),
+                l3_power: property!(HousePower.l3_power from generic as_f64),
             }),
 
             id => return Err(format!("Thing with ID `{}` cannot be identified", id)),
@@ -100,21 +103,24 @@ impl TryFrom<&generic::Thing> for Thing {
 
 #[derive(Debug)]
 pub struct Battery {
-    ongoing_power: f64,
-    temperature: f64,
-    state_of_charge: f64,
-    voltage: f64,
+    pub ongoing_power: f64,
+    pub temperature: f64,
+    pub state_of_charge: f64,
+    pub voltage: f64,
 }
 
 #[derive(Debug)]
 pub struct PvInverter {
-    voltage: f64,
-    frequency: f64,
-    power: f64,
-    current: f64,
+    pub voltage: f64,
+    pub frequency: f64,
+    pub power: f64,
+    pub current: f64,
 }
 
 #[derive(Debug)]
 pub struct HousePower {
-    power: f64,
+    pub power: f64,
+    pub l1_power: f64,
+    pub l2_power: f64,
+    pub l3_power: f64,
 }
