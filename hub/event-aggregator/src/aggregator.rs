@@ -62,23 +62,34 @@ pub fn aggregate(
                 .map(TryInto::try_into)
                 .collect::<Result<Vec<Thing>, _>>()
                 .unwrap();
-            dbg!(&message);
+            //dbg!(&message);
 
             let now = SystemTime::now();
 
             for thing in message {
                 match thing {
                     Thing::Battery(battery) => {
-                        let new_battery = database::models::ElectricityStorage {
-                            time: &now,
-                            ongoing_power: battery.ongoing_power,
-                            temperature: battery.temperature,
-                            state_of_charge: battery.state_of_charge,
-                            voltage: battery.voltage,
-                        };
-
                         diesel::insert_into(database::schema::electricity_storage::table)
-                            .values(&new_battery)
+                            .values(&database::models::ElectricityStorage {
+                                time: &now,
+                                ongoing_power: battery.ongoing_power,
+                                temperature: battery.temperature,
+                                state_of_charge: battery.state_of_charge,
+                                voltage: battery.voltage,
+                            })
+                            .execute(&database_connection)
+                            .unwrap();
+                    }
+
+                    Thing::HousePower(house_power) => {
+                        diesel::insert_into(database::schema::electricity_consumption::table)
+                            .values(&database::models::ElectricityConsumption {
+                                time: &now,
+                                house_power: house_power.power,
+                                house_l1_power: house_power.l1_power,
+                                house_l2_power: house_power.l2_power,
+                                house_l3_power: house_power.l3_power,
+                            })
                             .execute(&database_connection)
                             .unwrap();
                     }
