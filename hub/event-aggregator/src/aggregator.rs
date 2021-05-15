@@ -66,6 +66,11 @@ pub fn aggregate(
 
             let now = SystemTime::now();
 
+            let mut pv0 = None;
+            let mut pv1 = None;
+            let mut pv2 = None;
+            let mut pv3 = None;
+
             for thing in message {
                 match thing {
                     Thing::Battery(battery) => {
@@ -81,6 +86,19 @@ pub fn aggregate(
                             .unwrap();
                     }
 
+                    Thing::PvInverterAll(pv_inverter) => {
+                        pv0.replace(pv_inverter);
+                    }
+                    Thing::PvInverter1(pv_inverter) => {
+                        pv1.replace(pv_inverter);
+                    }
+                    Thing::PvInverter2(pv_inverter) => {
+                        pv2.replace(pv_inverter);
+                    }
+                    Thing::PvInverter3(pv_inverter) => {
+                        pv3.replace(pv_inverter);
+                    }
+
                     Thing::HousePower(house_power) => {
                         diesel::insert_into(database::schema::electricity_consumption::table)
                             .values(&database::models::ElectricityConsumption {
@@ -93,8 +111,40 @@ pub fn aggregate(
                             .execute(&database_connection)
                             .unwrap();
                     }
-                    _ => (),
                 }
+            }
+
+            match (pv0, pv1, pv2, pv3) {
+                (Some(pv0), Some(pv1), Some(pv2), Some(pv3)) => {
+                    diesel::insert_into(database::schema::electricity_production::table)
+                        .values(&database::models::ElectricityProduction {
+                            time: &now,
+
+                            l1_voltage: pv1.voltage,
+                            l1_frequency: pv1.frequency,
+                            l1_power: pv1.power,
+                            l1_current: pv1.current,
+
+                            l2_voltage: pv2.voltage,
+                            l2_frequency: pv2.frequency,
+                            l2_power: pv2.power,
+                            l2_current: pv2.current,
+
+                            l3_voltage: pv3.voltage,
+                            l3_frequency: pv3.frequency,
+                            l3_power: pv3.power,
+                            l3_current: pv3.current,
+
+                            voltage: pv0.voltage,
+                            frequency: pv0.frequency,
+                            power: pv0.power,
+                            current: pv0.current,
+                        })
+                        .execute(&database_connection)
+                        .unwrap();
+                }
+
+                _ => (),
             }
         }
     }
