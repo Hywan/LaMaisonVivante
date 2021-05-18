@@ -33,9 +33,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let addresses = &mut options.addresses;
-    addresses.extend(&configuration.addresses);
+    addresses.extend(configuration.addresses.into_iter().by_ref());
 
-    let refresh_rate = options.refresh_rate.unwrap_or(configuration.refresh_rate);
     let database_url = options.database_url.unwrap_or(configuration.database_url);
 
     if database_url.is_empty() {
@@ -49,7 +48,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         database_url
     ));
 
-    aggregator::aggregate(addresses.to_vec(), refresh_rate, database_connection);
+    aggregator::aggregate(addresses.to_vec(), database_connection);
 
     Ok(())
 }

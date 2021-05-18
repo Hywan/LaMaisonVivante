@@ -1,4 +1,5 @@
 use crate::{
+    command::AddressWithRefreshRate,
     database,
     thing::{generic, identified::*},
 };
@@ -6,8 +7,6 @@ use diesel::{pg::PgConnection, prelude::*};
 use std::{
     collections::HashMap,
     convert::TryInto,
-    net::SocketAddr,
-    num::NonZeroU64,
     sync::mpsc::channel,
     thread,
     time::{Duration, SystemTime},
@@ -18,14 +17,14 @@ struct Message {
     things: Vec<generic::Thing>,
 }
 
-pub fn aggregate(
-    addresses: Vec<SocketAddr>,
-    refresh_rate: NonZeroU64,
-    database_connection: PgConnection,
-) {
+pub fn aggregate(addresses: Vec<AddressWithRefreshRate>, database_connection: PgConnection) {
     let (tx, rx) = channel();
 
-    for address in addresses.iter().cloned() {
+    for AddressWithRefreshRate {
+        address,
+        refresh_rate,
+    } in addresses.iter().cloned()
+    {
         let tx = tx.clone();
 
         thread::spawn(move || loop {
