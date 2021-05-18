@@ -45,9 +45,6 @@ To set up Timescale:
 ```sh
 $ psql -U postgres -h localhost
 #
-# ; Disable the telemetry.
-# ALTER [SYSTEM | DATABASE | USER] { *db_name* | *role_specification* } SET timescaledb.telemetry_level=off
-#
 # ; Create the database.
 # CREATE database la_maison_vivante;
 #
@@ -58,7 +55,10 @@ $ psql -U postgres -h localhost
 # CREATE EXTENSION IF NOT EXISTS timescaledb;
 ```
 
-## Tables
+### Tables
+
+This is just a memo saying that we must use `create_hypertable` but
+this part is done by Diesel when migrating the database.
 
 ```sql
 CREATE TABLE IF NOT EXISTS my_table ( … time TIMESTAMP WITHOUT TIME ZONE NOT NULL … );
@@ -78,12 +78,13 @@ Install Timescale:
   $ brew install grafana
   ```
 
+* [on Debian](https://grafana.com/grafana/download?pg=get&platform=arm&plcmt=selfmanaged-box1-cta1)
 
-# Misc
-
-https://grafana.com/docs/grafana/latest/getting-started/getting-started/
-https://docs.timescale.com/timescaledb/latest/getting-started/query-data/##time-bucket-gapfill
-https://docs.timescale.com/timescaledb/latest/tutorials/grafana/create-dashboard-and-panel/#build-a-new-dashboard
+  ```sh
+  $ sudo apt-get install -y adduser libfontconfig1
+  $ wget https://dl.grafana.com/oss/release/grafana_7.5.6_arm64.deb
+  $ sudo dpkg -i grafana_7.5.6_arm64.deb
+  ```
 
 # [Diesel](https://diesel.rs/)
 
@@ -113,3 +114,7 @@ $ diesel migration \
 ```
 
 ## 
+
+# Misc
+
+https://stackoverflow.com/questions/32222889/how-to-calculate-power-consumption-from-power-records

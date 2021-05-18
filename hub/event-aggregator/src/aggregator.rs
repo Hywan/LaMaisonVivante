@@ -111,6 +111,35 @@ pub fn aggregate(
                             .execute(&database_connection)
                             .unwrap();
                     }
+
+                    Thing::DomesticHotWater(dhw) => {
+                        diesel::insert_into(database::schema::domestic_hot_water::table)
+                            .values(&database::models::DomesticHotWater {
+                                time: &now,
+                                top_of_the_tank_temperature: dhw.top_of_the_tank_temperature,
+                                bottom_of_the_tank_temperature: dhw.bottom_of_the_tank_temperature,
+                                wanted_temperature: dhw.wanted_temperature,
+                            })
+                            .execute(&database_connection)
+                            .unwrap();
+                    }
+
+                    Thing::Air(air) => {
+                        diesel::insert_into(database::schema::air::table)
+                            .values(&database::models::Air {
+                                time: &now,
+                                inside_humidity: air.inside_humidity,
+                                supplied_temperature_after_ground_coupled_heat_exchanger: air
+                                    .supplied_temperature_after_ground_coupled_heat_exchanger,
+                                supplied_temperature_after_heat_recovery_exchanger: air
+                                    .supplied_temperature_after_heat_recovery_exchanger,
+                                extracted_temperature: air.extracted_temperature,
+                                discharged_temperature: air.discharged_temperature,
+                                wanted_temperature: air.wanted_temperature,
+                            })
+                            .execute(&database_connection)
+                            .unwrap();
+                    }
                 }
             }
 

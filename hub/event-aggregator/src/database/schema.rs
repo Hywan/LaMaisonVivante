@@ -1,4 +1,25 @@
 table! {
+    air (time) {
+        time -> Timestamp,
+        inside_humidity -> Float8,
+        supplied_temperature_after_ground_coupled_heat_exchanger -> Float8,
+        supplied_temperature_after_heat_recovery_exchanger -> Float8,
+        extracted_temperature -> Float8,
+        discharged_temperature -> Float8,
+        wanted_temperature -> Float8,
+    }
+}
+
+table! {
+    domestic_hot_water (time) {
+        time -> Timestamp,
+        top_of_the_tank_temperature -> Float8,
+        bottom_of_the_tank_temperature -> Float8,
+        wanted_temperature -> Float8,
+    }
+}
+
+table! {
     electricity_consumption (time) {
         time -> Timestamp,
         house_power -> Float8,
@@ -41,6 +62,8 @@ table! {
 }
 
 allow_tables_to_appear_in_same_query!(
+    air,
+    domestic_hot_water,
     electricity_consumption,
     electricity_production,
     electricity_storage,

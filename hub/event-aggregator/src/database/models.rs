@@ -48,3 +48,27 @@ pub struct ElectricityConsumption<'a> {
     pub house_l2_power: f64,
     pub house_l3_power: f64,
 }
+
+#[derive(Insertable)]
+#[table_name = "domestic_hot_water"]
+pub struct DomesticHotWater<'a> {
+    pub time: &'a SystemTime,
+
+    pub top_of_the_tank_temperature: f64,
+    pub bottom_of_the_tank_temperature: f64,
+    pub wanted_temperature: f64,
+}
+
+#[derive(Insertable)]
+#[table_name = "air"]
+pub struct Air<'a> {
+    pub time: &'a SystemTime,
+
+    pub inside_humidity: f64,
+
+    pub supplied_temperature_after_ground_coupled_heat_exchanger: f64,
+    pub supplied_temperature_after_heat_recovery_exchanger: f64,
+    pub extracted_temperature: f64,
+    pub discharged_temperature: f64,
+    pub wanted_temperature: f64,
+}

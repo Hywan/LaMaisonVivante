@@ -7,8 +7,8 @@ pub struct Thing {
     pub id: String,
     pub base: String,
     pub title: String,
-    #[serde(rename(deserialize = "@type"))]
-    pub capabilities: Vec<Capability>,
+    ///#[serde(rename(deserialize = "@type"))]
+    ///pub capabilities: Vec<Capability>,
     pub properties: HashMap<String, Property>,
 }
 
@@ -17,9 +17,9 @@ pub struct Property {
     pub title: String,
     #[serde(rename(deserialize = "@type"))]
     pub r#type: PropertyType,
-    pub unit: String,
-    #[serde(rename(deserialize = "readOnly"))]
-    pub read_only: bool,
+    //pub unit: String,
+    //#[serde(rename(deserialize = "readOnly"))]
+    //pub read_only: bool,
     pub value: Option<PropertyValue>,
 }
 
