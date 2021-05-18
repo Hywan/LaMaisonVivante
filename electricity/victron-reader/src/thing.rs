@@ -313,7 +313,7 @@ pub fn run(mut context: sync::Context, port: Option<u16>) {
     things.push(house.clone());
 
     thread::spawn(move || loop {
-        thread::sleep(time::Duration::from_secs(2));
+        thread::sleep(time::Duration::from_secs(10));
 
         // Reading the current state.
         let state = reader::read(&mut context).unwrap();
