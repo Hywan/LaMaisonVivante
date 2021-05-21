@@ -1,7 +1,7 @@
 # Victron Reader
 
 This program aims at reading information from a [Victron
-CCGX](https://www.victronenergy.com/live/ccgx:start) device. In our
+CCGX](https://www.victronenergy.com/panel-systems-remote-monitoring/color-control) device. In our
 house, this device is connected to the batteries, the PV inverter, and
 the house (which includes the charging/discharging station for the
 electric vehicle).
