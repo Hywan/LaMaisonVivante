@@ -1,0 +1,146 @@
+:root {
+    --color-light-000: hsl(0, 0%, 100%);
+    --color-light-100: hsl(214, 41%, 97%);
+    --color-light-200: hsl(222, 25%, 92%);
+    --color-light-300: hsl(217, 48%, 83%);
+    --color-blue-500: hsl(213, 100%, 74%);
+    --color-yellow-000: hsl(47, 100%, 92%);
+    --color-yellow-100: hsl(47, 81%, 75%);
+    --color-yellow-500: hsl(47, 100%, 58%);
+    --color-pink-500: hsl(324, 77%, 75%);
+    --color-pink-600: hsl(331, 64%, 64%);
+    --color-dark: hsl(0, 100%, 0%);
+
+    --space-small: .5rem;
+    --space: 1rem;
+    --space-large: 2rem;
+    --space-very-large: 3.5rem;
+
+    --light-direction: 170deg;
+}
+
+@font-face {
+    font-family: text;
+    src: url('../fonts/interface.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    color: var(--color-dark);
+    font-size: 100%;
+    height: 100%;
+    background: linear-gradient(var(--light-direction), var(--color-light-000), var(--color-light-200)) no-repeat;
+}
+
+body {
+    display: grid;
+    grid-template: "header"
+                   "main";
+    grid-template-rows: auto 1fr;
+    margin: 0 auto;
+    padding-inline: var(--space);
+    min-height: 100%;
+    max-width: 50rem;
+
+    font: 1.1em/1.4em text;
+}
+
+#header {
+    grid-area: header;
+
+    font-weight: bold;
+    line-height: var(--space-very-large);
+
+    display: grid;
+    grid-template: "header-title header-details"
+}
+
+    #header-title {
+        grid-area: header-title;
+        font-size: 120%;
+    }
+
+    #header-details {
+        grid-area: header-details;
+        text-align: end;
+    }
+
+main {
+    grid-area: main;
+    padding-top: var(--space-large);
+}
+
+.things {
+}
+
+    .things + .things {
+        margin-block-start: var(--space-large);
+    }
+
+    .things-location {
+        display: block;
+        padding: var(--space);
+        border: 5px solid transparent;
+        border-radius: var(--space);
+        background: linear-gradient(var(--color-light-000), var(--color-light-000)) padding-box,
+                    linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-600)) border-box;
+    }
+
+    .things-list {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space);
+        justify-items: center;
+
+        padding-block-start: var(--space-large);
+    }
+
+    .thing {
+        display: grid;
+        grid-template: "thing-state"
+                       "thing-name";
+        grid-template-rows: 1fr auto;
+        width: calc(10rem - var(--space-large));
+        height: calc(10rem - var(--space-large));
+        padding: var(--space-large);
+        justify-items: center;
+        align-items: center;
+
+        border-radius: var(--space-very-large);
+        background: var(--color-light-000);
+        box-shadow:  14px 14px 28px #e7eaee,
+                     -14px -14px 28px #ffffff;
+    }
+
+        .thing-name {
+            grid-area: thing-name;
+        }
+
+        .thing-state {
+            grid-area: thing-state;
+        }
+
+            .thing-state-icon, .thing-state-text {
+                display: block;
+            }
+
+
+h2 { font-size: 130% }
+h3 { font-size: 110% }
+
+.header, .header-subtitle {
+    display: block;
+    line-height: 100%;
+}
+
+    h2 > .header-subtitle {
+        font-size: 60%;
+        font-weight: normal;
+        padding-block-start: var(--space-small);
+    }

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <title>Board — La Maison Vivante</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="content-type" content="text/javascript; charset=utf-8" />
+  <meta http-equiv="content-type" content="text/css; charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1.0" />
+  <meta name="theme-color" content="#b24646" />
+  <link rel="icon" type="image/png" href="" />
+  <link rel="stylesheet" type="text/css" href="static/style/main.css" />
+
+  <!--
+  <style>
+    p { color: green }
+  </style>
+
+  
+  <template id="my-paragraph">
+    <style>
+      em { color: red }
+    </style>
+    <p>Hello <em><slot name="who">default</slot></em>!</p>
+  </template>
+
+  <script>
+    console.log('huh?');
+    window.customElements.define(
+        'my-paragraph',
+        class extends HTMLElement {
+            constructor() {
+                super();
+                console.log('yolo?');
+            }
+
+            connectedCallback() {
+                console.log('here');
+                let template = document.getElementById('my-paragraph');
+                console.log(template);
+                let templateContent = template.content;
+
+                const shadowRoot = this.attachShadow({mode: 'closed'})
+                  .appendChild(templateContent.cloneNode(true));
+            }
+        }
+    );
+  </script>
+  -->
+</head>
+<body>
+  <!--
+  <my-paragraph>
+    <span slot="who">World</span>
+  </my-paragraph>
+  -->
+
+  <header id="header">
+    <h1 id="header-title">La Maison Vivante</h1>
+    <span id="header-details">
+      <span id="current-time">21:03</span>
+      <span id="battery-soc">95%</span>
+    </span>
+  </header>
+  <main>
+    <div class="things">
+      <h2 class="things-location"><span class="header">Pièce de vie</span><span class="header-subtitle">4 things</h2>
+      <div class="things-list">
+        <div class="thing">
+          <h3 class="thing-name">Table</h3>
+          <div class="thing-state">
+            <span class="thing-state-icon">💡</span>
+            <span class="thing-state-text">off</span>
+          </div>
+        </div>
+        <div class="thing">
+          <h3 class="thing-name">Cuisine</h3>
+          <div class="thing-state">
+            <span class="thing-state-icon">💡</span>
+            <span class="thing-state-text">off</span>
+          </div>
+        </div>
+        <div class="thing">
+          <h3 class="thing-name">Îlot</h3>
+          <div class="thing-state">
+            <span class="thing-state-icon">💡</span>
+            <span class="thing-state-text">off</span>
+          </div>
+        </div>
+        <div class="thing">
+          <h3 class="thing-name">Salon</h3>
+          <div class="thing-state">
+            <span class="thing-state-icon">💡</span>
+            <span class="thing-state-text">off</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="things">
+      <h2 class="things-location"><span class="header">Suite parentale</span><span class="header-subtitle">3 things</h2>
+      <div class="things-list">
+        <div class="thing">
+          <span class="thing-name">foo</span>
+        </div>
+        <div class="thing">
+          <span class="thing-name">bar</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
