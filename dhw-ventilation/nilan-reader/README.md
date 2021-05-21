@@ -1,7 +1,7 @@
 # Nilan Reader
 
 This program aims at reading information from a [Nilan Compact P
-XL](https://www.nilan.dk/en-gb/frontpage/solutions/domestic-solutions/compact-solutions/compact-p-xl). This
+XL](https://en.nilan.dk/en-gb/frontpage/solutions/domestic-solutions/compact-solutions/compact-p-xl-cts700). This
 device manages the ventilation, temperatures, CO<sub>2</sub>, Domestic
 Hot Water (DHW), Storage Hot Water (SHW, i.e. hot water tank).
 
