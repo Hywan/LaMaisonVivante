@@ -3,6 +3,7 @@
     --color-light-100: hsl(214, 41%, 97%);
     --color-light-200: hsl(222, 25%, 92%);
     --color-light-300: hsl(217, 48%, 83%);
+    --color-blue-300: hsl(213, 100%, 88%);
     --color-blue-500: hsl(213, 100%, 74%);
     --color-yellow-000: hsl(47, 100%, 92%);
     --color-yellow-100: hsl(47, 81%, 75%);
@@ -17,6 +18,8 @@
     --space-very-large: 3.5rem;
 
     --light-direction: 170deg;
+    --shadow-distance: 14px;
+    --shadow-blur: 28px;
 }
 
 @font-face {
@@ -34,7 +37,7 @@
 html {
     color: var(--color-dark);
     font-size: 100%;
-    height: 100%;
+    min-height: 100%;
     background: linear-gradient(var(--light-direction), var(--color-light-000), var(--color-light-200)) no-repeat;
 }
 
@@ -44,7 +47,7 @@ body {
                    "main";
     grid-template-rows: auto 1fr;
     margin: 0 auto;
-    padding-inline: var(--space);
+    padding-inline: var(--space-large);
     min-height: 100%;
     max-width: 50rem;
 
@@ -73,21 +76,23 @@ body {
 
 main {
     grid-area: main;
-    padding-top: var(--space-large);
 }
 
 .things {
 }
 
     .things + .things {
-        margin-block-start: var(--space-large);
+        margin-block-start: var(--space-very-large);
     }
 
     .things-location {
         display: block;
+        margin-block-end: var(--space-large);
         padding: var(--space);
-        border: 5px solid transparent;
+        border: 4px solid transparent;
         border-radius: var(--space);
+        box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
+                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
         background: linear-gradient(var(--color-light-000), var(--color-light-000)) padding-box,
                     linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-600)) border-box;
     }
@@ -101,22 +106,47 @@ main {
         padding-block-start: var(--space-large);
     }
 
+    @media (max-width: 768px) {
+        .things-list {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 635px) {
+        .things-list {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 375px) {
+        .things-list {
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+
     .thing {
         display: grid;
         grid-template: "thing-state"
                        "thing-name";
         grid-template-rows: 1fr auto;
-        width: calc(10rem - var(--space-large));
-        height: calc(10rem - var(--space-large));
+        width: calc(9rem - var(--space-large));
+        height: calc(9rem - var(--space-large));
         padding: var(--space-large);
         justify-items: center;
         align-items: center;
 
         border-radius: var(--space-very-large);
         background: var(--color-light-000);
-        box-shadow:  14px 14px 28px #e7eaee,
-                     -14px -14px 28px #ffffff;
+        box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
+                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
     }
+
+        .thing:hover, .thing:focus {
+            color: var(--color-light-000);
+            box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-300),
+                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-100);
+            background: linear-gradient(var(--light-direction), var(--color-blue-300), var(--color-blue-500)) no-repeat;
+        }
 
         .thing-name {
             grid-area: thing-name;
