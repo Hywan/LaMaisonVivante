@@ -60,6 +60,8 @@ body {
     font-weight: bold;
     line-height: var(--space-very-large);
 
+    margin-block-end: var(--space-large);
+
     display: grid;
     grid-template: "header-title header-details"
 }
@@ -129,8 +131,8 @@ main {
         grid-template: "thing-state"
                        "thing-name";
         grid-template-rows: 1fr auto;
-        width: calc(9rem - var(--space-large));
-        height: calc(9rem - var(--space-large));
+        width: calc(8rem - var(--space-large));
+        height: calc(8rem - var(--space-large));
         padding: var(--space-large);
         justify-items: center;
         align-items: center;
