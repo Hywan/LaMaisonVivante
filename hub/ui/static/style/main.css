@@ -8,6 +8,7 @@
     --color-yellow-000: hsl(47, 100%, 92%);
     --color-yellow-100: hsl(47, 81%, 75%);
     --color-yellow-500: hsl(47, 100%, 58%);
+    --color-pink-300: hsl(324, 77%, 88%);
     --color-pink-500: hsl(324, 77%, 75%);
     --color-pink-600: hsl(331, 64%, 64%);
     --color-dark: hsl(0, 100%, 0%);
@@ -126,42 +127,78 @@ main {
         }
     }
 
-    .thing {
-        display: grid;
-        grid-template: "thing-state"
-                       "thing-name";
-        grid-template-rows: 1fr auto;
-        width: calc(8rem - var(--space-large));
-        height: calc(8rem - var(--space-large));
-        padding: var(--space-large);
-        justify-items: center;
-        align-items: center;
-
-        border-radius: var(--space-very-large);
-        background: var(--color-light-000);
-        box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
-                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
+    .thing:not(:target) {
     }
 
-        .thing:hover, .thing:focus {
-            color: var(--color-light-000);
-            box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-300),
-                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-100);
-            background: linear-gradient(var(--light-direction), var(--color-blue-300), var(--color-blue-500)) no-repeat;
+        .thing:not(:target) > .thing-summary {
+            display: grid;
+            grid-template: "thing-state-icon"
+                           "thing-state-text"
+                           "thing-name";
+            grid-template-rows: 1fr auto auto;
+            justify-items: center;
+            align-items: center;
+
+            width: calc(8rem - var(--space-large));
+            height: calc(8rem - var(--space-large));
+            padding: var(--space-large);
+            border-radius: var(--space-very-large);
+            background: var(--color-light-000);
+            box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
+                        calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
+
+            color: inherit;
         }
 
-        .thing-name {
+        .thing:not(:target):hover > .thing-summary, .thing:not(:target):focus > .thing-summary {
+            box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-300),
+                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-100);
+            background: linear-gradient(var(--light-direction), var(--color-blue-300), var(--color-pink-300)) no-repeat;
+
+            color: var(--color-light-000);
+        }
+
+        .thing:not(:target) > .thing-summary > .thing-name {
             grid-area: thing-name;
         }
 
-        .thing-state {
-            grid-area: thing-state;
+        .thing:not(:target) > .thing-summary > .thing-state-icon {
+            grid-area: thing-state-icon;
         }
 
-            .thing-state-icon, .thing-state-text {
-                display: block;
-            }
+        .thing:not(:target) > .thing-summary > .thing-state-text {
+            grid-area: thing-state-text;
+        }
 
+        .thing:not(:target) .thing-long {
+            display: none;
+        }
+
+    .thing:target {
+        position: absolute;
+        top: var(--space-very-large);
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: var(--color-light-000);
+    }
+
+    @supports (backdrop-filter: blur(0)) {
+        .thing:target {
+            backdrop-filter: blur(15px);
+            background: transparent;
+        }
+    }
+
+        .thing:target > .thing-summary {
+            display: none;
+        }
+
+        .thing:target > .thing-long {
+            margin: 0 auto;
+            padding-inline: var(--space-large);
+            max-width: 50rem;
+        }
 
 h2 { font-size: 130% }
 h3 { font-size: 110% }
@@ -176,3 +213,7 @@ h3 { font-size: 110% }
         font-weight: normal;
         padding-block-start: var(--space-small);
     }
+
+a {
+    text-decoration: none;
+}
