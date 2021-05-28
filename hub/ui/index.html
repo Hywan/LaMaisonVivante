@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="fr">
 <head>
-  <title>Board — La Maison Vivante</title>
+  <title>Hub — La Maison Vivante</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <meta http-equiv="content-type" content="text/javascript; charset=utf-8" />
   <meta http-equiv="content-type" content="text/css; charset=utf-8" />
@@ -170,7 +170,7 @@
                                 const thing_name = self.querySelector('span[slot="name"]').textContent;
 
                                 thing.setAttribute('aria-expanded', 'true');
-                                nav.enter('All the things', leaving);
+                                nav.enter('Tous les objets', leaving);
                             }
                         }
                     );
@@ -228,34 +228,111 @@
       <span slot="location">Pièce de vie</span>
 
       <my-thing>
-        <span slot="name">Table</span>
-        <span slot="long-name">Table</span>
+        <span slot="name">Général</span>
+        <span slot="long-name">Espace de vie</span>
         <span slot="state-icon">💡</span>
-        <span slot="state-text">off</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/5" />
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">Table</span>
+        <span slot="long-name">Table à manger</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
           data-base="http://localhost:8888/7" />
       </my-thing>
 
       <my-thing>
-        <span slot="name">Cuisine</span>
-        <span slot="long-name">Cuisine</span>
-        <span slot="state-icon">💡</span>
-        <span slot="state-text">off</span>
-      </my-thing>
-
-      <my-thing>
         <span slot="name">Îlot</span>
-        <span slot="long-name">Îlot</span>
+        <span slot="long-name">Îlot de cuisine</span>
         <span slot="state-icon">💡</span>
-        <span slot="state-text">off</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/8" />
       </my-thing>
 
       <my-thing>
-        <span slot="name">Salon</span>
-        <span slot="long-name">Salon</span>
+        <span slot="name">Cuisine</span>
+        <span slot="long-name">Niche de la cuisine</span>
         <span slot="state-icon">💡</span>
-        <span slot="state-text">off</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/8" />
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">Canapé</span>
+        <span slot="long-name">Canapé</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/6" />
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">Entrée</span>
+        <span slot="long-name">Entrée</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/4" />
+      </my-thing>
+    </my-things>
+
+    <my-things>
+      <span slot="location">Salle de bain enfants</span>
+
+      <my-thing>
+        <span slot="name">S. de Bain</span>
+        <span slot="long-name">Salle de bain des enfants</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/1" />
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">Buanderie</span>
+        <span slot="long-name">Buanderie</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/0" />
+      </my-thing>
+    </my-things>
+
+    <my-things>
+      <span slot="location">Chambres enfants</span>
+
+      <my-thing>
+        <span slot="name">Louise</span>
+        <span slot="long-name">Chambre de Louise</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/2" />
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">Éli</span>
+        <span slot="long-name">Chambre d'Éli</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/3" />
       </my-thing>
     </my-things>
 
@@ -263,17 +340,33 @@
       <span slot="location">Suite parentale</span>
 
       <my-thing>
-        <span slot="name">Bain</span>
-        <span slot="long-name">Salle de bain</span>
+        <span slot="name">Chambre</span>
+        <span slot="long-name">Chambre parentale</span>
         <span slot="state-icon">💡</span>
-        <span slot="state-text">off</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/12" />
       </my-thing>
 
       <my-thing>
         <span slot="name">Lit</span>
-        <span slot="long-name">Lit</span>
+        <span slot="long-name">Lit parental</span>
         <span slot="state-icon">💡</span>
-        <span slot="state-text">off</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/10" />
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">S. de Bain</span>
+        <span slot="long-name">Salle de bain des parents</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/11" />
       </my-thing>
     </my-things>
   </main>
