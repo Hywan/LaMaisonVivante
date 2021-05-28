@@ -257,7 +257,7 @@ my-things, .things {
 
         .thing[aria-expanded = "true"] > .thing--long {
             margin: 0 auto;
-            padding-inline: var(--space-large);
+            padding: var(--space-large);
             max-width: 50rem;
         }
 

@@ -50,12 +50,33 @@
       </div>
       <div class="thing--long">
         <h3 class="thing--name"><slot name="long-name">(unnamed)</slot></h3>
-        <p>yolo</p>
+        <slot name="thing">(component)</slot>
       </div>
     </div>
   </template>
 
+  <template id="template--thing-pulse">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div class="thing--type-pulse">
+      <button>PULSE</button>
+    </div>
+  </template>
+
   <script>
+    function http_put(url, body) {
+        return fetch(url, {
+            method: 'PUT',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: body,
+        })
+    }
+
     window.customElements.define(
         'my-nav',
         class extends HTMLElement {
@@ -67,8 +88,8 @@
                 let template = document.getElementById('template--nav');
                 let templateContent = template.content.cloneNode(true);
 
-                const shadowRoot = this.attachShadow({mode: 'open'})
-                  .appendChild(templateContent);
+                this.attachShadow({mode: 'open'})
+                    .appendChild(templateContent);
             }
 
             enter(name, onclick) {
@@ -107,8 +128,8 @@
                 let template = document.getElementById('template--things');
                 let templateContent = template.content.cloneNode(true);
 
-                const shadowRoot = this.attachShadow({mode: 'closed'})
-                  .appendChild(templateContent);
+                this.attachShadow({mode: 'closed'})
+                    .appendChild(templateContent);
             }
         }
     );
@@ -157,6 +178,36 @@
             };
         }
     );
+
+    window.customElements.define(
+        'my-thing--pulse',
+        class extends HTMLElement {
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                const template = document.getElementById('template--thing-pulse');
+                const templateContent = template.content.cloneNode(true);
+
+                const button = templateContent.querySelector('.thing--type-pulse');
+
+                const shadowRoot = this.attachShadow({mode: 'open'})
+                    .appendChild(templateContent);
+
+                const self = this;
+                const base = self.getAttribute('data-base').replace(/\/+$/, '');
+                const url = base + '/properties/pulse';
+
+                button.addEventListener(
+                    'click',
+                    () => {
+                        http_put(url, '{"pulse": true}')
+                    }
+                );
+            }
+        }
+    );
   </script>
 </head>
 <body>
@@ -181,6 +232,9 @@
         <span slot="long-name">Table</span>
         <span slot="state-icon">💡</span>
         <span slot="state-text">off</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/7" />
       </my-thing>
 
       <my-thing>
