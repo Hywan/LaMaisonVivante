@@ -19,10 +19,6 @@
     <h1 class="header--title">
       <ol>
         <li><slot name="root">(root)</slot></li>
-        <!--
-        <li><a href="#">Niveau 1</a></li>
-        <li><a href="#">Niveau 2</a></li>
-        -->
       </ol>
     </h1>
   </template>
@@ -153,7 +149,7 @@
                                 const thing_name = self.querySelector('span[slot="name"]').textContent;
 
                                 thing.setAttribute('aria-expanded', 'true');
-                                nav.enter('〈  All the things', leaving);
+                                nav.enter('All the things', leaving);
                             }
                         }
                     );
