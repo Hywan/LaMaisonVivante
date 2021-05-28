@@ -12,7 +12,8 @@
     --color-pink-300: hsl(324, 77%, 88%);
     --color-pink-500: hsl(324, 77%, 75%);
     --color-pink-600: hsl(331, 64%, 64%);
-    --color-green-600: hsl(114, 57%, 70%);
+    --color-green-300: hsl(114, 57%, 70%);
+    --color-green-600: hsl(114, 57%, 48%);
     --color-dark-500: hsl(0, 0%, 26%);
     --color-dark: hsl(0, 100%, 0%);
 
@@ -285,14 +286,15 @@ my-things, .things {
     background: linear-gradient(145deg, #fff, #e6e6e6);
     box-shadow: 22px 22px 78px #d6d6d6,
                 -22px -22px 78px #fff,
-                0 0 4px var(--color-green-600) inset,
-                0 0 12px var(--color-green-600);
-    border: 3px var(--color-green-600) solid
+                0 0 4px var(--color-green-300) inset,
+                0 0 12px var(--color-green-300);
+    border: 3px var(--color-green-300) solid
 }
 
 .thing--type-pulse > button:hover,
 .thing--type-pulse > button:focus {
-    border: 5px green solid;
+    background: linear-gradient(145deg, #e6e6e6, #fff);
+    border-color: var(--color-green-600);
 }
 
 h2 { font-size: 130% }
