@@ -55,7 +55,7 @@ body {
     font: 1.1em/1.4em text;
 }
 
-#header {
+.header {
     grid-area: header;
 
     font-weight: bold;
@@ -67,12 +67,24 @@ body {
     grid-template: "header-title header-details"
 }
 
-    #header-title {
+    .header--title a {
+        color: inherit;
+    }
+
+    .header--title {
         grid-area: header-title;
         font-size: 120%;
     }
 
-    #header-details {
+        .header--title > ol {
+            list-style: none;
+        }
+
+        .header--title > ol > li:not(:last-child) {
+            display: none;
+        }
+
+    .header--details {
         grid-area: header-details;
         text-align: end;
     }
@@ -81,14 +93,38 @@ main {
     grid-area: main;
 }
 
-.things {
+my-things, .things {
 }
 
-    .things + .things {
-        margin-block-start: var(--space-very-large);
+    .things--list {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space);
+        justify-items: center;
+
+        margin-block-end: var(--space-very-large);
+        padding-block-start: var(--space-large);
     }
 
-    .things-location {
+    @media (max-width: 768px) {
+        .things--list {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 635px) {
+        .things--list {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 375px) {
+        .things--list {
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+
+    .things--location {
         display: block;
         margin-block-end: var(--space-large);
         padding: var(--space);
@@ -100,41 +136,14 @@ main {
                     linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-600)) border-box;
     }
 
-    .things-list {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: var(--space);
-        justify-items: center;
-
-        padding-block-start: var(--space-large);
+    .thing[aria-expanded = "false"] {
     }
 
-    @media (max-width: 768px) {
-        .things-list {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (max-width: 635px) {
-        .things-list {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (max-width: 375px) {
-        .things-list {
-            grid-template-columns: repeat(1, 1fr);
-        }
-    }
-
-    .thing:not(:target) {
-    }
-
-        .thing:not(:target) > .thing-summary {
+        .thing[aria-expanded = "false"] > .thing--summary {
             display: grid;
-            grid-template: "thing-state-icon"
-                           "thing-state-text"
-                           "thing-name";
+            grid-template: "thing--state-icon"
+                           "thing--state-text"
+                           "thing--name";
             grid-template-rows: 1fr auto auto;
             justify-items: center;
             align-items: center;
@@ -148,9 +157,10 @@ main {
                         calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
 
             color: inherit;
+            cursor: pointer;
         }
 
-        .thing:not(:target):hover > .thing-summary, .thing:not(:target):focus > .thing-summary {
+        .thing[aria-expanded = "false"]:hover > .thing--summary, .thing[aria-expanded = "false"]:focus > .thing--summary {
             box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-300),
                      calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-100);
             background: linear-gradient(var(--light-direction), var(--color-blue-300), var(--color-pink-300)) no-repeat;
@@ -158,23 +168,23 @@ main {
             color: var(--color-light-000);
         }
 
-        .thing:not(:target) > .thing-summary > .thing-name {
-            grid-area: thing-name;
+        .thing[aria-expanded = "false"] > .thing--summary > .thing--name {
+            grid-area: thing--name;
         }
 
-        .thing:not(:target) > .thing-summary > .thing-state-icon {
-            grid-area: thing-state-icon;
+        .thing[aria-expanded = "false"] > .thing--summary > .thing--state-icon {
+            grid-area: thing--state-icon;
         }
 
-        .thing:not(:target) > .thing-summary > .thing-state-text {
-            grid-area: thing-state-text;
+        .thing[aria-expanded = "false"] > .thing--summary > .thing--state-text {
+            grid-area: thing--state-text;
         }
 
-        .thing:not(:target) .thing-long {
+        .thing[aria-expanded = "false"] .thing--long {
             display: none;
         }
 
-    .thing:target {
+    .thing[aria-expanded = "true"] {
         position: absolute;
         top: var(--space-very-large);
         right: 0;
@@ -184,17 +194,17 @@ main {
     }
 
     @supports (backdrop-filter: blur(0)) {
-        .thing:target {
+        .thing[aria-expanded = "true"] {
             backdrop-filter: blur(15px);
             background: transparent;
         }
     }
 
-        .thing:target > .thing-summary {
+        .thing[aria-expanded = "true"] > .thing--summary {
             display: none;
         }
 
-        .thing:target > .thing-long {
+        .thing[aria-expanded = "true"] > .thing--long {
             margin: 0 auto;
             padding-inline: var(--space-large);
             max-width: 50rem;
@@ -203,12 +213,12 @@ main {
 h2 { font-size: 130% }
 h3 { font-size: 110% }
 
-.header, .header-subtitle {
+.heading, .heading--subtitle {
     display: block;
     line-height: 100%;
 }
 
-    h2 > .header-subtitle {
+    h2 > .heading--subtitle {
         font-size: 60%;
         font-weight: normal;
         padding-block-start: var(--space-small);

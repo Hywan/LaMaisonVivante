@@ -11,125 +11,219 @@
   <link rel="icon" type="image/png" href="" />
   <link rel="stylesheet" type="text/css" href="static/style/main.css" />
 
-  <!--
-  <style>
-    p { color: green }
-  </style>
-
-  
-  <template id="my-paragraph">
+  <template id="template--nav">
     <style>
-      em { color: red }
+      @import "static/style/main.css";
     </style>
-    <p>Hello <em><slot name="who">default</slot></em>!</p>
+
+    <h1 class="header--title">
+      <ol>
+        <li><slot name="root">(root)</slot></li>
+        <!--
+        <li><a href="#">Niveau 1</a></li>
+        <li><a href="#">Niveau 2</a></li>
+        -->
+      </ol>
+    </h1>
+  </template>
+
+  <template id="template--things">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div class="things">
+      <h2 class="things--location"><span class="heading"><slot name="location">(somewhere)</slot></span><span class="heading--subtitle">(X things)</span></h2>
+
+      <div class="things--list">
+        <slot>(none)</slot>
+      </div>
+    </div>
+  </template>
+
+  <template id="template--thing">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div id="thing-?" class="thing" aria-expanded="false">
+      <div class="thing--summary thing--expander">
+        <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
+        <span class="thing--state-icon"><slot name="state-icon">(❓)</slot></span>
+        <span class="thing--state-text"><slot name="state-text">(??)</slot></span>
+      </div>
+      <div class="thing--long">
+        <h3 class="thing--name"><slot name="long-name">(unnamed)</slot></h3>
+        <p>yolo</p>
+      </div>
+    </div>
   </template>
 
   <script>
-    console.log('huh?');
     window.customElements.define(
-        'my-paragraph',
+        'my-nav',
         class extends HTMLElement {
             constructor() {
                 super();
-                console.log('yolo?');
             }
 
             connectedCallback() {
-                console.log('here');
-                let template = document.getElementById('my-paragraph');
-                console.log(template);
-                let templateContent = template.content;
+                let template = document.getElementById('template--nav');
+                let templateContent = template.content.cloneNode(true);
 
-                const shadowRoot = this.attachShadow({mode: 'closed'})
-                  .appendChild(templateContent.cloneNode(true));
+                const shadowRoot = this.attachShadow({mode: 'open'})
+                  .appendChild(templateContent);
+            }
+
+            enter(name, onclick) {
+                let root = this.shadowRoot;
+
+                var link = document.createElement('a');
+                link.setAttribute('href', '#');
+                link.addEventListener('click', onclick);
+                link.appendChild(document.createTextNode(name));
+
+                var item = document.createElement('li');
+                item.appendChild(link);
+
+                let list = root.querySelector('ol');
+                list.appendChild(item);
+            }
+
+            leave() {
+                let last = this.shadowRoot.querySelector('li:last-child');
+
+                if (last) {
+                    last.parentNode.removeChild(last);
+                }
             }
         }
     );
+
+    window.customElements.define(
+        'my-things',
+        class extends HTMLElement {
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                let template = document.getElementById('template--things');
+                let templateContent = template.content.cloneNode(true);
+
+                const shadowRoot = this.attachShadow({mode: 'closed'})
+                  .appendChild(templateContent);
+            }
+        }
+    );
+
+    window.customElements.define(
+        'my-thing',
+        new function() {
+            let thing_index = 0;
+
+            return class extends HTMLElement {
+                constructor() {
+                    super();
+                }
+
+                connectedCallback() {
+                    const template = document.getElementById('template--thing');
+                    const templateContent = template.content.cloneNode(true);
+
+                    const thing = templateContent.querySelector('.thing');
+                    thing.setAttribute('id', 'thing-' + thing_index);
+                    thing_index += 1;
+
+                    const shadowRoot = this.attachShadow({mode: 'open'})
+                        .appendChild(templateContent);
+
+                    const self = this;
+
+                    thing.querySelector('.thing--expander').addEventListener(
+                        'click',
+                        () => {
+                            const nav = document.getElementById('nav');
+                            const leaving = () => {
+                                thing.setAttribute('aria-expanded', 'false')
+                                nav.leave();
+                            };
+
+                            if (thing.getAttribute('aria-expanded') == 'false') {
+                                const thing_name = self.querySelector('span[slot="name"]').textContent;
+
+                                thing.setAttribute('aria-expanded', 'true');
+                                nav.enter('〈  All the things', leaving);
+                            }
+                        }
+                    );
+                }
+            };
+        }
+    );
   </script>
-  -->
 </head>
 <body>
-  <!--
-  <my-paragraph>
-    <span slot="who">World</span>
-  </my-paragraph>
-  -->
-
-  <header id="header">
-    <h1 id="header-title">La Maison Vivante</h1>
-    <span id="header-details">
+  <header class="header">
+    <my-nav id="nav" role="nav">
+      <span slot="root">La Maison Vivante</span>
+    </my-nav>
+    <span id="header--details">
       <span id="current-time">21:03</span>
       <span id="battery-soc">95%</span>
     </span>
   </header>
+
   <main>
-    <div class="things">
-      <h2 class="things-location"><span class="header">Pièce de vie</span><span class="header-subtitle">4 things</h2>
-      <div class="things-list">
+    <my-things>
+      <span slot="location">Pièce de vie</span>
 
-        <div id="thing-1" class="thing">
-          <a href="#thing-1" class="thing-summary">
-            <h3 class="thing-name">Table</h3>
-            <span class="thing-state-icon">💡</span>
-            <span class="thing-state-text">off</span>
-          </a>
-          <div class="thing-long">
-            <a href="javascript:window.history.back()">Back</a>
-            <h3 class="thing-name">Table</h3>
-            <p>yolo</a>
-          </div>
-        </div>
+      <my-thing>
+        <span slot="name">Table</span>
+        <span slot="long-name">Table</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">off</span>
+      </my-thing>
 
-        <div id="thing-2" class="thing">
-          <a href="#thing-2" class="thing-summary">
-            <h3 class="thing-name">Cuisine</h3>
-            <span class="thing-state-icon">💡</span>
-            <span class="thing-state-text">off</span>
-          </a>
-          <div class="thing-long">
-            <h3 class="thing-name">Cuisine</h3>
-            <p>yolo</a>
-          </div>
-        </div>
+      <my-thing>
+        <span slot="name">Cuisine</span>
+        <span slot="long-name">Cuisine</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">off</span>
+      </my-thing>
 
-        <div id="thing-3" class="thing">
-          <a href="#thing-3" class="thing-summary">
-            <h3 class="thing-name">ïlot</h3>
-            <span class="thing-state-icon">💡</span>
-            <span class="thing-state-text">off</span>
-          </a>
-          <div class="thing-long">
-            <h3 class="thing-name">Îlot</h3>
-            <p>yolo</a>
-          </div>
-        </div>
+      <my-thing>
+        <span slot="name">Îlot</span>
+        <span slot="long-name">Îlot</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">off</span>
+      </my-thing>
 
-        <div id="thing-4" class="thing">
-          <a href="#thing-4" class="thing-summary">
-            <h3 class="thing-name">Salon</h3>
-            <span class="thing-state-icon">💡</span>
-            <span class="thing-state-text">off</span>
-          </a>
-          <div class="thing-long">
-            <h3 class="thing-name">Salon</h3>
-            <p>yolo</a>
-          </div>
-        </div>
+      <my-thing>
+        <span slot="name">Salon</span>
+        <span slot="long-name">Salon</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">off</span>
+      </my-thing>
+    </my-things>
 
-      </div>
-    </div>
+    <my-things>
+      <span slot="location">Suite parentale</span>
 
-    <div class="things">
-      <h2 class="things-location"><span class="header">Suite parentale</span><span class="header-subtitle">3 things</h2>
-      <div class="things-list">
-        <a href="#" class="thing">
-          <span class="thing-name">foo</span>
-        </a>
-        <a href="#" class="thing">
-          <span class="thing-name">bar</span>
-        </a>
-      </div>
-    </div>
+      <my-thing>
+        <span slot="name">Bain</span>
+        <span slot="long-name">Salle de bain</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">off</span>
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">Lit</span>
+        <span slot="long-name">Lit</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">off</span>
+      </my-thing>
+    </my-things>
   </main>
 </body>
 </html>
