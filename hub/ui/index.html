@@ -61,7 +61,7 @@
     </style>
 
     <div class="thing--type-pulse">
-      <button>PULSE</button>
+      <button>Pulser</button>
     </div>
   </template>
 
@@ -86,10 +86,10 @@
 
             connectedCallback() {
                 let template = document.getElementById('template--nav');
-                let templateContent = template.content.cloneNode(true);
+                let template_content = template.content.cloneNode(true);
 
                 this.attachShadow({mode: 'open'})
-                    .appendChild(templateContent);
+                    .appendChild(template_content);
             }
 
             enter(name, onclick) {
@@ -126,10 +126,10 @@
 
             connectedCallback() {
                 let template = document.getElementById('template--things');
-                let templateContent = template.content.cloneNode(true);
+                let template_content = template.content.cloneNode(true);
 
                 this.attachShadow({mode: 'closed'})
-                    .appendChild(templateContent);
+                    .appendChild(template_content);
             }
         }
     );
@@ -146,14 +146,14 @@
 
                 connectedCallback() {
                     const template = document.getElementById('template--thing');
-                    const templateContent = template.content.cloneNode(true);
+                    const template_content = template.content.cloneNode(true);
 
-                    const thing = templateContent.querySelector('.thing');
+                    const thing = template_content.querySelector('.thing');
                     thing.setAttribute('id', 'thing-' + thing_index);
                     thing_index += 1;
 
-                    const shadowRoot = this.attachShadow({mode: 'open'})
-                        .appendChild(templateContent);
+                    const shadow_root = this.attachShadow({mode: 'open'})
+                        .appendChild(template_content);
 
                     const self = this;
 
@@ -188,12 +188,12 @@
 
             connectedCallback() {
                 const template = document.getElementById('template--thing-pulse');
-                const templateContent = template.content.cloneNode(true);
+                const template_content = template.content.cloneNode(true);
 
-                const button = templateContent.querySelector('.thing--type-pulse');
+                const button = template_content.querySelector('.thing--type-pulse');
 
-                const shadowRoot = this.attachShadow({mode: 'open'})
-                    .appendChild(templateContent);
+                const shadow_root = this.attachShadow({mode: 'open'})
+                    .appendChild(template_content);
 
                 const self = this;
                 const base = self.getAttribute('data-base').replace(/\/+$/, '');

@@ -12,6 +12,8 @@
     --color-pink-300: hsl(324, 77%, 88%);
     --color-pink-500: hsl(324, 77%, 75%);
     --color-pink-600: hsl(331, 64%, 64%);
+    --color-green-600: hsl(114, 57%, 70%);
+    --color-dark-500: hsl(0, 0%, 26%);
     --color-dark: hsl(0, 100%, 0%);
 
     --space-small: .5rem;
@@ -186,7 +188,12 @@ my-things, .things {
                     linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-600)) border-box;
     }
 
-    .thing[aria-expanded = "false"] {
+    .thing[aria-expanded = "false"] > .thing--long {
+        display: none;
+    }
+
+    .thing[aria-expanded = "true"] > .thing--summary {
+        display: none;
     }
 
         .thing[aria-expanded = "false"] > .thing--summary {
@@ -218,20 +225,16 @@ my-things, .things {
             color: var(--color-light-000);
         }
 
-        .thing[aria-expanded = "false"] > .thing--summary > .thing--name {
+        .thing--summary > .thing--name {
             grid-area: thing--name;
         }
 
-        .thing[aria-expanded = "false"] > .thing--summary > .thing--state-icon {
+        .thing--summary > .thing--state-icon {
             grid-area: thing--state-icon;
         }
 
-        .thing[aria-expanded = "false"] > .thing--summary > .thing--state-text {
+        .thing--summary > .thing--state-text {
             grid-area: thing--state-text;
-        }
-
-        .thing[aria-expanded = "false"] .thing--long {
-            display: none;
         }
 
     .thing[aria-expanded = "true"] {
@@ -251,15 +254,46 @@ my-things, .things {
         }
     }
 
-        .thing[aria-expanded = "true"] > .thing--summary {
-            display: none;
-        }
-
-        .thing[aria-expanded = "true"] > .thing--long {
+        .thing--long {
             margin: 0 auto;
             padding: var(--space-large);
             max-width: 50rem;
         }
+
+        .thing--long > .thing--name {
+            margin-block-end: var(--space-very-large);
+        }
+
+.thing--type-pulse > button {
+    appeareance: none;
+    -moz-appaerance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background: linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-500));
+    padding-inline: var(--space-very-large);
+    padding-block: var(--space-large);
+    color: var(--color-dark-500);
+    font: inherit;
+    font-weight: inherit;
+    font-weight: inherit;
+    font-weight: 600;
+    border: 0;
+    border-radius: 50%;
+    border-radius: 50%;
+    height: 10rem;
+    width: 10rem;
+    background: linear-gradient(145deg, #fff, #e6e6e6);
+    box-shadow: 22px 22px 78px #d6d6d6,
+                -22px -22px 78px #fff,
+                0 0 4px var(--color-green-600) inset,
+                0 0 12px var(--color-green-600);
+    border: 3px var(--color-green-600) solid
+}
+
+.thing--type-pulse > button:hover,
+.thing--type-pulse > button:focus {
+    border: 5px green solid;
+}
 
 h2 { font-size: 130% }
 h3 { font-size: 110% }
