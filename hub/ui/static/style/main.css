@@ -1,4 +1,5 @@
 :root {
+    --color-light-000-transparent: hsla(0, 0%, 100%, 0.96);
     --color-light-000: hsl(0, 0%, 100%);
     --color-light-100: hsl(214, 41%, 97%);
     --color-light-200: hsl(222, 25%, 92%);
@@ -16,11 +17,14 @@
     --space-small: .5rem;
     --space: 1rem;
     --space-large: 2rem;
-    --space-very-large: 3.5rem;
+    --space-very-large: 3rem;
+    --space-very-very-large: 4rem;
 
     --light-direction: 170deg;
     --shadow-distance: 14px;
     --shadow-blur: 28px;
+
+    --backdrop-blur: 40px;
 }
 
 @font-face {
@@ -58,7 +62,7 @@ body {
     grid-template: "header"
                    "main";
     grid-template-rows: auto 1fr;
-    margin: 0 auto;
+    margin: var(--space-very-very-large) auto 0 auto;
     padding-inline: var(--space-large);
     min-height: 100%;
     max-width: 50rem;
@@ -67,20 +71,43 @@ body {
     font-weight: 400;
 }
 
+    .body--frozen {
+        overflow: hidden;
+    }
+
 strong {
     font-weight: 600;
 } 
 
+.header--container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    background: var(--color-light-000-transparent);
+}
+
+    @supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)) {
+        .header--container {
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
+            background: transparent;
+        }
+    }
+
 .header {
+    width: 100%;
+    max-width: 50rem;
+    margin: 0 auto;
+
     grid-area: header;
+
+    display: grid;
+    grid-template: "header-title header-details";
 
     font-weight: 600;
     line-height: var(--space-very-large);
-
-    margin-block-end: var(--space-large);
-
-    display: grid;
-    grid-template: "header-title header-details"
 }
 
     .header--title a {
@@ -208,18 +235,18 @@ my-things, .things {
         }
 
     .thing[aria-expanded = "true"] {
-        position: absolute;
+        position: fixed;
         top: var(--space-very-large);
         right: 0;
         bottom: 0;
         left: 0;
-        pointer-events: none;
-        background: var(--color-light-000);
+        background: var(--color-light-000-transparent);
     }
 
-    @supports (backdrop-filter: blur(0)) {
+    @supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)) {
         .thing[aria-expanded = "true"] {
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
             background: transparent;
         }
     }
