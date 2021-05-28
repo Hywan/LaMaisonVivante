@@ -74,10 +74,6 @@ body {
     font-weight: 400;
 }
 
-    .body--frozen {
-        overflow: hidden;
-    }
-
 strong {
     font-weight: 600;
 } 
@@ -155,7 +151,7 @@ my-things, .things {
         gap: var(--space);
         justify-items: center;
 
-        margin-block-end: var(--space-very-large);
+        margin-block-end: var(--space-very-very-large);
         padding-block-start: var(--space-large);
     }
 
