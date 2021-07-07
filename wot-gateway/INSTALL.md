@@ -29,6 +29,10 @@ arm_64bit=1
 to boot Raspbian in 64-bit mode ([learn
 more](https://www.raspberrypi.org/forums/viewtopic.php?t=250730)).
 
+## Boot from SSH
+
+(https://yves.io/blog/2020/08/251736/_/how-to-boot-a-raspberry-pi-4-from-ssd-the-ultimate-2020-guide)
+
 ## Boot
 
 Boot the Raspberry Pi. Find its IP, and connect with:
