@@ -1,0 +1,309 @@
+:root {
+    --color-light-000-transparent: hsla(0, 0%, 100%, 0.96);
+    --color-light-000: hsl(0, 0%, 100%);
+    --color-light-100: hsl(214, 41%, 97%);
+    --color-light-200: hsl(222, 25%, 92%);
+    --color-light-300: hsl(217, 48%, 83%);
+    --color-blue-300: hsl(213, 100%, 88%);
+    --color-blue-500: hsl(213, 100%, 74%);
+    --color-yellow-000: hsl(47, 100%, 92%);
+    --color-yellow-100: hsl(47, 81%, 75%);
+    --color-yellow-500: hsl(47, 100%, 58%);
+    --color-pink-300: hsl(324, 77%, 88%);
+    --color-pink-500: hsl(324, 77%, 75%);
+    --color-pink-600: hsl(331, 64%, 64%);
+    --color-green-300: hsl(114, 57%, 70%);
+    --color-green-600: hsl(114, 57%, 48%);
+    --color-dark-500: hsl(0, 0%, 26%);
+    --color-dark: hsl(0, 100%, 0%);
+
+    --space-small: .5rem;
+    --space: 1rem;
+    --space-large: 2rem;
+    --space-very-large: 3rem;
+    --space-very-very-large: 4rem;
+
+    --light-direction: 170deg;
+    --shadow-distance: 14px;
+    --shadow-blur: 28px;
+
+    --backdrop-blur: 40px;
+}
+
+@font-face {
+    font-family: text;
+    src: url('../fonts/inter-regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: text;
+    src: url('../fonts/inter-semi-bold.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    color: var(--color-dark);
+    font-size: 100%;
+    min-height: 100%;
+    background: linear-gradient(var(--light-direction), var(--color-light-000), var(--color-light-200)) no-repeat;
+}
+
+body {
+    display: grid;
+    grid-template: "header"
+                   "main";
+    grid-template-rows: auto 1fr;
+    margin: var(--space-very-very-large) auto 0 auto;
+    padding-inline: var(--space-large);
+    min-height: 100%;
+    max-width: 50rem;
+
+    font: 1.1em/1.4em text;
+    font-weight: 400;
+}
+
+strong {
+    font-weight: 600;
+} 
+
+.header--container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    background: var(--color-light-000-transparent);
+}
+
+    @supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)) {
+        .header--container {
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
+            background: transparent;
+        }
+    }
+
+.header {
+    width: 100%;
+    max-width: 50rem;
+    margin: 0 auto;
+
+    grid-area: header;
+
+    display: grid;
+    grid-template: "header-title header-details";
+
+    font-weight: 600;
+    line-height: var(--space-very-large);
+}
+
+    .header--title a {
+        color: inherit;
+    }
+
+    .header--title {
+        grid-area: header-title;
+        font-size: 120%;
+    }
+
+        .header--title > ol {
+            list-style: none;
+        }
+
+        .header--title > ol > li:not(:last-child) {
+            display: none;
+        }
+
+        .header--title > ol > li:not(:first-child)::before {
+            content: ' ';
+            display: inline-block;
+            width: 1.4rem;
+            background: url('../icons/chevron_left.svg') 50% 50% no-repeat;
+        }
+
+    .header--details {
+        grid-area: header-details;
+        text-align: end;
+    }
+
+main {
+    grid-area: main;
+}
+
+my-things, .things {
+}
+
+    .things--list {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space);
+        justify-items: center;
+
+        margin-block-end: var(--space-very-very-large);
+        padding-block-start: var(--space-large);
+    }
+
+    @media (max-width: 768px) {
+        .things--list {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 635px) {
+        .things--list {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 375px) {
+        .things--list {
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+
+    .things--location {
+        display: block;
+        margin-block-end: var(--space-large);
+        padding: var(--space);
+        border: 4px solid transparent;
+        border-radius: var(--space);
+        box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
+                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
+        background: linear-gradient(var(--color-light-000), var(--color-light-000)) padding-box,
+                    linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-600)) border-box;
+    }
+
+    .thing[aria-expanded = "false"] > .thing--long {
+        display: none;
+    }
+
+    .thing[aria-expanded = "true"] > .thing--summary {
+        display: none;
+    }
+
+        .thing[aria-expanded = "false"] > .thing--summary {
+            display: grid;
+            grid-template: "thing--state-icon"
+                           "thing--state-text"
+                           "thing--name";
+            grid-template-rows: 1fr auto auto;
+            justify-items: center;
+            align-items: center;
+
+            width: calc(8rem - var(--space-large));
+            height: calc(8rem - var(--space-large));
+            padding: var(--space-large);
+            border-radius: var(--space-very-large);
+            background: var(--color-light-000);
+            box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
+                        calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
+
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .thing[aria-expanded = "false"]:hover > .thing--summary, .thing[aria-expanded = "false"]:focus > .thing--summary {
+            box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-300),
+                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-100);
+            background: linear-gradient(var(--light-direction), var(--color-blue-300), var(--color-pink-300)) no-repeat;
+
+            color: var(--color-light-000);
+        }
+
+        .thing--summary > .thing--name {
+            grid-area: thing--name;
+        }
+
+        .thing--summary > .thing--state-icon {
+            grid-area: thing--state-icon;
+        }
+
+        .thing--summary > .thing--state-text {
+            grid-area: thing--state-text;
+        }
+
+    .thing[aria-expanded = "true"] {
+        position: fixed;
+        top: var(--space-very-large);
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: var(--color-light-000-transparent);
+    }
+
+    @supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)) {
+        .thing[aria-expanded = "true"] {
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
+            background: transparent;
+        }
+    }
+
+        .thing--long {
+            margin: 0 auto;
+            padding: var(--space-large);
+            max-width: 50rem;
+        }
+
+        .thing--long > .thing--name {
+            margin-block-end: var(--space-very-large);
+        }
+
+.thing--type-pulse > button {
+    appeareance: none;
+    -moz-appaerance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background: linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-500));
+    padding-inline: var(--space-very-large);
+    padding-block: var(--space-large);
+    color: var(--color-dark-500);
+    font: inherit;
+    font-weight: 600;
+    border: 0;
+    border-radius: 50%;
+    height: 10rem;
+    width: 10rem;
+    background: linear-gradient(145deg, #fff, #e6e6e6);
+    box-shadow: 22px 22px 78px #d6d6d6,
+                -22px -22px 78px #fff,
+                0 0 4px var(--color-green-300) inset,
+                0 0 12px var(--color-green-300);
+    border: 3px var(--color-green-300) solid
+}
+
+.thing--type-pulse > button:hover,
+.thing--type-pulse > button:focus {
+    background: linear-gradient(145deg, #e6e6e6, #fff);
+    border-color: var(--color-green-600);
+}
+
+h2 { font-size: 130% }
+h3 { font-size: 110% }
+
+.heading, .heading--subtitle {
+    display: block;
+    line-height: 100%;
+}
+
+    h2 > .heading--subtitle {
+        font-size: 60%;
+        font-weight: normal;
+        padding-block-start: var(--space-small);
+    }
+
+a {
+    text-decoration: none;
+}
