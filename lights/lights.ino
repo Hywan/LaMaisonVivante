@@ -40,6 +40,7 @@ enum Subject: uint8_t {
   ParentBed = 10,
   ParentBathroom = 11,
   ParentBedroom = 12,
+  GreenHouse = 13,
   SUBJECT_LAST,
 };
 
@@ -93,6 +94,9 @@ static Subject LIGHTS[NUMBER_OF_LIGHTS] = {
 
   // Parents' bedroom
   CONTROLLINO_R1,
+
+  // Green house
+  CONTROLLINO_R8,
 };
 
 // Initializes the system.

@@ -106,6 +106,7 @@ where
     things.push(make_light(address, Subject::ParentBed));
     things.push(make_light(address, Subject::ParentBathroom));
     things.push(make_light(address, Subject::ParentBedroom));
+    things.push(make_light(address, Subject::GreenHouse));
 
     println!(
         "Starting the Things server (port {})…",

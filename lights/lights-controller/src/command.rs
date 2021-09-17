@@ -18,6 +18,7 @@ arg_enum! {
         ParentBed,
         ParentBathroom,
         ParentBedroom,
+        GreenHouse,
     }
 }
 
@@ -41,6 +42,7 @@ impl ToString for Subject {
             Self::ParentBed => "Lit parental",
             Self::ParentBathroom => "Salle de bain parents",
             Self::ParentBedroom => "Suite parentale",
+            Self::GreenHouse => "Serre",
         }
         .to_string()
     }
