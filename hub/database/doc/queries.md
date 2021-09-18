@@ -105,14 +105,34 @@ WHERE
   $__timeFilter("time")
 ```
 
-# Monthly View
+# Daily View
+
+## Temperatures
+
+```sql
+SELECT
+  bucket_time as time,
+  avg_extracted as "Average of extracted air",
+  avg_supplied as "Average of supplied air"
+FROM (
+  SELECT
+    time_bucket('1 day', time) as bucket_time,
+    avg(extracted_temperature) as avg_extracted,
+    avg(supplied_temperature_after_heat_recovery_exchanger) as avg_supplied
+  FROM air
+  WHERE
+    $__timeFilter("time")
+  GROUP BY bucket_time
+  ORDER BY bucket_time DESC
+) AS s
+```
 
 ## Electricity consumption per day
 
 ```sql
 SELECT
   time_bucket('1 day', s.t) as time,
-  ROUND((sum(s.i * s.p) / 3600 / 1000)::numeric, 3) as "kWh"
+  ROUND((sum(s.i * s.p) / 3600 / 1000)::numeric, 3) as "Consumption"
 FROM (
   SELECT
     time as t,
@@ -121,7 +141,8 @@ FROM (
   FROM
     electricity_consumption
   WHERE
-    house_power > 0
+    house_power > 0 AND
+    $__timeFilter("time")
   ORDER BY time DESC
 ) AS s
 GROUP BY time
@@ -133,7 +154,7 @@ ORDER BY time DESC
 ```sql
 SELECT
   time_bucket('1 day', s.t) as time,
-  ROUND((sum(s.i * s.p) / 3600 / 1000)::numeric, 3) as "kWh"
+  ROUND((sum(s.i * s.p) / 3600 / 1000)::numeric, 3) as "Production"
 FROM (
   SELECT
     time as t,
@@ -142,7 +163,8 @@ FROM (
   FROM
     electricity_production
   WHERE
-    power > 0
+    power > 0 AND
+    $__timeFilter("time")
   ORDER BY time DESC
 ) AS s
 GROUP BY time
