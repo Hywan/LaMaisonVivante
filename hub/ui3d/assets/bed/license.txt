@@ -1,0 +1,11 @@
+Model Information:
+* title:	[ FREE ] Bed
+* source:	https://sketchfab.com/3d-models/free-bed-e164f5b3233846d6b1cf2035e17856c4
+* author:	ArchViz (https://sketchfab.com/Archivz)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "[ FREE ] Bed" (https://sketchfab.com/3d-models/free-bed-e164f5b3233846d6b1cf2035e17856c4) by ArchViz (https://sketchfab.com/Archivz) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
