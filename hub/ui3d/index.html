@@ -8,6 +8,10 @@
       <a-assets>
         <a-asset-item id="bulb" src="assets/bulb/scene.gltf"></a-asset-item>
         <a-asset-item id="bed" src="assets/bed/scene.gltf"></a-asset-item>
+        <a-asset-item id="toilet" src="assets/toilet/scene.gltf"></a-asset-item>
+        <a-asset-item id="shower" src="assets/shower/scene.gltf"></a-asset-item>
+        <a-asset-item id="sink" src="assets/sink/scene.gltf"></a-asset-item>
+        <a-asset-item id="step-stool" src="assets/step-stool/scene.gltf"></a-asset-item>
       </a-assets>
       
       <a-sky color="#fbedff"></a-sky>
@@ -70,10 +74,18 @@
       <!-- ## Laundry room -->
       <a-gltf-model src="#bulb" position="7.2 3.5 -0.7" rotation="180 0 0" scale="0.05 0.05 0.05"></a-gltf-model>
 
+      <!-- Objects -->
+      <a-gltf-model src="#toilet" position="2 0 -3.05" rotation="0 0 0" scale="1 1 1"></a-gltf-model>
+      <a-gltf-model src="#toilet" position="8.3 1.8 -1.05" rotation="0 0 0" scale="1 1 1"></a-gltf-model>
+      <a-gltf-model src="#shower" position="9.8 2.6 -1.05" rotation="0 0 0" scale="1 1 1"></a-gltf-model>
+      <a-gltf-model src="#sink" position="9 2.5 -1.2" rotation="0 180 0" scale="0.0007 0.0007 0.0007"></a-gltf-model>
+      <a-gltf-model src="#step-stool" position="9 1.8 -.8" rotation="0 0 0" scale="1 1 1"></a-gltf-model>
+
       <!-- Camera -->
       <a-entity position="0 3 12" rotation="-10 -12 0">
         <a-camera></a-camera>
       </a-entity>
+
     </a-scene>
   </body>
 </html>
