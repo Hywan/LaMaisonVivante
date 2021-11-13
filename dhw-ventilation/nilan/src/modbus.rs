@@ -1,3 +1,6 @@
+/// Ventilation activity.
+pub const VENTILATION_ACTIVITY: u16 = 20100;
+
 /// Ventilation state.
 pub const VENTILATION_STATE: u16 = 21770;
 

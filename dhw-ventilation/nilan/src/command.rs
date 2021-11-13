@@ -10,7 +10,7 @@ arg_enum! {
 }
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "nilan-reader")]
+#[structopt(name = "nilan")]
 pub struct Options {
     /// Modbus address of the Nilan,
     /// e.g. `192.168.1.142:502`. This option overwrites the value

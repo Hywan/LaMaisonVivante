@@ -2,6 +2,18 @@ use crate::unit::*;
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
+pub enum VentilationActivity {
+    Off,
+    On,
+}
+
+impl Default for VentilationActivity {
+    fn default() -> Self {
+        Self::On
+    }
+}
+
+#[derive(Debug, Serialize)]
 pub enum VentilationState {
     Auto,
     Cooling,
@@ -31,6 +43,7 @@ pub struct AirTemperatures {
 
 #[derive(Debug, Serialize, Default)]
 pub struct Ventilation {
+    pub activity: VentilationActivity,
     pub state: VentilationState,
     pub air_throughput: AirThroughput,
     pub inside_air_humidity: Percent,

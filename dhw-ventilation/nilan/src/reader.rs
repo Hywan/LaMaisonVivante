@@ -10,11 +10,16 @@ fn read_ventilation(mut context: &mut sync::Context) -> Result<Ventilation> {
     context.set_slave(Slave(1));
 
     Ok(Ventilation {
+        activity: match read_holding_register(&mut context, VENTILATION_ACTIVITY)? {
+            0 => VentilationActivity::Off,
+            1 => VentilationActivity::On,
+            v => unreachable!("Unrecognized ventilation activity (`{}`)", v),
+        },
         state: match read_holding_register(&mut context, VENTILATION_STATE)? {
             0 => VentilationState::Auto,
             1 => VentilationState::Cooling,
             2 => VentilationState::Heating,
-            v @ _ => unreachable!("Unrecognized ventilation state (`{}`).", v),
+            v => unreachable!("Unrecognized ventilation state (`{}`).", v),
         },
         air_throughput: AirThroughput {
             supplied_air_fan_speed: read_holding_register(&mut context, SUPPLIED_AIR_FAN_SPEED)?

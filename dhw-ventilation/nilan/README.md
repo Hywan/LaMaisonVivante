@@ -1,4 +1,4 @@
-# Nilan Reader
+# Nilan
 
 This program aims at reading information from a [Nilan Compact P
 XL](https://en.nilan.dk/en-gb/frontpage/solutions/domestic-solutions/compact-solutions/compact-p-xl-cts700). This
@@ -49,14 +49,14 @@ clone the program, and run:
 $ cargo build --release
 ```
 
-The executable binary is located in `./target/release/nilan-reader`.
+The executable binary is located in `./target/release/nilan`.
 
 ## Usage
 
 Use `-h`/`--help` to get help:
 
 ```
-nilan-reader 0.2.0
+nilan 0.2.0
 
 USAGE:
     nilan-reader [FLAGS] [OPTIONS]
@@ -84,7 +84,7 @@ file.
 
 ### Format
 
-The `nilan-reader` tool is designed to work in multiple environments.
+The `nilan` tool is designed to work in multiple environments.
 
 #### Text
 
@@ -149,9 +149,8 @@ State {
 
 #### [JSON](https://www.json.org/json-en.html)
 
-JSON can be used in a Web environment. Example with `nilan-reader
---address <addr< --format json` (formatted with `… | python -m
-json.tool`):
+JSON can be used in a Web environment. Example with `nilan --address
+<addr< --format json` (formatted with `… | python -m json.tool`):
 
 ```json
 {
@@ -197,7 +196,7 @@ Gateway](https://iot.mozilla.org/gateway/) to interact with the Nilan
 device. Enjoy!
 
 ```sh
-$ ./target/release/nilan-reader --address 192.168.1.122:502 --into-thing --thing-port 8083
+$ ./target/release/nilan --address 192.168.1.122:502 --into-thing --thing-port 8083
 Starting the Things server (port 8083)…
 ```
 

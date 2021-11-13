@@ -2,7 +2,7 @@
 members = [
     "appliances/dishwasher/vzug-reader/",
     "blinds/blinds-controller/",
-    "dhw-ventilation/nilan-reader/",
+    "dhw-ventilation/nilan/",
     "electricity/victron-reader/",
     "hub/event-aggregator/",
     "lights/lights-controller/",
