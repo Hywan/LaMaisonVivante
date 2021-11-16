@@ -6,7 +6,7 @@ fn read_holding_register(context: &mut sync::Context, address: u16) -> Result<u1
     Ok(context.read_holding_registers(address, 1)?[0])
 }
 
-fn read_ventilation(mut context: &mut sync::Context) -> Result<Ventilation> {
+pub fn read_ventilation(mut context: &mut sync::Context) -> Result<Ventilation> {
     context.set_slave(Slave(1));
 
     Ok(Ventilation {
@@ -50,7 +50,7 @@ fn read_ventilation(mut context: &mut sync::Context) -> Result<Ventilation> {
     })
 }
 
-fn read_domestic_hot_water(mut context: &mut sync::Context) -> Result<DomesticHotWater> {
+pub fn read_domestic_hot_water(mut context: &mut sync::Context) -> Result<DomesticHotWater> {
     context.set_slave(Slave(1));
 
     Ok(DomesticHotWater {
