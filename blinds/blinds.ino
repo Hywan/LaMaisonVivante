@@ -188,7 +188,27 @@ void setup() {
 
   // Use the MAC address only, and let the DHCP server assign an IP
   // address.
-  if (Ethernet.begin(mac) == 0) {
+  uint8_t retry_threshold = 5;
+  uint8_t has_network = 0;
+
+  while (retry_threshold > 0) {
+    Serial.println(F("Trying to connect to the network"));
+
+    if (Ethernet.begin(mac) == 0) {
+      Serial.println(F("Failed to connect; will retry in 15 seconds"));
+
+      retry_threshold--;
+      delay(1000 * 15); // wait for 15 seconds.
+    } else {
+      Serial.println(F("Connected to the network successfully!"));
+
+      has_network = 1;
+      break;
+    }
+  }
+
+  // No network…
+  if (has_network == 0) {
     Serial.println(F("No IP assigned by the DHCP server"));
 
     for (;;)
