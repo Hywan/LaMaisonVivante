@@ -19,7 +19,7 @@ more](blinds/).
 
 Supplied air, extracted air, temperatures, CO<sub>2</sub>, Domestic
 Hot Water (DHW), Storage Hot Water (SHW) etc. are monitored with the
-`nilan-reader` program. [Learn more](dhw-ventilation/nilan-reader/).
+`nilan` program. [Learn more](dhw-ventilation/nilan/).
 
 ## Electricity
 
