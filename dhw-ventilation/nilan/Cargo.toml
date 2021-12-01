@@ -1,12 +1,11 @@
 [package]
 name = "nilan"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Ivan Enderlin <ivan@mnt.io>"]
 edition = "2018"
 
 [dependencies]
-# Cannot use `tokio-modbus` 0.5 because of https://github.com/slowtec/tokio-modbus/issues/100. I use a specific revision for the moment.
-tokio-modbus = { git = "https://github.com/slowtec/tokio-modbus", rev = "0421a8b99a85c80fe926ad3a0dfacc14b5b8f8a2", default-features = false, features = ["tcp", "sync"] }
+tokio-modbus = { version = "0.5.1", default-features = false, features = ["tcp", "sync"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 structopt = "0.3"

@@ -2,25 +2,25 @@ use crate::unit::*;
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
-pub enum VentilationActivity {
-    Off,
-    On,
+pub enum VentilationState {
+    Paused,
+    Running,
 }
 
-impl Default for VentilationActivity {
+impl Default for VentilationState {
     fn default() -> Self {
-        Self::On
+        Self::Running
     }
 }
 
 #[derive(Debug, Serialize)]
-pub enum VentilationState {
+pub enum VentilationMode {
     Auto,
     Cooling,
     Heating,
 }
 
-impl Default for VentilationState {
+impl Default for VentilationMode {
     fn default() -> Self {
         Self::Auto
     }
@@ -43,7 +43,7 @@ pub struct AirTemperatures {
 
 #[derive(Debug, Serialize, Default)]
 pub struct Ventilation {
-    pub activity: VentilationActivity,
+    pub mode: VentilationMode,
     pub state: VentilationState,
     pub air_throughput: AirThroughput,
     pub inside_air_humidity: Percent,
@@ -66,6 +66,7 @@ impl Default for AntiLegionellaFrequency {
 
 #[derive(Debug, Serialize, Default)]
 pub struct AntiLegionella {
+    pub started_manually: bool,
     pub frequency: AntiLegionellaFrequency,
     pub day: u16,
     pub hour: u16,

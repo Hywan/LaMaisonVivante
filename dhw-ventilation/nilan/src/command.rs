@@ -66,8 +66,12 @@ arg_enum! {
 #[derive(StructOpt, Debug)]
 #[structopt(name = "write")]
 pub struct WriteCommand {
-    /// Toggle the ventilation: turn on if disabled, or off if
-    /// enabled.
+    /// Toggle the ventilation.
     #[structopt(short = "v", long = "toggle-ventilation")]
     pub toggle_ventilation: bool,
+
+    /// Toggle boiling hot water by playing with the anti-legionna
+    /// program.
+    #[structopt(short = "w", long = "toggle-hot-water")]
+    pub toggle_hot_water: bool,
 }

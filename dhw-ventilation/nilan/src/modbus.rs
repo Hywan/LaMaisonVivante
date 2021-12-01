@@ -1,8 +1,8 @@
-/// Ventilation activity.
-pub const VENTILATION_ACTIVITY: u16 = 20100;
+/// Whether ventilation state.
+pub const VENTILATION_STATE: u16 = 20100;
 
-/// Ventilation state.
-pub const VENTILATION_STATE: u16 = 21770;
+/// Ventilation mode.
+pub const VENTILATION_MODE: u16 = 21770;
 
 /// Fan speed for supplied air.
 pub const SUPPLIED_AIR_FAN_SPEED: u16 = 21771;
@@ -35,6 +35,9 @@ pub const DISCHARGED_AIR_TEMPERATURE: u16 = 20288; // T4
 
 /// Targeted inside air temperature.
 pub const WANTED_INSIDE_AIR_TEMPERATURE: u16 = 20260;
+
+/// Start anti-legionella manually.
+pub const START_ANTI_LEGIONELLA_MANUALLY: u16 = 20480;
 
 /// Automatic anti-legionella.
 pub const AUTOMATIC_ANTI_LEGIONELLA: u16 = 20481;

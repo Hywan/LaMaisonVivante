@@ -1,6 +1,7 @@
 # Nilan
 
-This program aims at reading information from a [Nilan Compact P
+This program aims at reading or writing information from a [Nilan
+Compact P
 XL](https://en.nilan.dk/en-gb/frontpage/solutions/domestic-solutions/compact-solutions/compact-p-xl-cts700). This
 device manages the ventilation, temperatures, CO<sub>2</sub>, Domestic
 Hot Water (DHW), Storage Hot Water (SHW, i.e. hot water tank).
@@ -17,7 +18,7 @@ Hot Water (DHW), Storage Hot Water (SHW, i.e. hot water tank).
 > which gives a more pleasant indoor climate than is possible with an
 > ordinary ventilation unit without a heat pump.
 
-Data are read through [Modbus
+Data are read or written through [Modbus
 TCP](https://en.wikipedia.org/wiki/Modbus). An IP address is then
 required to reach the Nilan. The port 502 must be opened.
 
@@ -56,35 +57,73 @@ The executable binary is located in `./target/release/nilan`.
 Use `-h`/`--help` to get help:
 
 ```
-nilan 0.2.0
+nilan 0.3.0
+This command allows to read values, or write new values to a Nilan Compact P XL device
 
 USAGE:
-    nilan-reader [FLAGS] [OPTIONS]
+    nilan [FLAGS] [OPTIONS] <SUBCOMMAND>
 
 FLAGS:
     -h, --help                 Prints help information
-    -t, --into-thing           Turns this program into a Thing, i.e. a new Web of Things device
     -c, --print-config-path    Print the configuration path and exit
     -V, --version              Prints version information
 
 OPTIONS:
-    -a, --address <address>          Modbus address of the Nilan, e.g. `192.168.1.142:502`. This option overwrites the
-                                     value read from the configuration file
-    -f, --format <format>            Define the kind of outputs [default: Text]  [possible values: Text, Json]
-    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective. This option overwrites
-                                     the value read from the configuration file
+    -a, --address <address>    Modbus address of the Nilan, e.g. `192.168.1.142:502`. This option overwrites the value
+                               read from the configuration file
+
+SUBCOMMANDS:
+    help     Prints this message or the help of the given subcommand(s)
+    read     Read values from the Nilan
+    write    Write values to the Nilan
 ```
 
-Use the `--address` option to specify the address. That's the only
-thing you need to know!
+Use the `read` or `write` subcommands to do something useful. Use the
+`--address` option to specify the address.
 
 A configuration file can be used to read the value of the `--address`
 option. Use `--print-config-path` to get the path to the configuration
 file.
 
+Let's see `nilan read --help`:
+
+```
+nilan-read 0.3.0
+Read values from the Nilan
+
+USAGE:
+    nilan read [FLAGS] [OPTIONS]
+
+FLAGS:
+    -h, --help          Prints help information
+    -t, --into-thing    Turns this program into a Thing, i.e. a new Web of Things device
+    -V, --version       Prints version information
+
+OPTIONS:
+    -f, --format <format>            Define the kind of outputs [default: Text]  [possible values: Text, Json]
+    -p, --thing-port <thing-port>    Port of the Thing. Requires `--into-thing` to be effective. This option overwrites
+                                     the value read from the configuration file
+```
+
+And let's see `nilan write --help`:
+
+```
+nilan-write 0.3.0
+Write values to the Nilan
+
+USAGE:
+    nilan write [FLAGS]
+
+FLAGS:
+    -h, --help                  Prints help information
+    -w, --toggle-hot-water      Toggle boiling hot water by playing with the anti-legionna program
+    -v, --toggle-ventilation    Toggle the ventilation
+    -V, --version               Prints version information
+```
+
 ### Format
 
-The `nilan` tool is designed to work in multiple environments.
+The `nilan read` tool is designed to work in multiple environments.
 
 #### Text
 
@@ -149,7 +188,7 @@ State {
 
 #### [JSON](https://www.json.org/json-en.html)
 
-JSON can be used in a Web environment. Example with `nilan --address
+JSON can be used in a Web environment. Example with `nilan read --address
 <addr< --format json` (formatted with `… | python -m json.tool`):
 
 ```json
@@ -196,7 +235,7 @@ Gateway](https://iot.mozilla.org/gateway/) to interact with the Nilan
 device. Enjoy!
 
 ```sh
-$ ./target/release/nilan --address 192.168.1.122:502 --into-thing --thing-port 8083
+$ ./target/release/nilan read --address 192.168.1.122:502 --into-thing --thing-port 8083
 Starting the Things server (port 8083)…
 ```
 

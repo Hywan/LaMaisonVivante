@@ -1,4 +1,4 @@
-use crate::{reader, state::VentilationState};
+use crate::{reader, state::VentilationMode};
 use serde_json::{json, Value};
 use std::{
     net::SocketAddr,
@@ -310,11 +310,11 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
 
             update_property!(
                 ventilation,
-                "state",
-                match ventilation_state.state {
-                    VentilationState::Auto => "auto",
-                    VentilationState::Cooling => "cool",
-                    VentilationState::Heating => "heat",
+                "mode",
+                match ventilation_state.mode {
+                    VentilationMode::Auto => "auto",
+                    VentilationMode::Cooling => "cool",
+                    VentilationMode::Heating => "heat",
                 }
             );
             update_property!(

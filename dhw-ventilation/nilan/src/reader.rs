@@ -10,16 +10,16 @@ pub fn read_ventilation(mut context: &mut sync::Context) -> Result<Ventilation> 
     context.set_slave(Slave(1));
 
     Ok(Ventilation {
-        activity: match read_holding_register(&mut context, VENTILATION_ACTIVITY)? {
-            0 => VentilationActivity::Off,
-            1 => VentilationActivity::On,
-            v => unreachable!("Unrecognized ventilation activity (`{}`)", v),
+        mode: match read_holding_register(&mut context, VENTILATION_MODE)? {
+            0 => VentilationMode::Auto,
+            1 => VentilationMode::Cooling,
+            2 => VentilationMode::Heating,
+            v => unreachable!("Unrecognized ventilation mode (`{}`).", v),
         },
         state: match read_holding_register(&mut context, VENTILATION_STATE)? {
-            0 => VentilationState::Auto,
-            1 => VentilationState::Cooling,
-            2 => VentilationState::Heating,
-            v => unreachable!("Unrecognized ventilation state (`{}`).", v),
+            0 => VentilationState::Running,
+            1 => VentilationState::Paused,
+            v => unreachable!("Unrecognized ventilation activity (`{}`)", v),
         },
         air_throughput: AirThroughput {
             supplied_air_fan_speed: read_holding_register(&mut context, SUPPLIED_AIR_FAN_SPEED)?
@@ -55,6 +55,8 @@ pub fn read_domestic_hot_water(mut context: &mut sync::Context) -> Result<Domest
 
     Ok(DomesticHotWater {
         anti_legionella: AntiLegionella {
+            started_manually: read_holding_register(&mut context, START_ANTI_LEGIONELLA_MANUALLY)?
+                .to_bool(),
             frequency: match read_holding_register(&mut context, AUTOMATIC_ANTI_LEGIONELLA)? {
                 0 => AntiLegionellaFrequency::Off,
                 1 => AntiLegionellaFrequency::Weekly,

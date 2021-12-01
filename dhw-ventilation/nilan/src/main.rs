@@ -5,6 +5,7 @@ mod reader;
 mod state;
 mod thing;
 mod unit;
+mod writer;
 
 use crate::command::*;
 use human_panic::setup_panic;
@@ -54,20 +55,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut context =
                 client::sync::tcp::connect(command.address.unwrap_or(configuration.address))?;
 
-            let ventilation = reader::read_ventilation(&mut context)?;
+            let current_state = reader::read(&mut context)?;
 
-            use crate::{modbus::*, state::*};
+            if write_command.toggle_ventilation {
+                writer::toggle_ventilation(&mut context, &current_state)?;
+            }
 
-            if dbg!(write_command.toggle_ventilation) {
-                match dbg!(ventilation.activity) {
-                    VentilationActivity::Off => {
-                        dbg!(context.write_single_register(VENTILATION_ACTIVITY, 1)?);
-                    }
-
-                    VentilationActivity::On => {
-                        dbg!(context.write_single_register(VENTILATION_ACTIVITY, 0)?);
-                    }
-                }
+            if write_command.toggle_hot_water {
+                writer::toggle_hot_water(&mut context, &current_state)?;
             }
         }
     }

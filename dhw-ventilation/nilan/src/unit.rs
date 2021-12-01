@@ -2,6 +2,8 @@ use serde::Serialize;
 use std::{fmt, ops};
 
 pub trait Unit {
+    fn to_bool(&self) -> bool;
+
     fn to_percent(&self) -> Percent;
 
     /// Revolution per minute.
@@ -14,6 +16,10 @@ pub trait Unit {
 }
 
 impl Unit for u16 {
+    fn to_bool(&self) -> bool {
+        *self > 0
+    }
+
     fn to_percent(&self) -> Percent {
         Percent(*self as f32)
     }
