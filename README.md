@@ -44,6 +44,11 @@ The house uses rain for everything. Rain is collected inside 2 water
 tanks. The `tanks` program runs in an ESP to calculate the remaining
 water in the tanks. [Learn more](tanks/).
 
+## Services
+
+The `services/` directory contains all service definitions ready to be
+consumed by `systemctl`. [Learn more](services/).
+
 # Install
 
 To compile all Rust programs (readers or controllers), run the

@@ -85,6 +85,7 @@ Install Timescale:
   $ wget https://dl.grafana.com/oss/release/grafana_8.0.4_armhf.deb
   $ sudo dpkg -i grafana_8.0.4_armhf.deb
   $ sudo systemctl start grafana-server
+  $ sudo systemctl enable grafana-server
   ```
 
 # [Diesel](https://diesel.rs/)
