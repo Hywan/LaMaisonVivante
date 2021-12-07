@@ -1562,7 +1562,7 @@ dependencies = [
  "serde",
  "serde_json",
  "structopt",
- "tokio-modbus 0.5.1",
+ "tokio-modbus",
  "webthing",
 ]
 
@@ -2777,21 +2777,6 @@ dependencies = [
 
 [[package]]
 name = "tokio-modbus"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95e3730d425a16fb51cf7b40bc2ac35ee83c0413c0050c7abd49ef97c945ad9b"
-dependencies = [
- "byteorder",
- "bytes 0.5.6",
- "futures-util",
- "log",
- "smallvec 1.7.0",
- "tokio 0.2.25",
- "tokio-util 0.2.0",
-]
-
-[[package]]
-name = "tokio-modbus"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "80470825969ce9d91508c6862934cff7e000d981458582a181bc5a54f7bb4cb2"
@@ -2946,20 +2931,6 @@ dependencies = [
  "tokio-codec",
  "tokio-io",
  "tokio-reactor",
-]
-
-[[package]]
-name = "tokio-util"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "571da51182ec208780505a32528fc5512a8fe1443ab960b3f2f3ef093cd16930"
-dependencies = [
- "bytes 0.5.6",
- "futures-core",
- "futures-sink",
- "log",
- "pin-project-lite 0.1.12",
- "tokio 0.2.25",
 ]
 
 [[package]]
@@ -3321,7 +3292,7 @@ dependencies = [
  "serde",
  "serde_json",
  "structopt",
- "tokio-modbus 0.4.1",
+ "tokio-modbus",
  "tui",
  "webthing",
 ]
