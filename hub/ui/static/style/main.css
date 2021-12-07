@@ -261,34 +261,39 @@ my-things, .things {
             margin-block-end: var(--space-very-large);
         }
 
-.thing--type-pulse > button {
-    appeareance: none;
-    -moz-appaerance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-    background: linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-500));
-    padding-inline: var(--space-very-large);
-    padding-block: var(--space-large);
-    color: var(--color-dark-500);
-    font: inherit;
-    font-weight: 600;
-    border: 0;
-    border-radius: 50%;
-    height: 10rem;
-    width: 10rem;
-    background: linear-gradient(145deg, #fff, #e6e6e6);
-    box-shadow: 22px 22px 78px #d6d6d6,
-                -22px -22px 78px #fff,
-                0 0 4px var(--color-green-300) inset,
-                0 0 12px var(--color-green-300);
-    border: 3px var(--color-green-300) solid
+.thing--type-pulse {
+    display: flex;
+    justify-content: center;
 }
+        
+    .thing--type-pulse > button {
+        appeareance: none;
+        -moz-appaerance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        background: linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-500));
+        padding-inline: var(--space-very-large);
+        padding-block: var(--space-large);
+        color: var(--color-dark-500);
+        font: inherit;
+        font-weight: 600;
+        border: 0;
+        border-radius: 50%;
+        height: 10rem;
+        width: 10rem;
+        background: linear-gradient(145deg, #fff, #e6e6e6);
+        box-shadow: 22px 22px 78px #d6d6d6,
+                    -22px -22px 78px #fff,
+                    0 0 4px var(--color-green-300) inset,
+                    0 0 12px var(--color-green-300);
+        border: 3px var(--color-green-300) solid
+    }
 
-.thing--type-pulse > button:hover,
-.thing--type-pulse > button:focus {
-    background: linear-gradient(145deg, #e6e6e6, #fff);
-    border-color: var(--color-green-600);
-}
+    .thing--type-pulse > button:hover,
+    .thing--type-pulse > button:focus {
+        background: linear-gradient(145deg, #e6e6e6, #fff);
+        border-color: var(--color-green-600);
+    }
 
 h2 { font-size: 130% }
 h3 { font-size: 110% }

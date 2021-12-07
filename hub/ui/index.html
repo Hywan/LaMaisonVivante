@@ -29,7 +29,7 @@
     </style>
 
     <div class="things">
-      <h2 class="things--location"><span class="heading"><slot name="location">(somewhere)</slot></span><span class="heading--subtitle">(X things)</span></h2>
+      <h2 class="things--location"><span class="heading"><slot name="location">(somewhere)</slot></span></h2>
 
       <div class="things--list">
         <slot>(none)</slot>
@@ -217,8 +217,6 @@
         <span slot="root">La Maison Vivante</span>
       </my-nav>
       <span id="header--details">
-        <span id="current-time">21:03</span>
-        <span id="battery-soc">95%</span>
       </span>
     </div>
   </header>
@@ -369,6 +367,51 @@
           data-base="http://localhost:8888/11" />
       </my-thing>
     </my-things>
+
+    <my-things>
+      <span slot="location">Serre</span>
+
+      <my-thing>
+        <span slot="name">Serre</span>
+        <span slot="long-name">Serre</span>
+        <span slot="state-icon">💡</span>
+        <span slot="state-text">lumière</span>
+        <my-thing--pulse
+          slot="thing"
+          data-base="http://localhost:8888/12" />
+      </my-thing>
+    </my-things>
+
+    <!--
+    <section id="dashboards" style="background: #f4f5f5">
+      <style>
+        iframe {
+            min-width: 100%;
+            min-height: 300px;
+            border: 0;
+        }
+      </style>
+      <h2>Dashboards</h2>
+
+      <h3>Électricité</h3>
+
+      <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=6"></iframe>
+      <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=10"></iframe>
+      <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=12"></iframe>
+      <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=8"></iframe>
+      <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=26"></iframe>
+      <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=4"></iframe>
+
+      <h3>Ventilation</h3>
+
+      <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=20"></iframe>
+      <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=24"></iframe>
+
+      <h3>Eau chaude sanitaire</h3>
+
+      <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=22"></iframe>
+    </section>
+    -->
   </main>
 </body>
 </html>
