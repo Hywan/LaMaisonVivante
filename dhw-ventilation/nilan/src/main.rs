@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     match command.kind {
-        CommandKind::Read(read_command) => {
+        Some(CommandKind::Read(read_command)) => {
             if read_command.into_thing {
                 thing::run(
                     command.address.unwrap_or(configuration.address),
@@ -51,7 +51,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
 
-        CommandKind::Write(write_command) => {
+        Some(CommandKind::Write(write_command)) => {
             let mut context =
                 client::sync::tcp::connect(command.address.unwrap_or(configuration.address))?;
 
@@ -65,6 +65,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 writer::toggle_hot_water(&mut context, &current_state)?;
             }
         }
+
+        _ => panic!("Must precise a command kind (like `read` or `write`)."),
     }
 
     Ok(())

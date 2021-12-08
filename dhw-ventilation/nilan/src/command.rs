@@ -18,7 +18,7 @@ pub struct Command {
 
     /// The sub-command.
     #[structopt(subcommand)]
-    pub kind: CommandKind,
+    pub kind: Option<CommandKind>,
 }
 
 #[derive(StructOpt, Debug)]

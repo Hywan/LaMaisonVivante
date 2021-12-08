@@ -85,7 +85,7 @@ fn make_ventilation() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
     );
 
     thing.add_property(Box::new(BaseProperty::new(
-        "state".to_owned(),
+        "mode".to_owned(),
         json!(0),
         None,
         Some(
@@ -255,9 +255,9 @@ macro_rules! update_property(
             let new_value = json!($value);
 
             let property_name = $property_name.to_string();
-            let mut thing = $thing.write().unwrap();
-            let property = thing.find_property(&property_name).unwrap();
-            property.set_cached_value(new_value.clone()).unwrap();
+            let mut thing = $thing.write().expect("Cannot get a write lock on the thing.");
+            let property = thing.find_property(&property_name).expect("Cannot find the property.");
+            property.set_cached_value(new_value.clone()).expect("Cannot set the cached value");
 
             thing.property_notify(property_name, new_value);
         }
