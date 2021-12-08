@@ -1,0 +1,10 @@
+[Unit]
+Description=The Hub Event Aggregator program
+After=network.target
+
+[Service]
+ExecStart=hub-event-aggregator --addresses=127.0.0.1:8092@10 --addresses=127.0.0.1:8093@60 --database-url='postgres://postgres:raspberry@localhost/la_maison_vivante'
+Type=simple
+
+[Install]
+WantedBy=multi-user.target

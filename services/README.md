@@ -5,6 +5,13 @@ Services are files consumed by
 
 ## Install
 
+Prior to the installation of the services, all `target/release/` bins must be present in `/usr/bin/`, a symlink is fine:
+
+```sh
+$ cd target/release
+$ for i in {victron-reader,nilan,blinds-controller,lights-controller,hub-event-aggregator} ; do sudo ln -s "$(pwd)/$i" /usr/bin/$i; done
+```
+
 They must be installed in `/etc/systemd/system`.
 
 ## Run

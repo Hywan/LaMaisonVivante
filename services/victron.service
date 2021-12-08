@@ -3,7 +3,7 @@ Description=The Victron Reader program
 After=network.target
 
 [Service]
-ExecStart=/home/pi/development/LaMaisonVivante/target/release/victron-reader --address=192.168.1.117:502 --thing-port=8092 --into-thing
+ExecStart=victron-reader --address=192.168.1.117:502 --thing-port=8092 --into-thing
 Type=simple
 
 [Install]

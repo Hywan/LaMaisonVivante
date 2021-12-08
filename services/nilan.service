@@ -3,7 +3,7 @@ Description=The Nilan program
 After=network.target
 
 [Service]
-ExecStart=/home/pi/development/LaMaisonVivante/target/release/nilan --address=192.168.1.122:502 --thing-port=8093 --into-thing
+ExecStart=nilan --address=192.168.1.122:502 read --thing-port=8093 --into-thing
 Type=simple
 
 [Install]
