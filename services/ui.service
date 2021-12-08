@@ -1,0 +1,10 @@
+[Unit]
+Description=The UI of the Home Automation
+After=network.target
+
+[Service]
+ExecStart=sudo /home/pi/.cargo/bin/http -p 80 /home/pi/development/LaMaisonVivante/hub/ui
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
