@@ -65,7 +65,7 @@ body {
     grid-template: "header"
                    "main";
     grid-template-rows: auto 1fr;
-    margin: var(--space-very-very-large) auto 0 auto;
+    margin: 0 auto;
     padding-inline: var(--space-large);
     min-height: 100%;
     max-width: 50rem;
@@ -79,10 +79,9 @@ strong {
 } 
 
 .header--container {
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
+    margin-bottom: var(--space-very-large);
 
     background: var(--color-light-000-transparent);
 }
