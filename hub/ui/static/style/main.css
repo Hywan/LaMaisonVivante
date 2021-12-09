@@ -58,6 +58,9 @@ html {
     font-size: 100%;
     min-height: 100%;
     background: linear-gradient(var(--light-direction), var(--color-light-000), var(--color-light-200)) no-repeat;
+    background-size: 100vw 100vh;
+    background-attachment: fixed;
+    overflow-x: hidden;
 }
 
 body {
@@ -82,12 +85,21 @@ strong {
     position: sticky;
     top: 0;
     margin-bottom: var(--space-very-large);
+}
 
+.header--container::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: -100rem;
+    right: -100rem;
+    bottom: 0;
     background: var(--color-light-000-transparent);
 }
 
     @supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)) {
-        .header--container {
+        .header--container::before {
             backdrop-filter: blur(var(--backdrop-blur));
             -webkit-backdrop-filter: blur(var(--backdrop-blur));
             background: transparent;
@@ -126,7 +138,7 @@ strong {
         }
 
         .header--title > ol > li:not(:first-child)::before {
-            content: ' ';
+            content: '';
             display: inline-block;
             width: 1.4rem;
             background: url('../icons/chevron_left.svg') 50% 50% no-repeat;
