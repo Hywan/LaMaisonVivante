@@ -19,7 +19,7 @@
 
     --space-small: .5rem;
     --space: 1rem;
-    --space-large: 2rem;
+    --space-large: 1.5rem;
     --space-very-large: 3rem;
     --space-very-very-large: 4rem;
 
@@ -60,7 +60,6 @@ html {
     background: linear-gradient(var(--light-direction), var(--color-light-000), var(--color-light-200)) no-repeat;
     background-size: 100vw 100vh;
     background-attachment: fixed;
-    overflow-x: hidden;
 }
 
 body {
@@ -92,8 +91,8 @@ strong {
     position: absolute;
     z-index: -1;
     top: 0;
-    left: -100rem;
-    right: -100rem;
+    left: calc(-1 * var(--space-large));
+    right: calc(-1 * var(--space-large));
     bottom: 0;
     background: var(--color-light-000-transparent);
 }
@@ -178,7 +177,7 @@ my-things, .things {
         }
     }
 
-    @media (max-width: 375px) {
+    @media (max-width: 385px) {
         .things--list {
             grid-template-columns: repeat(1, 1fr);
         }
