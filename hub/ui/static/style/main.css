@@ -137,8 +137,8 @@ strong {
             display: none;
         }
 
-        .header--title > ol > li:not(:first-child)::before {
-            content: '';
+        .header--title > ol > li:not(:first-child) > a::before {
+            content: ' ';
             display: inline-block;
             width: 1.4rem;
             background: url('../icons/chevron_left.svg') 50% 50% no-repeat;
