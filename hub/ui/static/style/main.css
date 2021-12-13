@@ -239,7 +239,10 @@ my-things, .things {
 
     .thing[aria-expanded = "true"] {
         position: fixed;
-        inset: var(--space-very-large) 0 0 0;
+        top: var(--space-very-large);
+        right: 0;
+        bottom: 0;
+        left: 0;
         background: var(--color-light-000-transparent);
     }
 
@@ -255,19 +258,9 @@ my-things, .things {
             margin: 0 auto;
             padding: var(--space-large);
             max-width: 50rem;
-
-            display: flex;
-            flex-direction: column;
-            height: 100%;
         }
 
         .thing--long > .thing--name {
-            margin-block-end: var(--space-very-large);
-        }
-
-        .thing--long > .thing--thing {
-            flex: 1;
-            display: flex;
             margin-block-end: var(--space-very-large);
         }
 
@@ -302,8 +295,6 @@ button {
 .thing--type-pulse {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100%;
 }
 
     .thing--type-pulse button {
@@ -315,7 +306,6 @@ button {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: 100%;
 }
 
     .thing--type-blind button {
