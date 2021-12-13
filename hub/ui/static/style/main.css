@@ -58,8 +58,6 @@ html {
     font-size: 100%;
     min-height: 100%;
     background: linear-gradient(var(--light-direction), var(--color-light-000), var(--color-light-200)) no-repeat;
-    background-size: 100vw 100vh;
-    background-attachment: fixed;
 }
 
 body {
@@ -67,7 +65,7 @@ body {
     grid-template: "header"
                    "main";
     grid-template-rows: auto 1fr;
-    margin: 0 auto;
+    margin-inline: auto;
     padding-inline: var(--space-large);
     min-height: 100%;
     max-width: 50rem;
@@ -83,6 +81,7 @@ strong {
 .header--container {
     position: sticky;
     top: 0;
+    isolate: isolation;
     margin-bottom: var(--space-very-large);
 }
 
@@ -90,10 +89,7 @@ strong {
     content: '';
     position: absolute;
     z-index: -1;
-    top: 0;
-    left: calc(-1 * var(--space-large));
-    right: calc(-1 * var(--space-large));
-    bottom: 0;
+    inset: 0 calc(-1 * var(--space-large));
     background: var(--color-light-000-transparent);
 }
 
@@ -106,15 +102,12 @@ strong {
     }
 
 .header {
-    width: 100%;
-    max-width: 50rem;
-    margin: 0 auto;
-
     grid-area: header;
 
     display: grid;
     grid-template: "header-title header-details";
 
+    max-width: 50rem;
     font-weight: 600;
     line-height: var(--space-very-large);
 }
@@ -271,38 +264,54 @@ my-things, .things {
             margin-block-end: var(--space-very-large);
         }
 
+button {
+    appeareance: none;
+    -moz-appaerance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background: linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-500));
+    padding-inline: var(--space-very-large);
+    padding-block: var(--space-large);
+    color: var(--color-dark-500);
+    font: inherit;
+    font-weight: 600;
+    border: 0;
+    height: 10rem;
+    width: 10rem;
+    background: linear-gradient(145deg, #fff, #e6e6e6);
+    box-shadow: 22px 22px 78px #d6d6d6,
+                -22px -22px 78px #fff,
+                0 0 4px var(--color-green-300) inset,
+                0 0 12px var(--color-green-300);
+    border: 3px var(--color-green-300) solid
+}
+
+    button:hover,
+    button:focus {
+        background: linear-gradient(145deg, #e6e6e6, #fff);
+        border-color: var(--color-green-600);
+    }
+
 .thing--type-pulse {
     display: flex;
     justify-content: center;
 }
-        
-    .thing--type-pulse > button {
-        appeareance: none;
-        -moz-appaerance: none;
-        -webkit-appearance: none;
-        cursor: pointer;
-        background: linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-500));
-        padding-inline: var(--space-very-large);
-        padding-block: var(--space-large);
-        color: var(--color-dark-500);
-        font: inherit;
-        font-weight: 600;
-        border: 0;
+
+    .thing--type-pulse button {
         border-radius: 50%;
-        height: 10rem;
-        width: 10rem;
-        background: linear-gradient(145deg, #fff, #e6e6e6);
-        box-shadow: 22px 22px 78px #d6d6d6,
-                    -22px -22px 78px #fff,
-                    0 0 4px var(--color-green-300) inset,
-                    0 0 12px var(--color-green-300);
-        border: 3px var(--color-green-300) solid
     }
 
-    .thing--type-pulse > button:hover,
-    .thing--type-pulse > button:focus {
-        background: linear-gradient(145deg, #e6e6e6, #fff);
-        border-color: var(--color-green-600);
+.thing--type-blind {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+    .thing--type-blind button {
+        border-radius: 2rem;
+        height: 5rem;
+        margin-block: 2rem;
     }
 
 h2 { font-size: 130% }
@@ -325,5 +334,6 @@ a {
 
 .icon {
     width: 2.2em;
-    height: 2.2em;
+    height: 100%;
+    max-height: 2.2em;
 }

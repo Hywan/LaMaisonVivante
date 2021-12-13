@@ -64,8 +64,15 @@
     </style>
 
     <div class="thing--type-pulse">
-      <button>Pulser</button>
+      <button><svg class="icon"><use href="#icon-tap" /></svg></button>
     </div>
+
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <symbol id="icon-tap" viewBox="0 0 340 532">
+        <path d="M304 243c-8 0-15 2-22 7a36 36 0 0 0-36-36c-8 0-16 2-22 7a36 36 0 0 0-36-36c-8 0-16 2-22 7v-73a36 36 0 0 0-72 0v198c-19-36-42-46-56-49-13-2-25 1-31 7-18 22 4 50 12 60 20 25 28 49 36 72 10 29 20 60 54 91 25 22 58 34 92 34 84 0 139-73 139-187v-66a36 36 0 0 0-36-36zm22 102c0 107-48 173-125 173-31 0-60-11-83-31-31-28-40-55-50-84-8-25-17-50-38-77-23-29-15-38-13-42 6-3 12-4 18-2 12 2 40 13 60 71v1l1 1v1l2 1 2 1h4l1-1 1-1 1-1 1-2V119a22 22 0 1 1 44 0v174a7 7 0 0 0 14 0v-73a22 22 0 0 1 44 0v73a7 7 0 0 0 14 0v-43a22 22 0 0 1 44 0v58a7 7 0 1 0 14 0v-29a22 22 0 0 1 44 0z" />
+        <path d="M70 221a7 7 0 1 0 7-12 105 105 0 1 1 142-35 7 7 0 0 0 3 10c3 2 7 1 9-3a119 119 0 1 0-161 40z" />
+      </symbol>
+    </svg>
   </template>
 
   <template id="template--thing-blind">
@@ -74,10 +81,23 @@
     </style>
 
     <div class="thing--type-blind">
-      <button class="thing--type-blind__open">up</button>
-      <button class="thing--type-blind__stop">stop</button>
-      <button class="thing--type-blind__close">down</button>
+      <button class="thing--type-blind__open"><svg class="icon"><use href="#icon-up" /></svg></button>
+      <button class="thing--type-blind__stop"><svg class="icon"><use href="#icon-stop" /></svg></button>
+      <button class="thing--type-blind__close"><svg class="icon"><use href="#icon-down" /></svg></button>
     </div>
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <symbol id="icon-up" viewBox="0 0 455 258">
+        <path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="61.3" d="m228 31 196 197M228 31 31 228" />
+      </symbol>
+
+      <symbol id="icon-down" viewBox="0 0 455 258">
+        <path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="61.3" d="M228 228 31 31M228 228 424 31" />
+      </symbol>
+
+      <symbol id="icon-stop" viewBox="0 0 484 527">
+        <path d="M324 163H158c-8 0-14 6-14 14v174c0 7 6 14 14 14h166c8 0 14-7 14-14V177c0-8-6-14-14-14zm-14 174H172V191h138zm169-182c-9-28-24-47-46-60l-70-41-71-41c-15-8-30-12-47-13-20-1-38 3-53 12l-39 23L50 95a98 98 0 0 0-50 86v164a103 103 0 0 0 50 87l70 40 70 40c14 9 29 13 45 14h8c18 0 34-4 49-12l141-82c15-9 27-20 36-36 10-17 15-32 15-48V181c-1-8-2-17-5-26zm-24 194c0 11-3 21-11 34-6 11-15 20-26 26l-141 82a73 73 0 0 1-73-2l-70-40-70-41c-16-9-27-22-34-42-2-6-3-13-3-20V182c0-28 12-48 37-63l101-60 41-23c10-6 20-9 34-9h3c13 1 24 4 34 11l71 40 71 41a73 73 0 0 1 35 63v167z" />
+      </symbol>
+    </svg>
   </template>
 
   <script>
@@ -300,8 +320,8 @@
       <my-thing>
         <span slot="name">Général</span>
         <span slot="long-name">Lumières de l'espace de vie</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
-        <span slot="state-text">lumière</span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
+        <span slot="state-text">lumières</span>
         <my-thing--pulse
           slot="thing"
           data-base="http://192.168.1.128:8094/5"></my-thing--pulse>
@@ -310,7 +330,7 @@
       <my-thing>
         <span slot="name">Table</span>
         <span slot="long-name">Lumière de la table à manger</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
@@ -320,7 +340,7 @@
       <my-thing>
         <span slot="name">Îlot</span>
         <span slot="long-name">Lumière de l'îlot de cuisine</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
@@ -330,7 +350,7 @@
       <my-thing>
         <span slot="name">Cuisine</span>
         <span slot="long-name">Lumière de la niche de la cuisine</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
@@ -340,7 +360,7 @@
       <my-thing>
         <span slot="name">Canapé</span>
         <span slot="long-name">Prise commandée du canapé</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
@@ -350,8 +370,8 @@
       <my-thing>
         <span slot="name">Entrée</span>
         <span slot="long-name">Lumières du hall d'entrée</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
-        <span slot="state-text">lumière</span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
+        <span slot="state-text">lumières</span>
         <my-thing--pulse
           slot="thing"
           data-base="http://192.168.1.128:8094/4"></my-thing--pulse>
@@ -360,7 +380,7 @@
       <my-thing>
         <span slot="name">Terrasse</span>
         <span slot="long-name">Store de la grande fenêtre côté terrasse</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-blind" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-blind" /></svg></span>
         <span slot="state-text">store</span>
         <my-thing--blind
           slot="thing"
@@ -370,7 +390,7 @@
       <my-thing>
         <span slot="name">Cuisine</span>
         <span slot="long-name">Store de la cuisine</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-blind" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-blind" /></svg></span>
         <span slot="state-text">store</span>
         <my-thing--blind
           slot="thing"
@@ -384,7 +404,7 @@
       <my-thing>
         <span slot="name">S. de Bain</span>
         <span slot="long-name">Lumière de la salle de bain des enfants</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
@@ -394,11 +414,21 @@
       <my-thing>
         <span slot="name">Buanderie</span>
         <span slot="long-name">Lumière de la buanderie</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
           data-base="http://192.168.1.128:8094/0"></my-thing--pulse>
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">S. de Bain</span>
+        <span slot="long-name">Store de la salle de bain des enfants</span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-blind" /></svg></span>
+        <span slot="state-text">store</span>
+        <my-thing--blind
+          slot="thing"
+          data-base="http://192.168.1.128:8095/5"></my-thing--blind>
       </my-thing>
     </my-things>
 
@@ -408,7 +438,7 @@
       <my-thing>
         <span slot="name">Louise</span>
         <span slot="long-name">Lumière de la chambre de Louise</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
@@ -418,11 +448,31 @@
       <my-thing>
         <span slot="name">Éli</span>
         <span slot="long-name">Lumière de la chambre d'Éli</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
           data-base="http://192.168.1.128:8094/3"></my-thing--pulse>
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">Louise</span>
+        <span slot="long-name">Store de la chambre de Louise</span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-blind" /></svg></span>
+        <span slot="state-text">store</span>
+        <my-thing--blind
+          slot="thing"
+          data-base="http://192.168.1.128:8095/4"></my-thing--blind>
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">Éli</span>
+        <span slot="long-name">Store de la chambre d'Éli</span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-blind" /></svg></span>
+        <span slot="state-text">store</span>
+        <my-thing--blind
+          slot="thing"
+          data-base="http://192.168.1.128:8095/3"></my-thing--blind>
       </my-thing>
     </my-things>
 
@@ -432,7 +482,7 @@
       <my-thing>
         <span slot="name">Chambre</span>
         <span slot="long-name">Lumière de la chambre parentale</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
@@ -442,7 +492,7 @@
       <my-thing>
         <span slot="name">Lit</span>
         <span slot="long-name">Prises commandées du lit parental</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
@@ -452,11 +502,21 @@
       <my-thing>
         <span slot="name">S. de Bain</span>
         <span slot="long-name">Lumière de la salle de bain des parents</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
           data-base="http://192.168.1.128:8094/11"></my-thing--pulse>
+      </my-thing>
+
+      <my-thing>
+        <span slot="name">Chambre</span>
+        <span slot="long-name">Store de la chambre parentale</span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-blind" /></svg></span>
+        <span slot="state-text">store</span>
+        <my-thing--blind
+          slot="thing"
+          data-base="http://192.168.1.128:8095/2"></my-thing--blind>
       </my-thing>
     </my-things>
 
@@ -466,7 +526,7 @@
       <my-thing>
         <span slot="name">Serre</span>
         <span slot="long-name">Lumières de la serre</span>
-        <span slot="state-icon"><svg class="icon"><use xlink:href="#icon-bulb" /></svg></span>
+        <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
         <span slot="state-text">lumière</span>
         <my-thing--pulse
           slot="thing"
@@ -507,11 +567,11 @@
   </main>
 
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <symbol viewBox="0 0 350 560" id="icon-bulb">
-        <path d="M175 0a175 175 0 01142 277c-24 31-37 69-37 108a35 35 0 01-35 35H128a12 12 0 00-11 12l-1 81c0 13 11 24 24 24h70c13 0 23-11 23-24v-58a12 12 0 0124 0v61c0 24-22 44-47 44h-70c-25 0-47-20-47-44v-84a35 35 0 0135-35h117a12 12 0 0012-12c0-42 13-83 39-118a152 152 0 10-241 0 199 199 0 0138 106 12 12 0 01-23 0l-2-11c-4-31-16-60-35-85A175 175 0 01175 0z"/>
+    <symbol id="icon-bulb" viewBox="0 0 350 560">
+        <path d="M175 0a175 175 0 01142 277c-24 31-37 69-37 108a35 35 0 01-35 35H128a12 12 0 00-11 12l-1 81c0 13 11 24 24 24h70c13 0 23-11 23-24v-58a12 12 0 0124 0v61c0 24-22 44-47 44h-70c-25 0-47-20-47-44v-84a35 35 0 0135-35h117a12 12 0 0012-12c0-42 13-83 39-118a152 152 0 10-241 0 199 199 0 0138 106 12 12 0 01-23 0l-2-11c-4-31-16-60-35-85A175 175 0 01175 0z" />
     </symbol>
-    <symbol viewBox="0 0 504 433" id="icon-blind">
-      <path d="M49 69v351c0 3 2 5 4 6 9 5 20 7 32 7 10 0 20-2 28-5 15 7 40 7 56 0 15 7 40 7 56 0 7 3 17 5 28 5s23-2 31-7c2-1 4-3 4-6v-28h160c8 0 14-6 14-14V126c0-8-6-14-14-14H287V70h161c31 0 56-25 56-56 0-8-6-14-14-14s-14 6-14 14c0 16-12 28-28 28H56c-16 0-28-12-28-28 0-8-6-14-14-14S0 6 0 14c0 29 21 52 49 55zm224 347c-13 5-34 3-46-2h-6c-6 3-15 5-24 5s-19-2-25-5h-6c-6 3-16 5-25 5s-18-2-25-5h-6c-11 5-32 7-46 2V94a82 82 0 0050-2c15 7 40 7 56 0 15 7 40 7 56 0 8 3 18 5 28 5l21-3v322zm0-336c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm-56 0c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm-56 0c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm-56 0c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm182 179h42v105h-42zm56 105V259h92v105zm91-119h-91V140h92v105zM329 140v105h-42V140z"/>
+    <symbol id="icon-blind" viewBox="0 0 504 433">
+      <path d="M49 69v351c0 3 2 5 4 6 9 5 20 7 32 7 10 0 20-2 28-5 15 7 40 7 56 0 15 7 40 7 56 0 7 3 17 5 28 5s23-2 31-7c2-1 4-3 4-6v-28h160c8 0 14-6 14-14V126c0-8-6-14-14-14H287V70h161c31 0 56-25 56-56 0-8-6-14-14-14s-14 6-14 14c0 16-12 28-28 28H56c-16 0-28-12-28-28 0-8-6-14-14-14S0 6 0 14c0 29 21 52 49 55zm224 347c-13 5-34 3-46-2h-6c-6 3-15 5-24 5s-19-2-25-5h-6c-6 3-16 5-25 5s-18-2-25-5h-6c-11 5-32 7-46 2V94a82 82 0 0050-2c15 7 40 7 56 0 15 7 40 7 56 0 8 3 18 5 28 5l21-3v322zm0-336c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm-56 0c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm-56 0c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm-56 0c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm182 179h42v105h-42zm56 105V259h92v105zm91-119h-91V140h92v105zM329 140v105h-42V140z" />
     </symbol>
   </svg>
 </body>
