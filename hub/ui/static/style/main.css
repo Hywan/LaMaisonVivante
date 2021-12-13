@@ -322,3 +322,8 @@ h3 { font-size: 110% }
 a {
     text-decoration: none;
 }
+
+.icon {
+    width: 2.2em;
+    height: 2.2em;
+}
