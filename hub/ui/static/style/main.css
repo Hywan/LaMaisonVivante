@@ -139,6 +139,11 @@ strong {
     .header--details {
         grid-area: header-details;
         text-align: end;
+        list-style: none;
+    }
+
+    .header--details > li {
+        display: inline-block;
     }
 
 main {
