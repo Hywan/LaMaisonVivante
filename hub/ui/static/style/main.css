@@ -65,8 +65,8 @@ body {
     grid-template: "header"
                    "main";
     grid-template-rows: auto 1fr;
-    margin-inline: auto;
-    padding-inline: var(--space-large);
+    margin: 0 auto;
+    padding: 0 var(--space-large);
     min-height: 100%;
     max-width: 50rem;
 
@@ -239,7 +239,10 @@ my-things, .things {
 
     .thing[aria-expanded = "true"] {
         position: fixed;
-        inset: var(--space-very-large) 0 0 0;
+        top: var(--space-very-large);
+        right: 0;
+        bottom: 0;
+        left: 0;
         background: var(--color-light-000-transparent);
     }
 
@@ -251,22 +254,21 @@ my-things, .things {
         }
     }
 
-        .thing--long {
-            display: flex;
-            flex-direction: column;
-            margin-inline: auto;
-            max-width: 50rem;
-            padding: var(--space-large);
-            box-sizing: border-box;
-            min-height: 100%;
-        }
+    .thing--long {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        max-width: 50rem;
+        padding: var(--space-large);
+        min-height: 100%;
+    }
 
         .thing--long > .thing--name {
-            margin-block-end: var(--space-very-large);
+            margin-block-end: var(--space-large);
         }
 
         .thing--long > .thing--thing {
-            display: flex;
             flex: 1;
         }
 
@@ -276,8 +278,7 @@ button {
     -webkit-appearance: none;
     cursor: pointer;
     background: linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-500));
-    padding-inline: var(--space-very-large);
-    padding-block: var(--space-large);
+    padding: var(--space-large) var(--space-very-large);
     color: var(--color-dark-500);
     font: inherit;
     font-weight: 600;
@@ -299,14 +300,15 @@ button {
     }
 
 .thing--type {
-    height: 100%;
-    box-sizing: border-box;
     display: flex;
+    height: calc(100vh - var(--space-very-large) - var(--space-large) * 4);
+    box-sizing: border-box;
+}
+
+.thing--type-pulse {
     justify-content: center;
     align-items: center;
 }
-
-.thing--type-pulse {}
 
     .thing--type-pulse button {
         border-radius: 50%;
@@ -322,7 +324,7 @@ button {
     .thing--type-blind button {
         border-radius: 2rem;
         height: 5.5rem;
-        margin-block: 1rem;
+        margin: 1rem 0;
     }
 
 h2 { font-size: 130% }
