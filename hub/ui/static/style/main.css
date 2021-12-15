@@ -239,10 +239,7 @@ my-things, .things {
 
     .thing[aria-expanded = "true"] {
         position: fixed;
-        top: var(--space-very-large);
-        right: 0;
-        bottom: 0;
-        left: 0;
+        inset: var(--space-very-large) 0 0 0;
         background: var(--color-light-000-transparent);
     }
 
@@ -255,13 +252,22 @@ my-things, .things {
     }
 
         .thing--long {
-            margin: 0 auto;
-            padding: var(--space-large);
+            display: flex;
+            flex-direction: column;
+            margin-inline: auto;
             max-width: 50rem;
+            padding: var(--space-large);
+            box-sizing: border-box;
+            min-height: 100%;
         }
 
         .thing--long > .thing--name {
             margin-block-end: var(--space-very-large);
+        }
+
+        .thing--long > .thing--thing {
+            display: flex;
+            flex: 1;
         }
 
 button {
@@ -292,10 +298,15 @@ button {
         border-color: var(--color-green-600);
     }
 
-.thing--type-pulse {
+.thing--type {
+    height: 100%;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
+
+.thing--type-pulse {}
 
     .thing--type-pulse button {
         border-radius: 50%;

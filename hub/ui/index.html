@@ -53,7 +53,7 @@
       </div>
       <div class="thing--long">
         <h3 class="thing--name"><slot name="long-name">(unnamed)</slot></h3>
-        <slot name="thing">(component)</slot>
+        <slot name="thing" class="thing--thing">(component)</slot>
       </div>
     </div>
   </template>
@@ -63,7 +63,7 @@
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--type-pulse">
+    <div class="thing--type thing--type-pulse">
       <button><svg class="icon"><use href="#icon-tap" /></svg></button>
     </div>
 
@@ -80,7 +80,7 @@
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--type-blind">
+    <div class="thing--type thing--type-blind">
       <button class="thing--type-blind__open"><svg class="icon"><use href="#icon-up" /></svg></button>
       <button class="thing--type-blind__stop"><svg class="icon"><use href="#icon-stop" /></svg></button>
       <button class="thing--type-blind__close"><svg class="icon"><use href="#icon-down" /></svg></button>
@@ -238,7 +238,7 @@
                 const template = document.getElementById('template--thing-pulse');
                 const template_content = template.content.cloneNode(true);
 
-                const button = template_content.querySelector('.thing--type-pulse');
+                const button = template_content.querySelector('.thing--type-pulse button');
 
                 const shadow_root = this.attachShadow({mode: 'open'})
                     .appendChild(template_content);
