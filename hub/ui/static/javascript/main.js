@@ -219,5 +219,38 @@ window.addEventListener(
             },
             1000 * 20 // Every 20 seconds.
         );
+
+        // Implement tabs for the navigation.
+        new function() {
+            const all_tablists = document.querySelectorAll('[role="tablist"]');
+
+            all_tablists.forEach(
+                (tablist) => {
+                    const all_tabs = tablist.querySelectorAll('[role="tab"]');
+
+                    all_tabs.forEach(
+                        (tab) => {
+                            tab.addEventListener(
+                                'click',
+                                () => {
+                                    const is_not_selected = tab.getAttribute('aria-selected') == "false";
+
+                                    if (is_not_selected) {
+                                        all_tabs.forEach(
+                                            (tab) => {
+                                                tab.setAttribute('aria-selected', 'false');
+                                                document.getElementById(tab.getAttribute('aria-controls')).setAttribute('aria-hidden', 'true');
+                                            }
+                                        );
+                                        tab.setAttribute('aria-selected', 'true');
+                                        document.getElementById(tab.getAttribute('aria-controls')).setAttribute('aria-hidden', 'false');
+                                    }
+                                }
+                            );
+                        }
+                    );
+                }
+            );
+        };
     }
 );

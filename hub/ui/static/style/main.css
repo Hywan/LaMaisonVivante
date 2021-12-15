@@ -146,6 +146,18 @@ strong {
         display: inline-block;
     }
 
+    .header--details[role="tablist"] > [role="tab"] {
+    }
+
+    .header--details[role="tablist"] > [role="tab"][aria-selected="true"] {
+        border: orange solid;
+        border-width: 0 0 2px 0;
+    }
+
+[aria-hidden="true"] {
+    display: none;
+}
+
 main {
     grid-area: main;
 }
