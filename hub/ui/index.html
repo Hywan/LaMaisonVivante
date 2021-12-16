@@ -111,8 +111,12 @@
         <span slot="root">La Maison Vivante</span>
       </my-nav>
       <ul class="header--details" role="tablist" aria-label="View">
-        <li id="tab-of-things-panel" role="tab" aria-selected="true" aria-controls="things-panel" tabindex="0">Objets</li>
-        <li id="tab-of-metrics-panel" role="tab" aria-selected="false" aria-controls="metrics-panel" tabindex="1">Données</li>
+        <li id="tab-of-things-panel" role="tab" aria-selected="true" aria-controls="things-panel" tabindex="0">
+          <svg class="icon"><use href="#icon-home" /></svg>
+        </li>
+        <li id="tab-of-metrics-panel" role="tab" aria-selected="false" aria-controls="metrics-panel" tabindex="1">
+          <svg class="icon"><use href="#icon-graph" /></svg>
+        </li>
       </ul>
     </div>
   </header>
@@ -378,6 +382,14 @@
     </symbol>
     <symbol id="icon-blind" viewBox="0 0 504 433">
       <path fill="currentColor" d="M49 69v351c0 3 2 5 4 6 9 5 20 7 32 7 10 0 20-2 28-5 15 7 40 7 56 0 15 7 40 7 56 0 7 3 17 5 28 5s23-2 31-7c2-1 4-3 4-6v-28h160c8 0 14-6 14-14V126c0-8-6-14-14-14H287V70h161c31 0 56-25 56-56 0-8-6-14-14-14s-14 6-14 14c0 16-12 28-28 28H56c-16 0-28-12-28-28 0-8-6-14-14-14S0 6 0 14c0 29 21 52 49 55zm224 347c-13 5-34 3-46-2h-6c-6 3-15 5-24 5s-19-2-25-5h-6c-6 3-16 5-25 5s-18-2-25-5h-6c-11 5-32 7-46 2V94a82 82 0 0050-2c15 7 40 7 56 0 15 7 40 7 56 0 8 3 18 5 28 5l21-3v322zm0-336c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm-56 0c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm-56 0c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm-56 0c-6 2-13 3-21 3s-15-1-21-3V70h42v10zm182 179h42v105h-42zm56 105V259h92v105zm91-119h-91V140h92v105zM329 140v105h-42V140z" />
+    </symbol>
+
+    <symbol id="icon-graph" viewBox="0 0 482 470">
+      <path fill="currentColor" d="M241 217a72 72 0 0 0-72 71v111a72 72 0 1 0 144 0V288a72 72 0 0 0-72-71zm38 182a38 38 0 1 1-77 0V288a38 38 0 0 1 77 0zM72 101a72 72 0 0 0-72 72v226a72 72 0 1 0 144 0V173a72 72 0 0 0-72-72Zm38 298a38 38 0 0 1-76 0V173a38 38 0 0 1 76 0zM410 0a72 72 0 0 0-72 72v327a72 72 0 1 0 144 0V72a72 72 0 0 0-72-72Zm38 399a38 38 0 1 1-77 0V72a38 38 0 0 1 77 0z" />
+    </symbol>
+    <symbol id="icon-home" viewBox="0 0 500 500">
+      <path stroke="#000" stroke-width="10" d="M250 5c-19 0-38 8-52 23L7 240a9 9 0 1 0 13 12l37-42v215c0 39 32 70 70 70h245c39 0 70-31 70-70V210l38 42a9 9 0 1 0 13-12L302 28a70 70 0 0 0-52-23Zm0 17c14 0 29 6 39 18l136 151v234c0 29-23 53-53 53H127c-29 0-52-24-52-53V191L211 40c10-12 25-18 39-18z" />
+      <path stroke="#00" stroke-width="10" d="M250 110a44 44 0 0 0-9 87v50l-49 63a61 61 0 1 0-30 115 61 61 0 0 0 44-104l46-60 45 24-3 17c0 29 23 53 52 53s53-24 53-53a53 53 0 0 0-94-32l-46-25v-48a44 44 0 0 0-9-87zm0 18c15 0 26 11 26 26 0 14-11 26-26 26s-26-12-26-26c0-15 11-26 26-26zm96 140c20 0 35 15 35 35 0 19-15 35-35 35-19 0-35-16-35-35 0-20 16-35 35-35zm-184 52c25 0 44 19 44 44a44 44 0 1 1-87 0c0-25 19-44 43-44z" />
     </symbol>
   </svg>
 </body>

@@ -368,3 +368,9 @@ a {
     max-height: 2.4em;
     padding: 2px;
 }
+
+    .header .icon {
+        padding: 0;
+        height: 1.5rem;
+        width: 1.5rem;
+    }
