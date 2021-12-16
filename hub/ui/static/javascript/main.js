@@ -202,24 +202,6 @@ window.customElements.define(
 window.addEventListener(
     'DOMContentLoaded',
     () => {
-        // Updates the current time.
-        window.setTimeout(
-            new function() {
-                const current_time_element = document.getElementById('current-time');
-
-                const update = () => {
-                    const now = new Date();
-
-                    current_time_element.innerHTML = now.getHours() + ':' + now.getMinutes();
-                };
-
-                update(); // Update now.
-
-                return update;
-            },
-            1000 * 20 // Every 20 seconds.
-        );
-
         // Implement tabs for the navigation.
         new function() {
             const all_tablists = document.querySelectorAll('[role="tablist"]');
