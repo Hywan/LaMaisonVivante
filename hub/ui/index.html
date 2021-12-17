@@ -122,7 +122,7 @@
   </header>
 
   <main>
-    <div id="things-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-of-things-panel" aria-hidden="false">
+    <section id="things-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-of-things-panel" aria-hidden="false">
       <my-things>
         <span slot="location">Pièce de vie</span>
 
@@ -342,38 +342,11 @@
             data-base="http://192.168.1.128:8094/13"></my-thing--pulse>
         </my-thing>
       </my-things>
-    </div>
+    </section>
 
-    <div id="metrics-panel" role="tabpanel" tabindex="1" aria-labelledby="tab-of-metrics-panel" aria-hidden="true">
-      <section id="dashboards" style="background: #f4f5f5">
-        <style>
-          iframe {
-              min-width: 100%;
-              min-height: 300px;
-              border: 0;
-          }
-        </style>
-        <h2>Dashboards</h2>
-
-        <h3>Électricité</h3>
-
-        <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=6"></iframe>
-        <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=10"></iframe>
-        <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=12"></iframe>
-        <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=8"></iframe>
-        <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=26"></iframe>
-        <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=4"></iframe>
-
-        <h3>Ventilation</h3>
-
-        <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=20"></iframe>
-        <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=24"></iframe>
-
-        <h3>Eau chaude sanitaire</h3>
-
-        <iframe src="http://192.168.1.128:3000/d-solo/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&panelId=22"></iframe>
-      </section>
-    </div>
+    <section id="metrics-panel" role="tabpanel" tabindex="1" aria-labelledby="tab-of-metrics-panel" aria-hidden="true">
+      <iframe src="http://192.168.1.128:3000/d/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&kiosk"></iframe>
+    </section>
   </main>
 
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
