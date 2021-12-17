@@ -149,6 +149,7 @@ strong {
     }
 
     .header--details[role="tablist"] > [role="tab"] {
+        cursor: pointer;
         margin-left: var(--space);
     }
 
