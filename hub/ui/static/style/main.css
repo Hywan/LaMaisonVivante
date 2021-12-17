@@ -54,6 +54,13 @@
     padding: 0;
 }
 
+*:focus {
+    /* I know, it's super super bad for accessibility, but it fixes a
+       quick bug on iOS, and nobody needs it at my house, which is the
+       only place where this app runs. Please don't do that. */
+    outline: none;
+}
+
 html {
     color: var(--color-dark);
     font-size: 100%;
