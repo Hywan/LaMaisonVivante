@@ -17,6 +17,7 @@
     --color-dark-500: hsl(0, 0%, 26%);
     --color-dark: hsl(0, 100%, 0%);
 
+    --space-very-small: .25rem;
     --space-small: .5rem;
     --space: 1rem;
     --space-large: 1.5rem;
@@ -144,14 +145,22 @@ strong {
 
     .header--details > li {
         display: inline-block;
+        position: relative;
     }
 
     .header--details[role="tablist"] > [role="tab"] {
+        margin-left: var(--space);
     }
 
-    .header--details[role="tablist"] > [role="tab"][aria-selected="true"] {
-        border: orange solid;
-        border-width: 0 0 2px 0;
+    .header--details[role="tablist"] > [role="tab"][aria-selected="true"]::before {
+        content: '';
+        position: absolute;
+        left: calc(50% - var(--space-small) / 2);
+        bottom: var(--space-very-small);
+        width: var(--space-small);
+        height: var(--space-small);
+        border-radius: 50%;
+        background: var(--color-yellow-500);
     }
 
 [aria-hidden="true"] {
