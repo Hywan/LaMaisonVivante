@@ -29,6 +29,7 @@
     --shadow-blur: 28px;
 
     --inset-shadow-distance: 5px;
+    --inset-shadow-blur: 10px;
 
     --backdrop-blur: 40px;
 }
@@ -158,7 +159,6 @@ strong {
     }
 
     .header--details[role="tablist"] > [role="tab"] {
-        cursor: pointer;
         margin-left: var(--space);
     }
 
@@ -412,17 +412,33 @@ button {
     }
 
 .tabs {
-    list-style: none;
     text-align: center;
-    width: 50%;
-    line-height: var(--space-very-large);
-    margin: 0 auto var(--space-large) auto;
-    border-radius: 10px;
-    background: #ffffff;
-    box-shadow: inset 5px 5px 10px #e8e8e8,
-                inset -5px -5px 10px #ffffff;
 }
-
-    .tabs > li {
+    
+    .tabs > [role="tablist"] {
         display: inline-block;
+        list-style: none;
+        text-align: center;
+        margin: 0 auto var(--space-large) auto;
+        padding: var(--space-very-small);
+
+        border-radius: 14px;
+        background: var(--color-light-000);
+        box-shadow: inset var(--inset-shadow-distance) var(--inset-shadow-distance) var(--inset-shadow-blur) var(--color-light-200),
+                    inset calc(-1 * var(--inset-shadow-distance)) calc(-1 * var(--inset-shadow-distance)) var(--inset-shadow-blur) var(--color-light-000);
     }
+
+    .tabs > [role="tab"] {
+        display: inline-block;
+        padding: var(--space-very-small) var(--space);
+        border-radius: 10px;
+    }
+
+    .tabs > [role="tab"][aria-selected="true"] {
+        background: var(--color-light-000);
+        box-shadow: var(--inset-shadow-distance) var(--inset-shadow-distance) var(--inset-shadow-blur) var(--color-light-200);
+    }
+
+[role="tab"] {
+    cursor: pointer;
+}
