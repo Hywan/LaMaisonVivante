@@ -28,6 +28,8 @@
     --shadow-distance: 14px;
     --shadow-blur: 28px;
 
+    --inset-shadow-distance: 5px;
+
     --backdrop-blur: 40px;
 }
 
@@ -407,4 +409,20 @@ button {
         padding: 0;
         height: 1.5rem;
         width: 1.5rem;
+    }
+
+.tabs {
+    list-style: none;
+    text-align: center;
+    width: 50%;
+    line-height: var(--space-very-large);
+    margin: 0 auto var(--space-large) auto;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: inset 5px 5px 10px #e8e8e8,
+                inset -5px -5px 10px #ffffff;
+}
+
+    .tabs > li {
+        display: inline-block;
     }
