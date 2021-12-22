@@ -123,6 +123,31 @@ window.customElements.define(
 );
 
 window.customElements.define(
+    'my-meter-thing',
+    new function() {
+        let thing_index = 0;
+
+        return class extends HTMLElement {
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                const template = document.getElementById('template--meter-thing');
+                const template_content = template.content.cloneNode(true);
+
+                const thing = template_content.querySelector('.thing');
+                thing.setAttribute('id', 'meter-thing-' + thing_index);
+                thing_index += 1;
+
+                const shadow_root = this.attachShadow({mode: 'open'})
+                      .appendChild(template_content);
+            }
+        };
+    }
+);
+
+window.customElements.define(
     'my-thing--pulse',
     class extends HTMLElement {
         constructor() {

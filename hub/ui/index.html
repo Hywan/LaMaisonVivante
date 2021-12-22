@@ -46,7 +46,7 @@
     </style>
 
     <div id="thing-?" class="thing" aria-expanded="false">
-      <div class="thing--summary thing--expander">
+      <div class="thing--frame thing--summary thing--expander">
         <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
         <span class="thing--state-icon"><slot name="state-icon">(❓)</slot></span>
         <span class="thing--state-text"><slot name="state-text">(??)</slot></span>
@@ -55,6 +55,27 @@
         <h3 class="thing--name"><slot name="long-name">(unnamed)</slot></h3>
         <slot name="thing" class="thing--thing">(component)</slot>
       </div>
+    </div>
+  </template>
+
+  <template id="template--meter-thing">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div id="meter-thing-?" class="thing thing--frame">
+      <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
+      
+      <svg class="meter" viewBox="0 0 52 52">
+        <foreignObject x="0" y="0" width="52" height="52">
+          <div class="meter--gradient"></div>
+        </foreignObject>
+
+        <g class="meter--blend">
+          <rect x="0" y="0" width="52" height="52" />
+          <circle r="16" cx="26" cy="26" />
+        </g>
+      </svg>
     </div>
   </template>
 
@@ -67,7 +88,7 @@
       <button><svg class="icon"><use href="#icon-tap" /></svg></button>
     </div>
 
-    <svg xmlns="http://www.w3.org/2000/svg">
+    <svg>
       <symbol id="icon-tap" viewBox="0 0 340 532">
         <path stroke="#000" stroke-width="6" d="M304 243c-8 0-15 2-22 7a36 36 0 0 0-36-36c-8 0-16 2-22 7a36 36 0 0 0-36-36c-8 0-16 2-22 7v-73a36 36 0 0 0-72 0v198c-19-36-42-46-56-49-13-2-25 1-31 7-18 22 4 50 12 60 20 25 28 49 36 72 10 29 20 60 54 91 25 22 58 34 92 34 84 0 139-73 139-187v-66a36 36 0 0 0-36-36zm22 102c0 107-48 173-125 173-31 0-60-11-83-31-31-28-40-55-50-84-8-25-17-50-38-77-23-29-15-38-13-42 6-3 12-4 18-2 12 2 40 13 60 71v1l1 1v1l2 1 2 1h4l1-1 1-1 1-1 1-2V119a22 22 0 1 1 44 0v174a7 7 0 0 0 14 0v-73a22 22 0 0 1 44 0v73a7 7 0 0 0 14 0v-43a22 22 0 0 1 44 0v58a7 7 0 1 0 14 0v-29a22 22 0 0 1 44 0z" />
         <path d="M70 221a7 7 0 1 0 7-12 105 105 0 1 1 142-35 7 7 0 0 0 3 10c3 2 7 1 9-3a119 119 0 1 0-161 40z" />
@@ -85,7 +106,7 @@
       <button class="thing--type-blind__stop"><svg class="icon"><use href="#icon-stop" /></svg></button>
       <button class="thing--type-blind__close"><svg class="icon"><use href="#icon-down" /></svg></button>
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg">
+    <svg>
       <symbol id="icon-up" viewBox="0 0 555 555">
         <path stroke="#000" stroke-miterlimit="10" stroke-width="8" d="M551 277a272 272 0 0 1-274 274A272 272 0 0 1 4 277 272 272 0 0 1 277 4a272 272 0 0 1 274 273zm-525 0a252 252 0 1 0 504 0 252 252 0 0 0-504 0z" />
         <path stroke="#000" stroke-miterlimit="10" stroke-width="18" d="M154 357c0-7 1-13 5-18l88-152a36 36 0 0 1 61 0l88 152c7 11 7 24 0 35-6 12-18 18-31 18H190c-13 0-25-6-31-18-4-5-5-11-5-17zm239 0c0-5-1-10-4-14l-88-152c-5-9-13-14-23-14s-19 5-25 14l-87 152c-6 8-6 19-1 27 5 9 14 14 24 14h176c10 0 19-5 24-14 3-4 4-9 4-13z" />
@@ -100,6 +121,16 @@
         <path d="M324 163H158c-8 0-14 6-14 14v174c0 7 6 14 14 14h166c8 0 14-7 14-14V177c0-8-6-14-14-14zm-14 174H172V191h138zm169-182c-9-28-24-47-46-60l-70-41-71-41c-15-8-30-12-47-13-20-1-38 3-53 12l-39 23L50 95a98 98 0 0 0-50 86v164a103 103 0 0 0 50 87l70 40 70 40c14 9 29 13 45 14h8c18 0 34-4 49-12l141-82c15-9 27-20 36-36 10-17 15-32 15-48V181c-1-8-2-17-5-26zm-24 194c0 11-3 21-11 34-6 11-15 20-26 26l-141 82a73 73 0 0 1-73-2l-70-40-70-41c-16-9-27-22-34-42-2-6-3-13-3-20V182c0-28 12-48 37-63l101-60 41-23c10-6 20-9 34-9h3c13 1 24 4 34 11l71 40 71 41a73 73 0 0 1 35 63v167z" />
       </symbol>
     </svg>
+  </template>
+
+  <template id="template--thing-meter">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div class="thing--type thing--type-meter">
+      42%
+    </div>
   </template>
 
   <script src="static/javascript/main.js"></script>
@@ -125,6 +156,10 @@
     <section id="things-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-of-things-panel" aria-hidden="false">
       <my-things>
         <span slot="location">Pièce de vie</span>
+
+        <my-meter-thing>
+          <span slot="name">Batteries</span>
+        </my-meter-thing>
 
         <my-thing>
           <span slot="name">Général</span>
@@ -361,7 +396,7 @@
     </section>
   </main>
 
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="0" width="0">
+  <svg height="0" width="0">
     <symbol id="icon-bulb" viewBox="0 0 350 560">
         <path fill="currentColor" d="M175 0a175 175 0 01142 277c-24 31-37 69-37 108a35 35 0 01-35 35H128a12 12 0 00-11 12l-1 81c0 13 11 24 24 24h70c13 0 23-11 23-24v-58a12 12 0 0124 0v61c0 24-22 44-47 44h-70c-25 0-47-20-47-44v-84a35 35 0 0135-35h117a12 12 0 0012-12c0-42 13-83 39-118a152 152 0 10-241 0 199 199 0 0138 106 12 12 0 01-23 0l-2-11c-4-31-16-60-35-85A175 175 0 01175 0z" />
     </symbol>
