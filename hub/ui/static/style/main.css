@@ -344,7 +344,7 @@ iframe {
 }
 
 #metrics-panel > iframe {
-    height: calc(100vh - var(--space-very-large) * 3);
+    height: calc(100vh - var(--space-very-large) * 4);
     border: 4px solid transparent;
     border-radius: var(--space);
     box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
