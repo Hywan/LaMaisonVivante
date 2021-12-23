@@ -186,30 +186,12 @@ my-things, .things {
 
     .things--list {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
         gap: var(--space);
         justify-items: center;
 
         margin-block-end: var(--space-very-very-large);
         padding-block-start: var(--space-large);
-    }
-
-    @media (max-width: 768px) {
-        .things--list {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (max-width: 635px) {
-        .things--list {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (max-width: 385px) {
-        .things--list {
-            grid-template-columns: repeat(1, 1fr);
-        }
     }
 
     .things--location {
