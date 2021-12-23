@@ -70,7 +70,7 @@
 
       <svg class="thing--meter-meter meter" viewBox="0 0 42 42">
         <foreignObject x="0" y="0" width="42" height="42">
-          <div class="meter--gradient"></div>
+          <slot name="meter-gradient"><div class="meter--gradient"></div></slot>
         </foreignObject>
 
         <g class="meter--blend">
@@ -162,6 +162,7 @@
         <my-meter-thing>
           <span slot="name">Batteries</span>
           <span slot="meter-value">83%</span>
+          <div slot="meter-gradient" class="meter--gradient meter--gradient__yellow_to_green"></div>
         </my-meter-thing>
 
         <my-thing>

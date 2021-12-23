@@ -469,6 +469,14 @@ button {
         );
     }
 
+    .meter--gradient__yellow_to_green {
+        background: conic-gradient(
+            from 86deg,
+            var(--color-yellow-500) 0%,
+            var(--color-green-600) 100%
+        );
+    }
+
     .meter--blend {
         mix-blend-mode: lighten;
     }
