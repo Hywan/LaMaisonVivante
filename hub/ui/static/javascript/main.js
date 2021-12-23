@@ -1,3 +1,9 @@
+function http_get(url) {
+    return fetch(url, {
+        method: 'GET',
+        cache: 'no-cache',
+    })
+}
 function http_put(url, body) {
     return fetch(url, {
         method: 'PUT',
@@ -132,7 +138,7 @@ window.customElements.define(
                 super();
             }
 
-            connectedCallback() {
+            async connectedCallback() {
                 const template = document.getElementById('template--meter-thing');
                 const template_content = template.content.cloneNode(true);
 
@@ -140,8 +146,44 @@ window.customElements.define(
                 thing.setAttribute('id', 'meter-thing-' + thing_index);
                 thing_index += 1;
 
+                const thing_value_element = template_content.querySelector('.thing--meter-value');
+                const thing_meter_circle_element = template_content.querySelector('.thing--meter-meter > .meter--blend > circle');
+
                 const shadow_root = this.attachShadow({mode: 'open'})
                       .appendChild(template_content);
+
+                const self = this;
+                const base = self.getAttribute('data-base').replace(/\/+$/, '');
+                const base_origin = new URL(base).origin;
+                const property_name = self.getAttribute('data-property');
+
+                const property_response = await http_get(base);
+                const property_json_response = await property_response.json();
+
+                const property_description = property_json_response.properties[property_name];
+                const property_unit = property_description.unit;
+                const property_link = property_description.links[0].href;
+
+                async function update_value() {
+                    const response = await http_get(base_origin + property_link);
+                    const json_response = await response.json();
+                    const value = json_response[property_name];
+                    let formatted_value = value;
+
+                    console.log(value);
+
+                    switch (property_unit) {
+                    case 'percent':
+                        formatted_value += '%';
+                    }
+
+                    thing_value_element.innerHTML = formatted_value;
+                    thing_meter_circle_element.style.strokeDasharray = value + ' 100';
+
+                    window.setTimeout(update_value, 1000 * 30 /* in 30 secs */, false);
+                }
+
+                update_value();
             }
         };
     }

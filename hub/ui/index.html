@@ -66,7 +66,7 @@
     <div id="meter-thing-?" class="thing thing--frame thing--meter">
       <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
 
-      <div class="thing--meter-value"><slot name="meter-value">?%</slot></div>
+      <div class="thing--meter-value">?%</div>
 
       <svg class="thing--meter-meter meter" viewBox="0 0 42 42">
         <foreignObject x="0" y="0" width="42" height="42">
@@ -159,9 +159,10 @@
       <my-things>
         <span slot="location">Pièce de vie</span>
 
-        <my-meter-thing>
+        <my-meter-thing
+          data-base="http://192.168.1.128:8092/0"
+          data-property="state_of_charge">
           <span slot="name">Batteries</span>
-          <span slot="meter-value">83%</span>
           <div slot="meter-gradient" class="meter--gradient meter--gradient__yellow_to_green"></div>
         </my-meter-thing>
 
