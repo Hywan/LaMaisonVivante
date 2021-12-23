@@ -45,7 +45,7 @@
       @import "static/style/main.css";
     </style>
 
-    <div id="thing-?" class="thing" aria-expanded="false">
+    <div id="thing-?" class="thing thing--expandable" aria-expanded="false">
       <div class="thing--frame thing--summary thing--expander">
         <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
         <span class="thing--state-icon"><slot name="state-icon">(❓)</slot></span>
@@ -63,12 +63,12 @@
       @import "static/style/main.css";
     </style>
 
-    <div id="meter-thing-?" class="thing thing--frame">
-      <!--
+    <div id="meter-thing-?" class="thing thing--frame thing--meter">
       <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
-      -->
 
-      <svg class="meter" viewBox="0 0 42 42">
+      <div class="thing--meter-value"><slot name="meter-value">?%</slot></div>
+
+      <svg class="thing--meter-meter meter" viewBox="0 0 42 42">
         <foreignObject x="0" y="0" width="42" height="42">
           <div class="meter--gradient"></div>
         </foreignObject>
@@ -161,6 +161,7 @@
 
         <my-meter-thing>
           <span slot="name">Batteries</span>
+          <span slot="meter-value">83%</span>
         </my-meter-thing>
 
         <my-thing>

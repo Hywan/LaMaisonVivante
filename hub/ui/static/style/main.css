@@ -181,50 +181,49 @@ main {
     grid-area: main;
 }
 
-my-things, .things {
+.things--list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: var(--space);
+    justify-items: center;
+
+    margin-block-end: var(--space-very-very-large);
+    padding-block-start: var(--space-large);
 }
 
-    .things--list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-        gap: var(--space);
-        justify-items: center;
-
-        margin-block-end: var(--space-very-very-large);
-        padding-block-start: var(--space-large);
-    }
-
-    .things--location {
-        display: block;
-        margin-block-end: var(--space-large);
-        padding: var(--space);
-        border: 4px solid transparent;
-        border-radius: var(--space);
-        box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
-                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
-        background: linear-gradient(var(--color-light-000), var(--color-light-000)) padding-box,
-                    linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-600)) border-box;
-    }
-
-    .thing--frame {
-        width: calc(8rem - var(--space-large));
-        height: calc(8rem - var(--space-large));
-        padding: var(--space-large);
-        border-radius: var(--space-very-large);
-        box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
+.things--location {
+    display: block;
+    margin-block-end: var(--space-large);
+    padding: var(--space);
+    border: 4px solid transparent;
+    border-radius: var(--space);
+    box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
-        background: var(--color-light-000);
-    }
+    background: linear-gradient(var(--color-light-000), var(--color-light-000)) padding-box,
+                linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-600)) border-box;
+}
 
-    .thing[aria-expanded = "false"] > .thing--long {
+.thing--frame {
+    width: calc(8rem - var(--space-large));
+    height: calc(8rem - var(--space-large));
+    padding: var(--space-large);
+    border-radius: var(--space-very-large);
+    box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
+                calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
+    background: var(--color-light-000);
+}
+
+.thing--expandable {}
+
+    .thing--expandable[aria-expanded = "false"] > .thing--long {
         display: none;
     }
 
-    .thing[aria-expanded = "true"] > .thing--summary {
+    .thing--expandable[aria-expanded = "true"] > .thing--summary {
         display: none;
     }
 
-        .thing[aria-expanded = "false"] > .thing--summary {
+        .thing--expandable[aria-expanded = "false"] > .thing--summary {
             display: grid;
             grid-template: "thing--state-icon"
                            "thing--state-text"
@@ -237,7 +236,7 @@ my-things, .things {
             color: inherit;
         }
 
-        .thing[aria-expanded = "false"]:hover > .thing--summary, .thing[aria-expanded = "false"]:focus > .thing--summary {
+        .thing--expandable[aria-expanded = "false"]:hover > .thing--summary, .thing[aria-expanded = "false"]:focus > .thing--summary {
             box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-300),
                      calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-100);
             background: linear-gradient(var(--light-direction), var(--color-blue-300), var(--color-pink-300)) no-repeat;
@@ -245,19 +244,19 @@ my-things, .things {
             color: var(--color-light-000);
         }
 
-        .thing--summary > .thing--name {
+        .thing--expandable > .thing--summary > .thing--name {
             grid-area: thing--name;
         }
 
-        .thing--summary > .thing--state-icon {
+        .thing--expandable > .thing--summary > .thing--state-icon {
             grid-area: thing--state-icon;
         }
 
-        .thing--summary > .thing--state-text {
+        .thing--expandable > .thing--summary > .thing--state-text {
             grid-area: thing--state-text;
         }
 
-    .thing[aria-expanded = "true"] {
+    .thing--expandable[aria-expanded = "true"] {
         position: fixed;
         top: var(--space-very-large);
         right: 0;
@@ -267,14 +266,14 @@ my-things, .things {
     }
 
     @supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)) {
-        .thing[aria-expanded = "true"] {
+        .thing--expandable[aria-expanded = "true"] {
             backdrop-filter: blur(var(--backdrop-blur));
             -webkit-backdrop-filter: blur(var(--backdrop-blur));
             background: transparent;
         }
     }
 
-    .thing--long {
+    .thing--expandable > .thing--long {
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
@@ -284,13 +283,42 @@ my-things, .things {
         min-height: 100%;
     }
 
-        .thing--long > .thing--name {
+        .thing--expandable > .thing--long > .thing--name {
             margin-block-end: var(--space-large);
         }
 
-        .thing--long > .thing--thing {
+        .thing--expandable > .thing--long > .thing--thing {
             flex: 1;
         }
+
+.thing--meter {
+    position: relative;
+    display: grid;
+    grid-template: "thing--meter"
+                   "thing--name";
+    grid-template-rows: auto 1fr;
+    justify-items: center;
+    align-items: center;
+}
+
+    .thing--meter > .thing--name {
+        grid-area: thing--name;
+        z-index: 1;
+    }
+
+    .thing--meter > .thing--meter-meter {
+        grid-area: thing--meter;
+        margin-bottom: var(--space-small);
+    }
+
+    .thing--meter > .thing--meter-value {
+        position: absolute;
+        top: calc(50% - 2rem / 2 - var(--space-small) - .2rem);
+        left: 0;
+        right: 0;
+        height: 2rem;
+        text-align: center;
+    }
 
 .thing--type {
     display: flex;
