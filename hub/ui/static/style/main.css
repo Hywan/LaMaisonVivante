@@ -470,7 +470,9 @@ button {
 
     .meter--blend > circle {
         fill: none;
+        filter: drop-shadow(0 0 2px var(--color-light-200));
         stroke: black;
         stroke-width: 2;
+        stroke-linecap: round;
         stroke-dasharray: 90 100; /* for 90% */
     }
