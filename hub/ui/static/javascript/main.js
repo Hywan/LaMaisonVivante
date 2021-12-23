@@ -170,8 +170,6 @@ window.customElements.define(
                     const value = json_response[property_name];
                     let formatted_value = value;
 
-                    console.log(value);
-
                     switch (property_unit) {
                     case 'percent':
                         formatted_value += '%';
