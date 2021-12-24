@@ -311,13 +311,24 @@ main {
         margin-bottom: var(--space-small);
     }
 
-    .thing--meter > .thing--meter-value {
+    .thing--meter > .thing--meter-primary-value {
         position: absolute;
         top: calc(50% - 2rem / 2 - var(--space-small) - .2rem);
         left: 0;
         right: 0;
         height: 2rem;
         text-align: center;
+        font-size: 1rem;
+    }
+
+    .thing--meter > .thing--meter-secondary-value {
+        position: absolute;
+        top: calc(50% - 2rem / 2 - var(--space-small) - .2rem + 1rem);
+        left: 0;
+        right: 0;
+        height: 2rem;
+        text-align: center;
+        font-size: .7rem;
     }
 
 .thing--type {
