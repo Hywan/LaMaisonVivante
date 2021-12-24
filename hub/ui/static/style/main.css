@@ -502,5 +502,6 @@ button {
         stroke: black;
         stroke-width: 2;
         stroke-linecap: round;
-        stroke-dasharray: 90 100; /* for 90% */
+        stroke-dasharray: 10 100; /* for 90% */
+        transition: stroke-dasharray 300ms ease-in-out;
     }
