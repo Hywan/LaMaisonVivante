@@ -197,7 +197,7 @@ window.customElements.define(
                                 do_update_thing_meter_circle_element
                             );
                         },
-                        1000 * 30 /* in 30 secs */,
+                        1000 * 10 /* in 10 secs */,
                         false
                     );
                 }
