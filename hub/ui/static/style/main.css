@@ -91,6 +91,7 @@ strong {
 
 .header--container {
     position: sticky;
+    z-index: 10;
     top: 0;
     isolate: isolation;
     margin-bottom: var(--space-very-large);
