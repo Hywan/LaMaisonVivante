@@ -67,7 +67,7 @@
       <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
 
       <div class="thing--meter-primary-value">?</div>
-      <div class="thing--meter-secondary-value">?</div>
+      <div class="thing--meter-secondary-value"></div>
 
       <svg class="thing--meter-meter meter" viewBox="0 0 42 42">
         <foreignObject x="0" y="0" width="42" height="42">
@@ -168,13 +168,11 @@
           <div slot="meter-gradient" class="meter--gradient meter--gradient__yellow_to_green"></div>
         </my-meter-thing>
 
-        <!--
         <my-meter-thing
           data-base="http://192.168.1.128:8092/4"
           data-property="power">
-          <span slot="name">Solaire</span>
+          <span slot="name">Solaire PV</span>
         </my-meter-thing>
-        -->
 
         <my-thing>
           <span slot="name">Général</span>

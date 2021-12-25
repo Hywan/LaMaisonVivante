@@ -32,19 +32,31 @@ async function read_property(base, property_name) {
     const property_json_response = await property_response.json();
 
     const property_description = property_json_response.properties[property_name];
-    const property_unit = property_description.unit;
-    const property_link = property_description.links[0].href;
+    const unit = property_description.unit;
+    const link = property_description.links[0].href;
+    let min = 0;
+    let max = null;
+
+    if (property_description.minimum) {
+        min = property_description.minimum;
+    }
+
+    if (property_description.maximum) {
+        max = property_description.maximum;
+    }
 
     return {
-        link: property_link,
-        unit: property_unit,
+        link,
+        unit,
+        min,
+        max,
         value_reader: async function () {
-            const response = await http_get(base_origin + property_link);
+            const response = await http_get(base_origin + link);
             const json_response = await response.json();
             const value = json_response[property_name];
             let formatted_value = value;
 
-            switch (property_unit) {
+            switch (unit) {
             case 'percent':
                 formatted_value += '%';
                 break;
@@ -189,13 +201,26 @@ window.customElements.define(
                 const shadow_root = this.attachShadow({mode: 'open'})
                       .appendChild(template_content);
 
-                async function update_value(thing_value_element, property_value_reader, property_link, property_unit, do_update_thing_meter_circle_element) {
+                async function update_value(
+                    thing_value_element,
+                    property_value_reader,
+                    property_link,
+                    property_unit,
+                    property_min,
+                    property_max,
+                    do_update_thing_meter_circle_element
+                ) {
                     const {value, formatted_value} = await property_value_reader();
 
                     thing_value_element.innerHTML = formatted_value;
 
                     if (do_update_thing_meter_circle_element) {
-                        thing_meter_circle_element.style.strokeDasharray = value + ' 100';
+                        if (property_max != null) {
+                            const percent = (value * 100) / property_max;
+                            thing_meter_circle_element.style.strokeDasharray = percent + ' 100';
+                        } else {
+                            thing_meter_circle_element.style.strokeDasharray = '100 100';
+                        }
                     }
 
                     window.setTimeout(
@@ -205,6 +230,8 @@ window.customElements.define(
                                 property_value_reader,
                                 property_link,
                                 property_unit,
+                                property_min,
+                                property_max,
                                 do_update_thing_meter_circle_element
                             );
                         },
@@ -222,6 +249,8 @@ window.customElements.define(
                     primary_property.value_reader,
                     primary_property.link,
                     primary_property.unit,
+                    primary_property.min,
+                    primary_property.max,
                     true,
                 );
 
@@ -233,6 +262,8 @@ window.customElements.define(
                         secondary_property.value_reader,
                         secondary_property.link,
                         secondary_property.unit,
+                        secondary_property.min,
+                        secondary_property.max,
                         false,
                     );
                 }
