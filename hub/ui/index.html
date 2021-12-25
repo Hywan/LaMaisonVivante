@@ -40,6 +40,18 @@
     </div>
   </template>
 
+  <template id="template--unlocated-things">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div class="things">
+      <div class="things--list">
+        <slot>(none)</slot>
+      </div>
+    </div>
+  </template>
+
   <template id="template--thing">
     <style>
       @import "static/style/main.css";
@@ -72,6 +84,29 @@
       <svg class="thing--meter-meter meter" viewBox="0 0 42 42">
         <foreignObject x="0" y="0" width="42" height="42">
           <slot name="meter-gradient"><div class="meter--gradient"></div></slot>
+        </foreignObject>
+
+        <g class="meter--blend">
+          <rect x="0" y="0" width="42" height="42" />
+          <circle r="16" cx="21" cy="21" />
+        </g>
+      </svg>
+    </div>
+  </template>
+
+  <template id="template--temperature-thing">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div id="temperature-thing-?" class="thing thing--frame thing--meter">
+      <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
+
+      <div class="thing--meter-primary-value">?</div>
+
+      <svg class="thing--meter-meter meter" viewBox="0 0 42 42">
+        <foreignObject x="0" y="0" width="42" height="42">
+          <slot name="meter-gradient"><div class="meter--gradient meter--gradient__blue_to_red"></div></slot>
         </foreignObject>
 
         <g class="meter--blend">
@@ -157,9 +192,7 @@
 
   <main>
     <section id="things-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-of-things-panel" aria-hidden="false">
-      <my-things>
-        <span slot="location">Pièce de vie</span>
-
+      <my-unlocated-things>
         <my-meter-thing
           data-base="http://192.168.1.128:8092/0"
           data-property="state_of_charge"
@@ -174,6 +207,10 @@
           data-secondary-property="current">
           <span slot="name">Solaire PV</span>
         </my-meter-thing>
+      </my-unlocated-things>
+
+      <my-things>
+        <span slot="location">Pièce de vie</span>
 
         <my-thing>
           <span slot="name">Général</span>
@@ -258,6 +295,13 @@
 
       <my-things>
         <span slot="location">Salle de bain enfants</span>
+
+        <my-temperature-thing
+          data-base="http://192.168.1.128:8093/0"
+          data-current-value="bottom_of_the_tank"
+          data-target-value="wanted">
+          <span slot="name">Boiler</span>
+        </my-temperature-thing>
 
         <my-thing>
           <span slot="name">S. de Bain</span>
@@ -356,6 +400,13 @@
             slot="thing"
             data-base="http://192.168.1.128:8094/10"></my-thing--pulse>
         </my-thing>
+
+        <my-temperature-thing
+          data-base="http://192.168.1.128:8093/0"
+          data-current-value="bottom_of_the_tank"
+          data-target-value="wanted">
+          <span slot="name">Boiler</span>
+        </my-temperature-thing>
 
         <my-thing>
           <span slot="name">S. de Bain</span>

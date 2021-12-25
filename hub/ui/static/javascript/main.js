@@ -54,7 +54,7 @@ async function read_property(base, property_name) {
             const response = await http_get(base_origin + link);
             const json_response = await response.json();
             const value = json_response[property_name];
-            let formatted_value = value;
+            let formatted_value = Math.round((value + Number.EPSILON) * 100) / 100;
 
             switch (unit) {
             case 'percent':
@@ -67,6 +67,10 @@ async function read_property(base, property_name) {
 
             case 'ampere':
                 formatted_value += 'A';
+                break;
+
+            case 'celsius':
+                formatted_value += '°C';
                 break;
             }
 
@@ -127,6 +131,23 @@ window.customElements.define(
 
         connectedCallback() {
             let template = document.getElementById('template--things');
+            let template_content = template.content.cloneNode(true);
+
+            this.attachShadow({mode: 'closed'})
+                .appendChild(template_content);
+        }
+    }
+);
+
+window.customElements.define(
+    'my-unlocated-things',
+    class extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            let template = document.getElementById('template--unlocated-things');
             let template_content = template.content.cloneNode(true);
 
             this.attachShadow({mode: 'closed'})
@@ -209,7 +230,6 @@ window.customElements.define(
                     thing_value_element,
                     property_value_reader,
                     property_link,
-                    property_unit,
                     property_min,
                     property_max,
                     do_update_thing_meter_circle_element
@@ -233,7 +253,6 @@ window.customElements.define(
                                 thing_value_element,
                                 property_value_reader,
                                 property_link,
-                                property_unit,
                                 property_min,
                                 property_max,
                                 do_update_thing_meter_circle_element
@@ -252,7 +271,6 @@ window.customElements.define(
                     thing_primary_value_element,
                     primary_property.value_reader,
                     primary_property.link,
-                    primary_property.unit,
                     primary_property.min,
                     primary_property.max,
                     true,
@@ -265,12 +283,80 @@ window.customElements.define(
                         thing_secondary_value_element,
                         secondary_property.value_reader,
                         secondary_property.link,
-                        secondary_property.unit,
                         secondary_property.min,
                         secondary_property.max,
                         false,
                     );
                 }
+            }
+        };
+    }
+);
+
+window.customElements.define(
+    'my-temperature-thing',
+    new function() {
+        let thing_index = 0;
+
+        return class extends HTMLElement {
+            constructor() {
+                super();
+            }
+
+            async connectedCallback() {
+                const template = document.getElementById('template--temperature-thing');
+                const template_content = template.content.cloneNode(true);
+
+                const thing = template_content.querySelector('.thing');
+                thing.setAttribute('id', 'temperature-thing-' + thing_index);
+                thing_index += 1;
+
+                const thing_value_element = template_content.querySelector('.thing--meter-primary-value');
+                const thing_meter_circle_element = template_content.querySelector('.thing--meter-meter > .meter--blend > circle');
+
+                const shadow_root = this.attachShadow({mode: 'open'})
+                      .appendChild(template_content);
+
+                async function update_value(
+                    thing_value_element,
+                    property_value_reader,
+                    property_link,
+                    property_max,
+                ) {
+                    const {value, formatted_value} = await property_value_reader();
+
+                    thing_value_element.innerHTML = formatted_value;
+
+                    const percent = (value * 100) / property_max;
+                    thing_meter_circle_element.style.strokeDasharray = percent + ' 100';
+
+                    window.setTimeout(
+                        () => {
+                            update_value(
+                                thing_value_element,
+                                property_value_reader,
+                                property_link,
+                                property_max,
+                            );
+                        },
+                        1000 * 10 /* in 10 secs */,
+                        false
+                    );
+                }
+
+                const self = this;
+                const base = self.getAttribute('data-base').replace(/\/+$/, '');
+                const current_property = await read_property(base, self.getAttribute('data-current-value'));
+                const target_property = await read_property(base, self.getAttribute('data-target-value'));
+                const target_value = (await target_property.value_reader()).value;
+
+                update_value(
+                    thing_value_element,
+                    current_property.value_reader,
+                    current_property.link,
+                    target_value,
+                    true,
+                );
             }
         };
     }

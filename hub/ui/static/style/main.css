@@ -181,16 +181,6 @@ main {
     grid-area: main;
 }
 
-.things--list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-    gap: var(--space);
-    justify-items: center;
-
-    margin-block-end: var(--space-very-very-large);
-    padding-block-start: var(--space-large);
-}
-
 .things--location {
     display: block;
     margin-block-end: var(--space-large);
@@ -201,6 +191,16 @@ main {
                     calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
     background: linear-gradient(var(--color-light-000), var(--color-light-000)) padding-box,
                 linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-600)) border-box;
+}
+
+.things--list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: var(--space);
+    justify-items: center;
+
+    margin-block-end: var(--space-very-very-large);
+    padding-block-start: var(--space-large);
 }
 
 .thing--frame {
@@ -485,6 +485,14 @@ button {
             from 86deg,
             var(--color-yellow-500) 0%,
             var(--color-green-600) 100%
+        );
+    }
+
+    .meter--gradient__blue_to_red {
+        background: conic-gradient(
+            from 86deg,
+            var(--color-blue-500) 0%,
+            var(--color-pink-600) 100%
         );
     }
 
