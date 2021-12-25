@@ -64,6 +64,10 @@ async function read_property(base, property_name) {
             case 'watt':
                 formatted_value += 'W';
                 break;
+
+            case 'ampere':
+                formatted_value += 'A';
+                break;
             }
 
             return {
