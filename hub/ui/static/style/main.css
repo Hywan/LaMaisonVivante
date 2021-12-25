@@ -259,6 +259,7 @@ main {
 
     .thing--expandable[aria-expanded = "true"] {
         position: fixed;
+        z-index: 9;
         top: var(--space-very-large);
         right: 0;
         bottom: 0;
