@@ -14,6 +14,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
+  <!-- A navigation element -->
   <template id="template--nav">
     <style>
       @import "static/style/main.css";
@@ -298,7 +299,7 @@
 
         <my-temperature-thing
           data-base="http://192.168.1.128:8093/0"
-          data-current-value="bottom_of_the_tank"
+          data-current-value="top_of_the_tank"
           data-target-value="wanted">
           <span slot="name">Boiler</span>
         </my-temperature-thing>
@@ -403,7 +404,7 @@
 
         <my-temperature-thing
           data-base="http://192.168.1.128:8093/0"
-          data-current-value="bottom_of_the_tank"
+          data-current-value="top_of_the_tank"
           data-target-value="wanted">
           <span slot="name">Boiler</span>
         </my-temperature-thing>
