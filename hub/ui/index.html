@@ -105,6 +105,30 @@
     </div>
   </template>
 
+  <template id="template--solar-pv-thing">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div class="thing--frame thing--meter">
+      <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
+
+      <div class="thing--meter-primary-value">?</div>
+      <div class="thing--meter-secondary-value"></div>
+
+      <svg class="thing--meter-meter meter" viewBox="0 0 42 42">
+        <foreignObject x="0" y="0" width="42" height="42">
+          <slot name="meter-gradient"><div class="meter--gradient"></div></slot>
+        </foreignObject>
+
+        <g class="meter--blend">
+          <rect x="0" y="0" width="42" height="42" />
+          <circle r="16" cx="21" cy="21" />
+        </g>
+      </svg>
+    </div>
+  </template>
+
   <template id="template--temperature-thing">
     <style>
       @import "static/style/main.css";
@@ -216,13 +240,13 @@
         </my-thing>
 
         <my-thing>
-          <my-meter-thing
+          <my-solar-pv-thing
             slot="thing"
             data-base="http://192.168.1.128:8092/4"
             data-property="power"
             data-secondary-property="current">
             <span slot="name">Solaire PV</span>
-          </my-meter-thing>
+          </my-solar-pv-thing>
         </my-thing>
       </my-unlocated-things>
 
