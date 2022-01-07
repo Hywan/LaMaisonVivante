@@ -86,7 +86,7 @@
       @import "static/style/main.css";
     </style>
 
-    <div id="meter-thing-?" class="thing thing--frame thing--meter">
+    <div class="thing--frame thing--meter">
       <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
 
       <div class="thing--meter-primary-value">?</div>
@@ -204,20 +204,26 @@
   <main>
     <section id="things-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-of-things-panel" aria-hidden="false">
       <my-unlocated-things>
-        <my-meter-thing
-          data-base="http://192.168.1.128:8092/0"
-          data-property="state_of_charge"
-          data-secondary-property="ongoing_power">
-          <span slot="name">Batteries</span>
-          <div slot="meter-gradient" class="meter--gradient meter--gradient__yellow_to_green"></div>
-        </my-meter-thing>
+        <my-thing>
+          <my-meter-thing
+            slot="thing"
+            data-base="http://192.168.1.128:8092/0"
+            data-property="state_of_charge"
+            data-secondary-property="ongoing_power">
+            <span slot="name">Batteries</span>
+            <div slot="meter-gradient" class="meter--gradient meter--gradient__yellow_to_green"></div>
+          </my-meter-thing>
+        </my-thing>
 
-        <my-meter-thing
-          data-base="http://192.168.1.128:8092/4"
-          data-property="power"
-          data-secondary-property="current">
-          <span slot="name">Solaire PV</span>
-        </my-meter-thing>
+        <my-thing>
+          <my-meter-thing
+            slot="thing"
+            data-base="http://192.168.1.128:8092/4"
+            data-property="power"
+            data-secondary-property="current">
+            <span slot="name">Solaire PV</span>
+          </my-meter-thing>
+        </my-thing>
       </my-unlocated-things>
 
       <my-things>
