@@ -176,28 +176,47 @@ window.customElements.define(
 
                 const shadow_root = this.attachShadow({mode: 'open'})
                       .appendChild(template_content);
-
-                const self = this;
-
-                thing.querySelector('.thing--expander').addEventListener(
-                    'click',
-                    () => {
-                        const nav = document.getElementById('nav');
-                        const leaving = () => {
-                            thing.setAttribute('aria-expanded', 'false')
-                            nav.leave();
-                        };
-
-                        if (thing.getAttribute('aria-expanded') == 'false') {
-                            const thing_name = self.querySelector('span[slot="name"]').textContent;
-
-                            thing.setAttribute('aria-expanded', 'true');
-                            nav.enter('Tous les objets', leaving);
-                        }
-                    }
-                );
             }
         };
+    }
+);
+
+window.customElements.define(
+    'my-expandable-thing',
+    class extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            const template = document.getElementById('template--expandable-thing');
+            const template_content = template.content.cloneNode(true);
+            
+            const thing = template_content.querySelector('.thing--expandable');
+
+            const shadow_root = this.attachShadow({mode: 'open'})
+                  .appendChild(template_content);
+
+            const self = this;
+
+            thing.querySelector('.thing--expander').addEventListener(
+                'click',
+                () => {
+                    const nav = document.getElementById('nav');
+                    const leaving = () => {
+                        thing.setAttribute('aria-expanded', 'false')
+                        nav.leave();
+                    };
+
+                    if (thing.getAttribute('aria-expanded') == 'false') {
+                        const thing_name = self.querySelector('span[slot="name"]').textContent;
+
+                        thing.setAttribute('aria-expanded', 'true');
+                        nav.enter('Tous les objets', leaving);
+                    }
+                }
+            );
+        }
     }
 );
 
