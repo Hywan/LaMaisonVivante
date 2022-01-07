@@ -306,70 +306,62 @@ window.customElements.define(
 
 window.customElements.define(
     'my-temperature-thing',
-    new function() {
-        let thing_index = 0;
+    class extends HTMLElement {
+        constructor() {
+            super();
+        }
 
-        return class extends HTMLElement {
-            constructor() {
-                super();
-            }
+        async connectedCallback() {
+            const template = document.getElementById('template--temperature-thing');
+            const template_content = template.content.cloneNode(true);
 
-            async connectedCallback() {
-                const template = document.getElementById('template--temperature-thing');
-                const template_content = template.content.cloneNode(true);
+            const thing_value_element = template_content.querySelector('.thing--meter-primary-value');
+            const thing_meter_circle_element = template_content.querySelector('.thing--meter-meter > .meter--blend > circle');
 
-                const thing = template_content.querySelector('.thing');
-                thing.setAttribute('id', 'temperature-thing-' + thing_index);
-                thing_index += 1;
+            const shadow_root = this.attachShadow({mode: 'open'})
+                  .appendChild(template_content);
 
-                const thing_value_element = template_content.querySelector('.thing--meter-primary-value');
-                const thing_meter_circle_element = template_content.querySelector('.thing--meter-meter > .meter--blend > circle');
+            async function update_value(
+                thing_value_element,
+                property_value_reader,
+                property_link,
+                property_max,
+            ) {
+                const {value, formatted_value} = await property_value_reader();
 
-                const shadow_root = this.attachShadow({mode: 'open'})
-                      .appendChild(template_content);
+                thing_value_element.innerHTML = formatted_value;
 
-                async function update_value(
-                    thing_value_element,
-                    property_value_reader,
-                    property_link,
-                    property_max,
-                ) {
-                    const {value, formatted_value} = await property_value_reader();
+                const percent = (value * 100) / property_max;
+                thing_meter_circle_element.style.strokeDasharray = percent + ' 100';
 
-                    thing_value_element.innerHTML = formatted_value;
-
-                    const percent = (value * 100) / property_max;
-                    thing_meter_circle_element.style.strokeDasharray = percent + ' 100';
-
-                    window.setTimeout(
-                        () => {
-                            update_value(
-                                thing_value_element,
-                                property_value_reader,
-                                property_link,
-                                property_max,
-                            );
-                        },
-                        1000 * 10 /* in 10 secs */,
-                        false
-                    );
-                }
-
-                const self = this;
-                const base = self.getAttribute('data-base').replace(/\/+$/, '');
-                const current_property = await read_property(base, self.getAttribute('data-current-value'));
-                const target_property = await read_property(base, self.getAttribute('data-target-value'));
-                const target_value = (await target_property.value_reader()).value;
-
-                update_value(
-                    thing_value_element,
-                    current_property.value_reader,
-                    current_property.link,
-                    target_value,
-                    true,
+                window.setTimeout(
+                    () => {
+                        update_value(
+                            thing_value_element,
+                            property_value_reader,
+                            property_link,
+                            property_max,
+                        );
+                    },
+                    1000 * 10 /* in 10 secs */,
+                    false
                 );
             }
-        };
+
+            const self = this;
+            const base = self.getAttribute('data-base').replace(/\/+$/, '');
+            const current_property = await read_property(base, self.getAttribute('data-current-value'));
+            const target_property = await read_property(base, self.getAttribute('data-target-value'));
+            const target_value = (await target_property.value_reader()).value;
+
+            update_value(
+                thing_value_element,
+                current_property.value_reader,
+                current_property.link,
+                target_value,
+                true,
+            );
+        }
     }
 );
 

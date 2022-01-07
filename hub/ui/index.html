@@ -110,7 +110,7 @@
       @import "static/style/main.css";
     </style>
 
-    <div id="temperature-thing-?" class="thing thing--frame thing--meter">
+    <div class="thing--frame thing--meter">
       <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
 
       <div class="thing--meter-primary-value">?</div>
@@ -329,12 +329,15 @@
       <my-things>
         <span slot="location">Salle de bain enfants</span>
 
-        <my-temperature-thing
-          data-base="http://192.168.1.128:8093/0"
-          data-current-value="top_of_the_tank"
-          data-target-value="wanted">
-          <span slot="name">Boiler</span>
-        </my-temperature-thing>
+        <my-thing>
+          <my-temperature-thing
+            slot="thing"
+            data-base="http://192.168.1.128:8093/0"
+            data-current-value="top_of_the_tank"
+            data-target-value="wanted">
+            <span slot="name">Boiler</span>
+          </my-temperature-thing>
+        </my-thing>
 
         <my-thing>
           <my-expandable-thing slot="thing">
@@ -452,12 +455,15 @@
           </my-expandable-thing>
         </my-thing>
 
-        <my-temperature-thing
-          data-base="http://192.168.1.128:8093/0"
-          data-current-value="top_of_the_tank"
-          data-target-value="wanted">
-          <span slot="name">Boiler</span>
-        </my-temperature-thing>
+        <my-thing>
+          <my-temperature-thing
+            slot="thing"
+            data-base="http://192.168.1.128:8093/0"
+            data-current-value="top_of_the_tank"
+            data-target-value="wanted">
+            <span slot="name">Boiler</span>
+          </my-temperature-thing>
+        </my-thing>
 
         <my-thing>
           <my-expandable-thing slot="thing">
