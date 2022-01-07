@@ -371,6 +371,11 @@ window.customElements.define(
                     secondary_property.max,
                 );
             }
+
+            let { sunrise, sunset } = sunrise_sunset(46.78657339107215, 6.806581635522576, 2022, 1, 7);
+
+            console.log('sunrise', sunrise);
+            console.log('sunset', sunset);
         }
     }
 );
