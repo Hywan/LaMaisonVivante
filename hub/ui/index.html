@@ -110,15 +110,15 @@
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--frame thing--meter">
+    <div class="thing--frame thing--solar-pv">
       <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
 
-      <div class="thing--meter-primary-value">?</div>
-      <div class="thing--meter-secondary-value"></div>
+      <div class="thing--solar-pv-primary-value">?</div>
+      <div class="thing--solar-pv-secondary-value"></div>
 
-      <svg class="thing--meter-meter meter" viewBox="0 0 42 42">
+      <svg class="thing--solar-pv-meter meter" viewBox="0 0 42 42">
         <foreignObject x="0" y="0" width="42" height="42">
-          <slot name="meter-gradient"><div class="meter--gradient"></div></slot>
+          <div class="meter--gradient"></div>
         </foreignObject>
 
         <g class="meter--blend">

@@ -333,6 +333,46 @@ main {
         font-size: .7rem;
     }
 
+.thing--solar-pv {
+    position: relative;
+    display: grid;
+    grid-template: "thing--solar-pv"
+                   "thing--name";
+    grid-template-rows: auto 1fr;
+    justify-items: center;
+    align-items: center;
+}
+
+    .thing--solar-pv > .thing--name {
+        grid-area: thing--name;
+        z-index: 1;
+    }
+
+    .thing--solar-pv > .thing--solar-pv-solar-pv {
+        grid-area: thing--solar-pv;
+        margin-bottom: var(--space-small);
+    }
+
+    .thing--solar-pv > .thing--solar-pv-primary-value {
+        position: absolute;
+        top: calc(50% - 2rem / 2 - var(--space-small) - .2rem);
+        left: 0;
+        right: 0;
+        height: 2rem;
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    .thing--solar-pv > .thing--solar-pv-secondary-value {
+        position: absolute;
+        top: calc(50% - 2rem / 2 - var(--space-small) - .2rem + 1rem);
+        left: 0;
+        right: 0;
+        height: 2rem;
+        text-align: center;
+        font-size: .7rem;
+    }
+
 .thing--type {
     display: flex;
     height: calc(100vh - var(--space-very-large) - var(--space-large) * 4);
@@ -468,8 +508,7 @@ button {
     cursor: pointer;
 }
 
-.meter {
-}
+.meter {}
 
     .meter--gradient {
         width: 100%;

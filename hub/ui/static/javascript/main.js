@@ -315,9 +315,9 @@ window.customElements.define(
             const template = document.getElementById('template--solar-pv-thing');
             const template_content = template.content.cloneNode(true);
 
-            const thing_primary_value_element = template_content.querySelector('.thing--meter-primary-value');
-            const thing_secondary_value_element = template_content.querySelector('.thing--meter-secondary-value');
-            const thing_meter_circle_element = template_content.querySelector('.thing--meter-meter > .meter--blend > circle');
+            const thing_primary_value_element = template_content.querySelector('.thing--solar-pv-primary-value');
+            const thing_secondary_value_element = template_content.querySelector('.thing--solar-pv-secondary-value');
+            const thing_meter_circle_element = template_content.querySelector('.thing--solar-pv-meter > .meter--blend > circle');
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
