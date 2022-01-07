@@ -1,3 +1,6 @@
+const HOME_LATITUDE = 46.78657339107215;
+const HOME_LONGITUDE = 6.806581635522576;
+
 function http_get(url) {
     return fetch(url, {
         method: 'GET',
@@ -316,8 +319,9 @@ window.customElements.define(
             const template_content = template.content.cloneNode(true);
 
             const thing_primary_value_element = template_content.querySelector('.thing--solar-pv-primary-value');
-            const thing_secondary_value_element = template_content.querySelector('.thing--solar-pv-secondary-value');
             const thing_meter_circle_element = template_content.querySelector('.thing--solar-pv-meter > .meter--blend > circle');
+            const thing_sunrise_element = template_content.querySelector('.thing--solar-pv-sunrise');
+            const thing_sunset_element = template_content.querySelector('.thing--solar-pv-sunset');
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
@@ -360,22 +364,25 @@ window.customElements.define(
                 primary_property.max,
             );
 
-            if (self.hasAttribute('data-secondary-property')) {
-                const secondary_property = await read_property(base, self.getAttribute('data-secondary-property'));
+            let now = new Date();
+            let { sunrise, sunset } = sunrise_sunset(
+                HOME_LATITUDE,
+                HOME_LONGITUDE,
+                now.getFullYear(),
+                now.getMonth() + 1,
+                now.getDate()
+            );
 
-                update_value(
-                    thing_secondary_value_element,
-                    secondary_property.value_reader,
-                    secondary_property.link,
-                    secondary_property.min,
-                    secondary_property.max,
-                );
+            function format_minutes(minutes) {
+                if (minutes < 10) {
+                    return "0" + minutes;
+                }
+
+                return minutes;
             }
 
-            let { sunrise, sunset } = sunrise_sunset(46.78657339107215, 6.806581635522576, 2022, 1, 7);
-
-            console.log('sunrise', sunrise);
-            console.log('sunset', sunset);
+            thing_sunrise_element.innerHTML = sunrise.getHours() + ":" + format_minutes(sunrise.getMinutes());
+            thing_sunset_element.innerHTML = sunset.getHours() + ":" + format_minutes(sunset.getMinutes());
         }
     }
 );

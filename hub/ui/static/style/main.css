@@ -328,7 +328,7 @@ main {
         top: calc(50% - 2rem / 2 - var(--space-small) - .2rem + 1rem);
         left: 0;
         right: 0;
-        height: 2rem;
+        height: 1.5rem;
         text-align: center;
         font-size: .7rem;
     }
@@ -358,19 +358,30 @@ main {
         top: calc(50% - 2rem / 2 - var(--space-small) - .2rem);
         left: 0;
         right: 0;
-        height: 2rem;
+        height: 1.5rem;
         text-align: center;
         font-size: 1rem;
     }
 
-    .thing--solar-pv > .thing--solar-pv-secondary-value {
+    .thing--solar-pv > .thing--solar-pv-sunrise,
+    .thing--solar-pv > .thing--solar-pv-sunset {
         position: absolute;
         top: calc(50% - 2rem / 2 - var(--space-small) - .2rem + 1rem);
-        left: 0;
-        right: 0;
-        height: 2rem;
+        height: 1.5rem;
+
+        --solar-pv-sunrise-sunset-width: 2rem;
+        width: var(--solar-pv-sunrise-sunset-width);
+
         text-align: center;
         font-size: .7rem;
+    }
+
+    .thing--solar-pv > .thing--solar-pv-sunrise {
+        left: calc(2.2rem - var(--solar-pv-sunrise-sunset-width) / 2);
+    }
+
+    .thing--solar-pv > .thing--solar-pv-sunset {
+        right: calc(2.2rem - var(--solar-pv-sunrise-sunset-width) / 2);
     }
 
     .thing--solar-pv > .meter > .meter--blend > circle {
