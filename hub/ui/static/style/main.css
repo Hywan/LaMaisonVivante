@@ -373,6 +373,12 @@ main {
         font-size: .7rem;
     }
 
+    .thing--solar-pv > .meter > .meter--blend > circle {
+        transform: rotate(180deg);
+        transform-origin: 50% 50%;
+        stroke-dasharray: 50 100;
+    }
+
 .thing--type {
     display: flex;
     height: calc(100vh - var(--space-very-large) - var(--space-large) * 4);
