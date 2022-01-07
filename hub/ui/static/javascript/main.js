@@ -322,6 +322,7 @@ window.customElements.define(
             const thing_meter_circle_element = template_content.querySelector('.thing--solar-pv-meter > .meter--blend > circle');
             const thing_sunrise_element = template_content.querySelector('.thing--solar-pv-sunrise');
             const thing_sunset_element = template_content.querySelector('.thing--solar-pv-sunset');
+            const thing_sun_element = template_content.querySelector('.thing--solar-pv-sun');
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
@@ -364,25 +365,47 @@ window.customElements.define(
                 primary_property.max,
             );
 
-            let now = new Date();
-            let { sunrise, sunset } = sunrise_sunset(
-                HOME_LATITUDE,
-                HOME_LONGITUDE,
-                now.getFullYear(),
-                now.getMonth() + 1,
-                now.getDate()
-            );
+            function update_sunrise_sunset() {
+                let now = new Date();
+                let { sunrise, sunset } = sunrise_sunset(
+                    HOME_LATITUDE,
+                    HOME_LONGITUDE,
+                    now.getFullYear(),
+                    now.getMonth() + 1,
+                    now.getDate()
+                );
 
-            function format_minutes(minutes) {
-                if (minutes < 10) {
-                    return "0" + minutes;
+                function format_minutes(minutes) {
+                    if (minutes < 10) {
+                        return "0" + minutes;
+                    }
+
+                    return minutes;
                 }
 
-                return minutes;
+                thing_sunrise_element.innerHTML = sunrise.getHours() + ":" + format_minutes(sunrise.getMinutes());
+                thing_sunset_element.innerHTML = sunset.getHours() + ":" + format_minutes(sunset.getMinutes());
+
+                let now_in_minutes = now.getHours() * 60 + now.getMinutes();
+                const min_sun = sunrise.getHours() * 60 + sunrise.getMinutes();
+                const max_sun = sunset.getHours() * 60 + sunset.getMinutes();
+                const min_circle = 50;
+                const max_circle = 100;
+
+                const pos = ((now_in_minutes - min_sun) / (max_sun - min_sun)) * (max_circle - min_circle) + min_circle;
+
+                const pos_point = thing_meter_circle_element.getPointAtLength(pos);
+                thing_sun_element.setAttributeNS(null, "cx", pos_point.x);
+                thing_sun_element.setAttributeNS(null, "cy", pos_point.y);
+
+                window.setTimeout(
+                    () => update_sunrise_sunset,
+                    1000 * 60 /* in 60 secs */,
+                    false,
+                );
             }
 
-            thing_sunrise_element.innerHTML = sunrise.getHours() + ":" + format_minutes(sunrise.getMinutes());
-            thing_sunset_element.innerHTML = sunset.getHours() + ":" + format_minutes(sunset.getMinutes());
+            update_sunrise_sunset();
         }
     }
 );
