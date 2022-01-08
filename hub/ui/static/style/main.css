@@ -384,7 +384,16 @@ main {
         right: calc(2.2rem - var(--solar-pv-sunrise-sunset-width) / 2);
     }
 
-    .thing--solar-pv > .meter > .meter--blend > circle {
+    .thing--solar-pv > .thing--solar-pv-meter .meter--gradient {
+        background: conic-gradient(
+            from 160deg,
+            var(--color-blue-500) 15%,
+            var(--color-yellow-100),
+            var(--color-pink-600) 95%
+        );
+    }
+
+    .thing--solar-pv > .meter > .meter--blend > .meter--meter {
         transform: rotate(180deg);
         transform-origin: 50% 50%;
         stroke-dasharray: 50 100;
@@ -559,10 +568,10 @@ button {
     }
 
     .meter--blend > rect {
-        fill: white;
+        fill: #fff;
     }
 
-    .meter--blend > circle {
+    .meter--blend > .meter--meter {
         fill: none;
         filter: drop-shadow(0 0 2px var(--color-light-200));
         stroke: black;

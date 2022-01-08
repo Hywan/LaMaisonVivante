@@ -29,6 +29,14 @@ function http_post(url, body) {
     })
 }
 
+function number_to_2_chars(number) {
+    if (number < 10) {
+        return "0" + number;
+    }
+
+    return number;
+}
+
 async function read_property(base, property_name) {
     const base_origin = new URL(base).origin;
     const property_response = await http_get(base);
@@ -375,16 +383,8 @@ window.customElements.define(
                     now.getDate()
                 );
 
-                function format_minutes(minutes) {
-                    if (minutes < 10) {
-                        return "0" + minutes;
-                    }
-
-                    return minutes;
-                }
-
-                thing_sunrise_element.innerHTML = sunrise.getHours() + ":" + format_minutes(sunrise.getMinutes());
-                thing_sunset_element.innerHTML = sunset.getHours() + ":" + format_minutes(sunset.getMinutes());
+                thing_sunrise_element.innerHTML = sunrise.getHours() + ":" + number_to_2_chars(sunrise.getMinutes());
+                thing_sunset_element.innerHTML = sunset.getHours() + ":" + number_to_2_chars(sunset.getMinutes());
 
                 let now_in_minutes = now.getHours() * 60 + now.getMinutes();
                 const min_sun = sunrise.getHours() * 60 + sunrise.getMinutes();
