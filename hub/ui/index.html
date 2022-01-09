@@ -92,14 +92,16 @@
       <div class="thing--meter-primary-value">?</div>
       <div class="thing--meter-secondary-value"></div>
 
-      <svg class="thing--meter-meter meter" viewBox="0 0 42 42">
-        <foreignObject x="0" y="0" width="42" height="42">
-          <slot name="meter-gradient"><div class="meter--gradient"></div></slot>
-        </foreignObject>
+      <svg class="thing--meter-meter" viewBox="0 0 42 42">
+        <g class="blender">
+          <foreignObject x="0" y="0" width="42" height="42">
+            <slot name="meter-gradient"><div class="gradient gradient--conic_default"></div></slot>
+          </foreignObject>
 
-        <g class="meter--blend">
-          <rect x="0" y="0" width="42" height="42" />
-          <circle class="meter--meter" r="16" cx="21" cy="21" />
+          <g class="blender--subject">
+            <rect x="0" y="0" width="42" height="42" fill="#fff" />
+            <circle class="meter" r="16" cx="21" cy="21" />
+          </g>
         </g>
       </svg>
     </div>
@@ -117,15 +119,17 @@
       <div class="thing--solar-pv-sunrise">?</div>
       <div class="thing--solar-pv-sunset">?</div>
 
-      <svg class="thing--solar-pv-meter meter" viewBox="0 0 42 42">
-        <foreignObject x="0" y="0" width="42" height="42">
-          <div class="meter--gradient"></div>
-        </foreignObject>
+      <svg class="thing--solar-pv-meter" viewBox="0 0 42 42">
+        <g class="blender">
+          <foreignObject x="0" y="0" width="42" height="42">
+            <div class="gradient gradient--conic__sky"></div>
+          </foreignObject>
 
-        <g class="meter--blend">
-          <rect x="0" y="0" width="42" height="42" />
-          <circle class="meter--meter" r="16" cx="21" cy="21" />
-          <circle class="thing--solar-pv-sun" r="3" cx="5" cy="21" />
+          <g class="blender--subject">
+            <rect x="0" y="0" width="42" height="42" fill="#fff" />
+            <circle class="meter" r="16" cx="21" cy="21" />
+            <circle class="thing--solar-pv-sun" r="3" cx="5" cy="21" />
+          </g>
         </g>
       </svg>
     </div>
@@ -141,14 +145,16 @@
 
       <div class="thing--meter-primary-value">?</div>
 
-      <svg class="thing--meter-meter meter" viewBox="0 0 42 42">
-        <foreignObject x="0" y="0" width="42" height="42">
-          <slot name="meter-gradient"><div class="meter--gradient meter--gradient__blue_to_red"></div></slot>
-        </foreignObject>
+      <svg class="thing--meter-meter" viewBox="0 0 42 42">
+        <g class="blender">
+          <foreignObject x="0" y="0" width="42" height="42">
+            <slot name="meter-gradient"><div class="gradient gradient--conic__blue_to_red"></div></slot>
+          </foreignObject>
 
-        <g class="meter--blend">
-          <rect x="0" y="0" width="42" height="42" />
-          <circle class="meter--meter" r="16" cx="21" cy="21" />
+          <g class="blender--subject">
+            <rect x="0" y="0" width="42" height="42" fill="#fff" />
+            <circle class="meter" r="16" cx="21" cy="21" />
+          </g>
         </g>
       </svg>
     </div>
@@ -238,7 +244,7 @@
             data-property="state_of_charge"
             data-secondary-property="ongoing_power">
             <span slot="name">Batteries</span>
-            <div slot="meter-gradient" class="meter--gradient meter--gradient__yellow_to_green"></div>
+            <div slot="meter-gradient" class="gradient gradient--conic__yellow_to_green"></div>
           </my-meter-thing>
         </my-thing>
 
