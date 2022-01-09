@@ -37,6 +37,46 @@ function number_to_2_chars(number) {
     return number;
 }
 
+// Fire a function:
+// * immediately,
+// * every `timeout`,
+// * when the document is back to visible.
+function fire(timeout, func, ...args) {
+    let timeout_id = null;
+
+    function next(...new_args) {
+        if (timeout_id != null) {
+            window.clearTimeout(timeout_id);
+        }
+
+        timeout_id = window.setTimeout(
+            () => {
+                func(next, ...new_args);
+            },
+            timeout,
+            false,
+        );
+    }
+
+    // Fire `func` if the document's visibility has changed to
+    // `visible`. Otherwise, cancel the timeout set by `next`.
+    document.addEventListener(
+        'visibilitychange',
+        () => {
+            if (document.visibilityState == 'visible') {
+                func(next, ...args)
+            } else {
+                if (timeout_id != null) {
+                    window.clearTimeout(timeout_id);
+                }
+            }
+        }
+    );
+
+    // Fire `func` immediately.
+    func(next, ...args);
+}
+
 async function read_property(base, property_name) {
     const base_origin = new URL(base).origin;
     const property_response = await http_get(base);
@@ -249,7 +289,8 @@ window.customElements.define(
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
-            async function update_value(
+            async function update(
+                next,
                 thing_value_element,
                 property_value_reader,
                 property_link,
@@ -270,19 +311,13 @@ window.customElements.define(
                     }
                 }
 
-                window.setTimeout(
-                    () => {
-                        update_value(
-                            thing_value_element,
-                            property_value_reader,
-                            property_link,
-                            property_min,
-                            property_max,
-                            do_update_thing_meter_circle_element
-                        );
-                    },
-                    1000 * 10 /* in 10 secs */,
-                    false
+                next(
+                    thing_value_element,
+                    property_value_reader, 
+                    property_link,
+                    property_min,
+                    property_max,
+                    do_update_thing_meter_circle_element,
                 );
             }
 
@@ -290,7 +325,9 @@ window.customElements.define(
             const base = self.getAttribute('data-base').replace(/\/+$/, '');
             const primary_property = await read_property(base, self.getAttribute('data-property'));
 
-            update_value(
+            fire(
+                1000 * 5, // 5 secs
+                update,
                 thing_primary_value_element,
                 primary_property.value_reader,
                 primary_property.link,
@@ -302,7 +339,9 @@ window.customElements.define(
             if (self.hasAttribute('data-secondary-property')) {
                 const secondary_property = await read_property(base, self.getAttribute('data-secondary-property'));
 
-                update_value(
+                fire(
+                    1000 * 5, // 5 secs,
+                    update,
                     thing_secondary_value_element,
                     secondary_property.value_reader,
                     secondary_property.link,
@@ -335,45 +374,23 @@ window.customElements.define(
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
-            async function update_value(
+            async function update(
+                next,
                 thing_value_element,
                 property_value_reader,
                 property_link,
                 property_min,
                 property_max,
+                thing_sunrise_element,
+                thing_sunset_element,
+                thing_sun_element,
             ) {
+                // `thing_value_element`.
                 const {value, formatted_value} = await property_value_reader();
 
                 thing_value_element.innerHTML = formatted_value;
 
-                window.setTimeout(
-                    () => {
-                        update_value(
-                            thing_value_element,
-                            property_value_reader,
-                            property_link,
-                            property_min,
-                            property_max,
-                        );
-                    },
-                    1000 * 10 /* in 10 secs */,
-                    false
-                );
-            }
-
-            const self = this;
-            const base = self.getAttribute('data-base').replace(/\/+$/, '');
-            const primary_property = await read_property(base, self.getAttribute('data-property'));
-
-            update_value(
-                thing_primary_value_element,
-                primary_property.value_reader,
-                primary_property.link,
-                primary_property.min,
-                primary_property.max,
-            );
-
-            function update_sunrise_sunset() {
+                // `thing_sunrise_element` + `thing_sunset_element`.
                 let now = new Date();
                 let { sunrise, sunset } = sunrise_sunset(
                     HOME_LATITUDE,
@@ -386,6 +403,7 @@ window.customElements.define(
                 thing_sunrise_element.innerHTML = sunrise.getHours() + ":" + number_to_2_chars(sunrise.getMinutes());
                 thing_sunset_element.innerHTML = sunset.getHours() + ":" + number_to_2_chars(sunset.getMinutes());
 
+                // `thing_sun_element`.
                 let now_in_minutes = now.getHours() * 60 + now.getMinutes();
                 const min_sun = sunrise.getHours() * 60 + sunrise.getMinutes();
                 const max_sun = sunset.getHours() * 60 + sunset.getMinutes();
@@ -398,14 +416,34 @@ window.customElements.define(
                 thing_sun_element.setAttributeNS(null, "cx", pos_point.x);
                 thing_sun_element.setAttributeNS(null, "cy", pos_point.y);
 
-                window.setTimeout(
-                    () => update_sunrise_sunset,
-                    1000 * 60 /* in 60 secs */,
-                    false,
+                next(
+                    thing_value_element,
+                    property_value_reader,
+                    property_link,
+                    property_min,
+                    property_max,
+                    thing_sunrise_element,
+                    thing_sunset_element,
+                    thing_sun_element,
                 );
             }
 
-            update_sunrise_sunset();
+            const self = this;
+            const base = self.getAttribute('data-base').replace(/\/+$/, '');
+            const primary_property = await read_property(base, self.getAttribute('data-property'));
+
+            fire(
+                1000 * 5, // 5 secs
+                update,
+                thing_primary_value_element,
+                primary_property.value_reader,
+                primary_property.link,
+                primary_property.min,
+                primary_property.max,
+                thing_sunrise_element,
+                thing_sunset_element,
+                thing_sun_element,
+            );
         }
     }
 );
@@ -427,7 +465,8 @@ window.customElements.define(
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
-            async function update_value(
+            async function update(
+                next,
                 thing_value_element,
                 property_value_reader,
                 property_link,
@@ -440,17 +479,11 @@ window.customElements.define(
                 const percent = (value * 100) / property_max;
                 thing_meter_circle_element.style.strokeDasharray = percent + ' 100';
 
-                window.setTimeout(
-                    () => {
-                        update_value(
-                            thing_value_element,
-                            property_value_reader,
-                            property_link,
-                            property_max,
-                        );
-                    },
-                    1000 * 10 /* in 10 secs */,
-                    false
+                next(
+                    thing_value_element,
+                    property_value_reader,
+                    property_link,
+                    property_max,
                 );
             }
 
@@ -460,12 +493,13 @@ window.customElements.define(
             const target_property = await read_property(base, self.getAttribute('data-target-value'));
             const target_value = (await target_property.value_reader()).value;
 
-            update_value(
+            fire(
+                1000 * 5, // 5 secs
+                update,
                 thing_value_element,
                 current_property.value_reader,
                 current_property.link,
                 target_value,
-                true,
             );
         }
     }
