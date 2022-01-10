@@ -375,6 +375,10 @@ window.customElements.define(
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
+            let previous_now = new Date(0);
+            let sunrise = null;
+            let sunset = null;
+
             async function update(
                 next,
                 thing_value_element,
@@ -393,13 +397,25 @@ window.customElements.define(
 
                 // `thing_sunrise_element` + `thing_sunset_element`.
                 let now = new Date();
-                let { sunrise, sunset } = sunrise_sunset(
-                    HOME_LATITUDE,
-                    HOME_LONGITUDE,
-                    now.getFullYear(),
-                    now.getMonth() + 1,
-                    now.getDate()
-                );
+
+                // The day has changed.
+                if (previous_now.getDate() != now.getDate() || sunrise == null || sunset == null) {
+                    previous_now = now;
+
+                    let {
+                        sunrise: next_sunrise,
+                        sunset: next_sunset
+                    } = sunrise_sunset(
+                        HOME_LATITUDE,
+                        HOME_LONGITUDE,
+                        now.getFullYear(),
+                        now.getMonth() + 1,
+                        now.getDate()
+                    );
+
+                    sunrise = next_sunrise;
+                    sunset = next_sunset;
+                }
 
                 thing_sunrise_element.innerHTML = sunrise.getHours() + ":" + number_to_2_chars(sunrise.getMinutes());
                 thing_sunset_element.innerHTML = sunset.getHours() + ":" + number_to_2_chars(sunset.getMinutes());
