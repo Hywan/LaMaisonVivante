@@ -70,9 +70,12 @@
 
     <div class="thing--expandable" aria-expanded="false">
       <div class="thing--frame thing--summary thing--expander">
-        <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
-        <span class="thing--state-icon"><slot name="state-icon">(❓)</slot></span>
-        <span class="thing--state-text"><slot name="state-text">(??)</slot></span>
+        <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
+
+        <div class="thing--frame-content">
+          <span class="thing--state-icon"><slot name="state-icon">(❓)</slot></span>
+          <span class="thing--state-text"><slot name="state-text">(??)</slot></span>
+        </div>
       </div>
       <div class="thing--long">
         <h3 class="thing--name"><slot name="long-name">(unnamed)</slot></h3>
@@ -87,23 +90,25 @@
     </style>
 
     <div class="thing--frame thing--meter">
-      <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
+      <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
-      <div class="thing--meter-primary-value">?</div>
-      <div class="thing--meter-secondary-value"></div>
+      <div class="thing--frame-content">
+        <div class="thing--meter-primary-value">?</div>
+        <div class="thing--meter-secondary-value"></div>
 
-      <svg class="thing--meter-meter" viewBox="0 0 42 42">
-        <g class="blender">
-          <foreignObject x="0" y="0" width="42" height="42">
-            <slot name="meter-gradient"><div class="gradient gradient--conic_default"></div></slot>
-          </foreignObject>
+        <svg class="thing--meter-meter" viewBox="0 0 38 38">
+            <g class="blender">
+            <foreignObject x="0" y="0" width="38" height="38">
+                <slot name="meter-gradient"><div class="gradient gradient--conic_default"></div></slot>
+            </foreignObject>
 
-          <g class="blender--subject">
-            <rect x="0" y="0" width="42" height="42" fill="#fff" />
-            <circle class="meter" r="16" cx="21" cy="21" />
-          </g>
-        </g>
-      </svg>
+            <g class="blender--subject">
+                <rect x="0" y="0" width="38" height="38" fill="#fff" />
+                <circle class="meter meter--stroked" r="16" cx="19" cy="19" />
+            </g>
+            </g>
+        </svg>
+      </div>
     </div>
   </template>
 
@@ -113,25 +118,28 @@
     </style>
 
     <div class="thing--frame thing--solar-pv">
-      <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
+      <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
-      <div class="thing--solar-pv-primary-value">?</div>
-      <div class="thing--solar-pv-sunrise">?</div>
-      <div class="thing--solar-pv-sunset">?</div>
+      <div class="thing--frame-content">
+        <div class="thing--solar-pv-primary-value">?</div>
+        <div class="thing--solar-pv-sunrise">?</div>
+        <div class="thing--solar-pv-sunset">?</div>
 
-      <svg class="thing--solar-pv-meter" viewBox="0 0 42 42">
-        <g class="blender">
-          <foreignObject x="0" y="0" width="42" height="42">
-            <div class="gradient gradient--conic__sky"></div>
-          </foreignObject>
+        <svg class="thing--solar-pv-meter" viewBox="0 0 38 38">
+          <g class="blender">
+            <foreignObject x="0" y="0" width="38" height="38">
+              <div class="gradient gradient--conic__sky"></div>
+            </foreignObject>
 
-          <g class="blender--subject">
-            <rect x="0" y="0" width="42" height="42" fill="#fff" />
-            <circle class="meter" r="16" cx="21" cy="21" />
-            <circle class="thing--solar-pv-sun" r="3" cx="5" cy="21" />
+            <g class="blender--subject">
+              <rect x="0" y="0" width="38" height="38" fill="#fff" />
+              <circle class="meter meter--stroked" r="16" cx="19" cy="19" />
+              <circle class="meter--stroked" r="16" cx="19" cy="19" stroke-dasharray="30 100" stroke-dashoffset="-10"  />
+              <circle class="thing--solar-pv-sun" r="3" cx="5" cy="19" />
+            </g>
           </g>
-        </g>
-      </svg>
+        </svg>
+      </div>
     </div>
   </template>
 
@@ -141,22 +149,24 @@
     </style>
 
     <div class="thing--frame thing--meter">
-      <h3 class="thing--name"><slot name="name">(unnamed)</slot></h3>
+      <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
-      <div class="thing--meter-primary-value">?</div>
+      <div class="thing--frame-content">
+        <div class="thing--meter-primary-value">?</div>
 
-      <svg class="thing--meter-meter" viewBox="0 0 42 42">
-        <g class="blender">
-          <foreignObject x="0" y="0" width="42" height="42">
-            <slot name="meter-gradient"><div class="gradient gradient--conic__blue_to_red"></div></slot>
-          </foreignObject>
+        <svg class="thing--meter-meter" viewBox="0 0 42 42">
+          <g class="blender">
+            <foreignObject x="0" y="0" width="42" height="42">
+              <slot name="meter-gradient"><div class="gradient gradient--conic__blue_to_red"></div></slot>
+            </foreignObject>
 
-          <g class="blender--subject">
-            <rect x="0" y="0" width="42" height="42" fill="#fff" />
-            <circle class="meter" r="16" cx="21" cy="21" />
+            <g class="blender--subject">
+              <rect x="0" y="0" width="42" height="42" fill="#fff" />
+              <circle class="meter meter--stroked" r="16" cx="21" cy="21" />
+            </g>
           </g>
-        </g>
-      </svg>
+        </svg>
+      </div>
     </div>
   </template>
 
@@ -187,6 +197,7 @@
       <button class="thing--type-blind__stop"><svg class="icon"><use href="#icon-stop" /></svg></button>
       <button class="thing--type-blind__close"><svg class="icon"><use href="#icon-down" /></svg></button>
     </div>
+
     <svg>
       <symbol id="icon-up" viewBox="0 0 555 555">
         <path stroke="#000" stroke-miterlimit="10" stroke-width="8" d="M551 277a272 272 0 0 1-274 274A272 272 0 0 1 4 277 272 272 0 0 1 277 4a272 272 0 0 1 274 273zm-525 0a252 252 0 1 0 504 0 252 252 0 0 0-504 0z" />
@@ -202,16 +213,6 @@
         <path d="M324 163H158c-8 0-14 6-14 14v174c0 7 6 14 14 14h166c8 0 14-7 14-14V177c0-8-6-14-14-14zm-14 174H172V191h138zm169-182c-9-28-24-47-46-60l-70-41-71-41c-15-8-30-12-47-13-20-1-38 3-53 12l-39 23L50 95a98 98 0 0 0-50 86v164a103 103 0 0 0 50 87l70 40 70 40c14 9 29 13 45 14h8c18 0 34-4 49-12l141-82c15-9 27-20 36-36 10-17 15-32 15-48V181c-1-8-2-17-5-26zm-24 194c0 11-3 21-11 34-6 11-15 20-26 26l-141 82a73 73 0 0 1-73-2l-70-40-70-41c-16-9-27-22-34-42-2-6-3-13-3-20V182c0-28 12-48 37-63l101-60 41-23c10-6 20-9 34-9h3c13 1 24 4 34 11l71 40 71 41a73 73 0 0 1 35 63v167z" />
       </symbol>
     </svg>
-  </template>
-
-  <template id="template--thing-meter">
-    <style>
-      @import "static/style/main.css";
-    </style>
-
-    <div class="thing--type thing--type-meter">
-      42%
-    </div>
   </template>
 
   <script src="static/javascript/sunrise.js"></script>

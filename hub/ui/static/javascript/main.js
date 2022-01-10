@@ -1,5 +1,6 @@
 const HOME_LATITUDE = 46.78657339107215;
 const HOME_LONGITUDE = 6.806581635522576;
+const REFRESH_RATE = 1000 * 10; // 10 secs
 
 function http_get(url) {
     return fetch(url, {
@@ -326,7 +327,7 @@ window.customElements.define(
             const primary_property = await read_property(base, self.getAttribute('data-property'));
 
             fire(
-                1000 * 5, // 5 secs
+                REFRESH_RATE,
                 update,
                 thing_primary_value_element,
                 primary_property.value_reader,
@@ -340,7 +341,7 @@ window.customElements.define(
                 const secondary_property = await read_property(base, self.getAttribute('data-secondary-property'));
 
                 fire(
-                    1000 * 5, // 5 secs,
+                    REFRESH_RATE,
                     update,
                     thing_secondary_value_element,
                     secondary_property.value_reader,
@@ -433,7 +434,7 @@ window.customElements.define(
             const primary_property = await read_property(base, self.getAttribute('data-property'));
 
             fire(
-                1000 * 5, // 5 secs
+                REFRESH_RATE,
                 update,
                 thing_primary_value_element,
                 primary_property.value_reader,
@@ -494,7 +495,7 @@ window.customElements.define(
             const target_value = (await target_property.value_reader()).value;
 
             fire(
-                1000 * 5, // 5 secs
+                REFRESH_RATE,
                 update,
                 thing_value_element,
                 current_property.value_reader,

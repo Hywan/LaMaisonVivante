@@ -6,6 +6,7 @@
     --color-light-300: hsl(217, 48%, 83%);
     --color-blue-300: hsl(213, 100%, 88%);
     --color-blue-500: hsl(213, 100%, 74%);
+    --color-blue-800: hsl(213, 100%, 25%);
     --color-yellow-000: hsl(47, 100%, 92%);
     --color-yellow-100: hsl(47, 81%, 75%);
     --color-yellow-500: hsl(47, 100%, 58%);
@@ -205,14 +206,30 @@ main {
 }
 
 .thing--frame {
-    width: calc(8rem - var(--space-large));
-    height: calc(8rem - var(--space-large));
-    padding: var(--space-large);
+    --thing--frame--padding-block: var(--space);
+    --thing--frame--padding-inline: var(--space-large);
+
+    display: flex;
+    flex-direction: column-reverse;
+
+    box-sizing: border-box;
+    width: 9.5rem;
+    height: 9.5rem;
+    padding: var(--thing--frame--padding-block) var(--thing--frame--padding-inline);
+
     border-radius: var(--space-very-large);
     box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
                 calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
     background: var(--color-light-000);
 }
+
+    .thing--frame > .thing--frame-name {
+        text-align: center;
+    }
+
+    .thing--frame > .thing--frame-content {
+        flex: 1;
+    }
 
 .thing--expandable {}
 
@@ -224,11 +241,10 @@ main {
         display: none;
     }
 
-        .thing--expandable[aria-expanded = "false"] > .thing--summary {
+        .thing--expandable[aria-expanded = "false"] > .thing--summary > .thing--frame-content {
             display: grid;
-            grid-template: "thing--state-icon"
-                           "thing--state-text"
-                           "thing--name";
+            grid-template: "state-icon"
+                           "state-text";
             grid-template-rows: 1fr auto auto;
             justify-items: center;
             align-items: center;
@@ -245,16 +261,12 @@ main {
             color: var(--color-light-000);
         }
 
-        .thing--expandable > .thing--summary > .thing--name {
-            grid-area: thing--name;
+        .thing--expandable > .thing--summary > .thing--frame-content > .thing--state-icon {
+            grid-area: state-icon;
         }
 
-        .thing--expandable > .thing--summary > .thing--state-icon {
-            grid-area: thing--state-icon;
-        }
-
-        .thing--expandable > .thing--summary > .thing--state-text {
-            grid-area: thing--state-text;
+        .thing--expandable > .thing--summary > .thing--frame-content > .thing--state-text {
+            grid-area: state-text;
         }
 
     .thing--expandable[aria-expanded = "true"] {
@@ -293,98 +305,91 @@ main {
             flex: 1;
         }
 
-.thing--meter {
-    position: relative;
-    display: grid;
-    grid-template: "thing--meter"
-                   "thing--name";
-    grid-template-rows: auto 1fr;
-    justify-items: center;
-    align-items: center;
-}
+.thing--meter {}
 
-    .thing--meter > .thing--name {
-        grid-area: thing--name;
-        z-index: 1;
+    .thing--meter > .thing--frame-content {
+        position: relative;
+        text-align: center;
     }
 
-    .thing--meter > .thing--meter-meter {
-        grid-area: thing--meter;
-        margin-bottom: var(--space-small);
+    .thing--meter > .thing--frame-content > .thing--meter-meter {
+        width: 100%;
+        vertical-align: bottom;
     }
 
-    .thing--meter > .thing--meter-primary-value {
+    .thing--meter > .thing--frame-content > .thing--meter-primary-value {
+        --this-height: 1.5rem;
+
         position: absolute;
-        top: calc(50% - 2rem / 2 - var(--space-small) - .2rem);
+        top: calc(50% - var(--this-height) / 2 - var(--this-height) / 4);
         left: 0;
         right: 0;
-        height: 2rem;
+        line-height: var(--this-height);
         text-align: center;
         font-size: 1rem;
     }
 
-    .thing--meter > .thing--meter-secondary-value {
+    .thing--meter > .thing--frame-content > .thing--meter-secondary-value {
+        --this-height: 1.5rem;
+
         position: absolute;
-        top: calc(50% - 2rem / 2 - var(--space-small) - .2rem + 1rem);
+        top: calc(50% - var(--this-height) / 2 + var(--this-height) / 2);
         left: 0;
         right: 0;
-        height: 1.5rem;
+        line-height: var(--this-height);
         text-align: center;
         font-size: .7rem;
+        color: var(--color-dark-500);
     }
 
-.thing--solar-pv {
-    position: relative;
-    display: grid;
-    grid-template: "thing--solar-pv"
-                   "thing--name";
-    grid-template-rows: auto 1fr;
-    justify-items: center;
-    align-items: center;
-}
+.thing--solar-pv {}
 
-    .thing--solar-pv > .thing--name {
-        grid-area: thing--name;
-        z-index: 1;
+    .thing--solar-pv > .thing--frame-content {
+        position: relative;
     }
 
-    .thing--solar-pv > .thing--solar-pv-solar-pv {
-        grid-area: thing--solar-pv;
-        margin-bottom: var(--space-small);
+    .thing--solar-pv > .thing--frame-content > .thing--solar-pv-meter {
+        width: 100%;
+        vertical-align: bottom;
     }
 
-    .thing--solar-pv > .thing--solar-pv-primary-value {
+    .thing--solar-pv > .thing--frame-content > .thing--solar-pv-primary-value {
+        --this-height: 1.5rem;
+
         position: absolute;
-        top: calc(50% - 2rem / 2 - var(--space-small) - .2rem);
+        top: calc(50% - var(--this-height) / 2 - var(--this-height) / 4);
         left: 0;
         right: 0;
-        height: 1.5rem;
+        line-height: var(--this-height);
         text-align: center;
         font-size: 1rem;
     }
 
-    .thing--solar-pv > .thing--solar-pv-sunrise,
-    .thing--solar-pv > .thing--solar-pv-sunset {
-        position: absolute;
-        top: calc(50% - 2rem / 2 - var(--space-small) - .2rem + 1rem);
-        height: 1.5rem;
-
+    .thing--solar-pv > .thing--frame-content > .thing--solar-pv-sunrise,
+    .thing--solar-pv > .thing--frame-content > .thing--solar-pv-sunset {
+        --this-height: 1.5rem;
         --solar-pv-sunrise-sunset-width: 2rem;
-        width: var(--solar-pv-sunrise-sunset-width);
 
+        position: absolute;
+        top: calc(50% - var(--this-height) / 2 + var(--this-height) / 2);
+        line-height: var(--this-height);
         text-align: center;
         font-size: .7rem;
+        color: var(--color-dark-500);
+        width: var(--solar-pv-sunrise-sunset-width);
     }
 
-    .thing--solar-pv > .thing--solar-pv-sunrise {
-        left: calc(2.2rem - var(--solar-pv-sunrise-sunset-width) / 2);
+    .thing--solar-pv > .thing--frame-content > .thing--solar-pv-sunrise {
+        left: 0;
+        text-align: left;
     }
 
-    .thing--solar-pv > .thing--solar-pv-sunset {
-        right: calc(2.2rem - var(--solar-pv-sunrise-sunset-width) / 2);
+    .thing--solar-pv > .thing--frame-content > .thing--solar-pv-sunset {
+        right: 0;
+        text-align: right;
     }
 
-    .thing--solar-pv > .thing--solar-pv-meter .meter {
+    .thing--solar-pv > .thing--frame-content > .thing--solar-pv-meter .meter {
         transform: rotate(180deg);
         transform-origin: 50% 50%;
         stroke-dasharray: 50 100;
@@ -532,13 +537,16 @@ button {
     }
 
 .meter {
-    fill: none;
-    filter: drop-shadow(0 0 2px var(--color-light-200));
-    stroke: black;
-    stroke-width: 2;
-    stroke-linecap: round;
     stroke-dasharray: 10 100; /* for 10% */
     transition: stroke-dasharray 300ms ease-in-out;
+}
+
+.meter--stroked {
+    fill: none;
+    filter: drop-shadow(0 0 2px var(--color-light-200));
+    stroke: #000;
+    stroke-width: 2;
+    stroke-linecap: round;
 }
 
 .gradient {
@@ -557,7 +565,7 @@ button {
 
     .gradient--conic__yellow_to_green {
         background: conic-gradient(
-            from 86deg,
+            from 84deg,
             var(--color-yellow-500) 0%,
             var(--color-green-600) 100%
         );
@@ -573,9 +581,12 @@ button {
 
     .gradient--conic__sky {
         background: conic-gradient(
-            from 160deg,
-            var(--color-blue-500) 15%,
+            from -90deg,
+            var(--color-blue-500) 5%,
             var(--color-yellow-100),
-            var(--color-pink-600) 95%
+            var(--color-pink-600) 50%,
+            var(--color-blue-800) 55%,
+            var(--color-blue-800) 95%,
+            var(--color-blue-500) 100%
         );
     }
