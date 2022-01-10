@@ -466,57 +466,61 @@ window.customElements.define(
 );
 
 window.customElements.define(
-    'my-temperature-thing',
+    'my-dhw-thing',
     class extends HTMLElement {
         constructor() {
             super();
         }
 
         async connectedCallback() {
-            const template = document.getElementById('template--temperature-thing');
+            const template = document.getElementById('template--dhw-thing');
             const template_content = template.content.cloneNode(true);
 
-            const thing_value_element = template_content.querySelector('.thing--meter-primary-value');
-            const thing_meter_circle_element = template_content.querySelector('.thing--meter-meter .meter');
+            const thing_top_value_element = template_content.querySelector('.thing--dhw-top-value');
+            const thing_bottom_value_element = template_content.querySelector('.thing--dhw-bottom-value');
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
             async function update(
                 next,
-                thing_value_element,
-                property_value_reader,
-                property_link,
-                property_max,
+                thing_top_value_element,
+                top_value_reader,
+                thing_bottom_value_element,
+                bottom_value_reader,
             ) {
-                const {value, formatted_value} = await property_value_reader();
+                const {
+                    value: top_value,
+                    formatted_value: top_formatted_value
+                } = await top_value_reader();
+                const {
+                    value: bottom_value,
+                    formatted_value: bottom_formatted_value
+                } = await bottom_value_reader();
 
-                thing_value_element.innerHTML = formatted_value;
-
-                const percent = (value * 100) / property_max;
-                thing_meter_circle_element.style.strokeDasharray = percent + ' 100';
+                thing_top_value_element.innerHTML = top_formatted_value;
+                thing_bottom_value_element.innerHTML = bottom_formatted_value;
 
                 next(
-                    thing_value_element,
-                    property_value_reader,
-                    property_link,
-                    property_max,
+                    thing_top_value_element,
+                    top_value_reader,
+                    thing_bottom_value_element,
+                    bottom_value_reader,
                 );
             }
 
             const self = this;
             const base = self.getAttribute('data-base').replace(/\/+$/, '');
-            const current_property = await read_property(base, self.getAttribute('data-current-value'));
-            const target_property = await read_property(base, self.getAttribute('data-target-value'));
-            const target_value = (await target_property.value_reader()).value;
+            const top_property = await read_property(base, self.getAttribute('data-top-value'));
+            const bottom_property = await read_property(base, self.getAttribute('data-bottom-value'));
 
             fire(
                 REFRESH_RATE,
                 update,
-                thing_value_element,
-                current_property.value_reader,
-                current_property.link,
-                target_value,
+                thing_top_value_element,
+                top_property.value_reader,
+                thing_bottom_value_element,
+                bottom_property.value_reader,
             );
         }
     }

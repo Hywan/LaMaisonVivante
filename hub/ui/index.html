@@ -143,26 +143,27 @@
     </div>
   </template>
 
-  <template id="template--temperature-thing">
+  <template id="template--dhw-thing">
     <style>
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--frame thing--meter">
+    <div class="thing--frame thing--dhw">
       <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
       <div class="thing--frame-content">
-        <div class="thing--meter-primary-value">?</div>
+        <div class="thing--dhw-top-value">?</div>
+        <div class="thing--dhw-bottom-value">?</div>
 
-        <svg class="thing--meter-meter" viewBox="0 0 42 42">
+        <svg class="thing--dhw-boiler" viewBox="0 0 314 493">
           <g class="blender">
-            <foreignObject x="0" y="0" width="42" height="42">
-              <slot name="meter-gradient"><div class="gradient gradient--conic__blue_to_red"></div></slot>
+            <foreignObject x="-157" y="-246" width="628" height="986">
+              <div class="gradient gradient--conic__blue_to_red"></div>
             </foreignObject>
 
             <g class="blender--subject">
-              <rect x="0" y="0" width="42" height="42" fill="#fff" />
-              <circle class="meter meter--stroked" r="16" cx="21" cy="21" />
+              <rect x="0" y="0" width="314" height="493" fill="#fff" />
+              <path d="M155 0c-3 1-6 3-8 6C79 131 0 239 0 342c0 86 71 151 157 151s157-65 157-151c0-103-80-211-147-336-3-4-7-6-12-6zm2 34c65 119 134 221 134 308 0 74-59 128-134 128S22 416 22 342c0-87 69-189 135-308zM66 325c-6 0-10 5-10 11 0 64 51 112 112 112a11 11 0 1 0 0-22c-50 0-90-38-90-90a11 11 0 0 0-12-11z" />
             </g>
           </g>
         </svg>
@@ -257,6 +258,16 @@
             data-secondary-property="current">
             <span slot="name">Solaire PV</span>
           </my-solar-pv-thing>
+        </my-thing>
+
+        <my-thing>
+          <my-dhw-thing
+            slot="thing"
+            data-base="http://192.168.1.128:8093/0"
+            data-top-value="top_of_the_tank"
+            data-bottom-value="bottom_of_the_tank">
+            <span slot="name">Boiler</span>
+          </my-dhw-thing>
         </my-thing>
       </my-unlocated-things>
 
@@ -362,16 +373,6 @@
 
       <my-things>
         <span slot="location">Salle de bain enfants</span>
-
-        <my-thing>
-          <my-temperature-thing
-            slot="thing"
-            data-base="http://192.168.1.128:8093/0"
-            data-current-value="top_of_the_tank"
-            data-target-value="wanted">
-            <span slot="name">Boiler</span>
-          </my-temperature-thing>
-        </my-thing>
 
         <my-thing>
           <my-expandable-thing slot="thing">
@@ -487,16 +488,6 @@
               slot="thing"
               data-base="http://192.168.1.128:8094/10"></my-thing--pulse>
           </my-expandable-thing>
-        </my-thing>
-
-        <my-thing>
-          <my-temperature-thing
-            slot="thing"
-            data-base="http://192.168.1.128:8093/0"
-            data-current-value="top_of_the_tank"
-            data-target-value="wanted">
-            <span slot="name">Boiler</span>
-          </my-temperature-thing>
         </my-thing>
 
         <my-thing>

@@ -206,6 +206,8 @@ main {
 }
 
 .thing--frame {
+    --thing--frame--font-size-primary: .9rem;
+    --thing--frame--font-size-secondary: .7rem;
     --thing--frame--padding-block: var(--space);
     --thing--frame--padding-inline: var(--space-large);
 
@@ -326,7 +328,7 @@ main {
         right: 0;
         line-height: var(--this-height);
         text-align: center;
-        font-size: 1rem;
+        font-size: var(--thing--frame--font-size-primary);
     }
 
     .thing--meter > .thing--frame-content > .thing--meter-secondary-value {
@@ -338,7 +340,7 @@ main {
         right: 0;
         line-height: var(--this-height);
         text-align: center;
-        font-size: .7rem;
+        font-size: var(--thing--frame--font-size-secondary);
         color: var(--color-dark-500);
     }
 
@@ -362,7 +364,7 @@ main {
         right: 0;
         line-height: var(--this-height);
         text-align: center;
-        font-size: 1rem;
+        font-size: var(--thing--frame--font-size-primary);
     }
 
     .thing--solar-pv > .thing--frame-content > .thing--solar-pv-sunrise,
@@ -374,7 +376,7 @@ main {
         top: calc(50% - var(--this-height) / 2 + var(--this-height) / 2);
         line-height: var(--this-height);
         text-align: center;
-        font-size: .7rem;
+        font-size: var(--thing--frame--font-size-secondary);
         color: var(--color-dark-500);
         width: var(--solar-pv-sunrise-sunset-width);
     }
@@ -393,6 +395,58 @@ main {
         transform: rotate(180deg);
         transform-origin: 50% 50%;
         stroke-dasharray: 50 100;
+    }
+
+.thing--dhw {}
+
+    .thing--dhw > .thing--frame-content {
+        position: relative;
+        text-align: center;
+    }
+
+    .thing--dhw > .thing--frame-content > .thing--dhw-boiler {
+        height: 5.5rem;
+        vertical-align: bottom;
+        margin-bottom: var(--space-very-small);
+    }
+
+    .thing--dhw > .thing--frame-content > .thing--dhw-top-value,
+    .thing--dhw > .thing--frame-content > .thing--dhw-bottom-value {
+        --this-height: 1.5rem;
+
+        position: absolute;
+        right: -.5rem;
+        line-height: var(--this-height);
+        text-align: center;
+        font-size: var(--thing--frame--font-size-primary);
+        padding-left: .4rem;
+        border-radius: .5rem;
+        background: var(--color-light-000);
+    }
+
+    .thing--dhw > .thing--frame-content > .thing--dhw-top-value {
+        top: 10%;
+    }
+
+    .thing--dhw > .thing--frame-content > .thing--dhw-bottom-value {
+        top: 65%;
+    }
+
+    .thing--dhw > .thing--frame-content > .thing--dhw-boiler .gradient {
+        animation-duration: 7s;
+        animation-name: thing-dhw-rotate;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+
+    @keyframes thing-dhw-rotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
     }
 
 .thing--type {
@@ -573,9 +627,10 @@ button {
 
     .gradient--conic__blue_to_red {
         background: conic-gradient(
-            from 86deg,
+            from 90deg,
             var(--color-blue-500) 0%,
-            var(--color-pink-600) 100%
+            var(--color-pink-600) 75%,
+            var(--color-blue-500) 100%
         );
     }
 
