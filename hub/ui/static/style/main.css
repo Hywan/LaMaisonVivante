@@ -546,36 +546,36 @@ button {
     height: 100%;
 }
 
-.gradient--conic__default {
-    background: conic-gradient(
-        from calc(-45deg + var(--light-direction)),
-        var(--color-pink-600) 10%,
-        var(--color-yellow-100),
-        var(--color-pink-600) 95%
-    );
-}
+    .gradient--conic__default {
+        background: conic-gradient(
+            from calc(-45deg + var(--light-direction)),
+            var(--color-pink-600) 10%,
+            var(--color-yellow-100),
+            var(--color-pink-600) 95%
+        );
+    }
 
-.gradient--conic__yellow_to_green {
-    background: conic-gradient(
-        from 86deg,
-        var(--color-yellow-500) 0%,
-        var(--color-green-600) 100%
-    );
-}
+    .gradient--conic__yellow_to_green {
+        background: conic-gradient(
+            from 86deg,
+            var(--color-yellow-500) 0%,
+            var(--color-green-600) 100%
+        );
+    }
 
-.gradient--conic__blue_to_red {
-    background: conic-gradient(
-        from 86deg,
-        var(--color-blue-500) 0%,
-        var(--color-pink-600) 100%
-    );
-}
+    .gradient--conic__blue_to_red {
+        background: conic-gradient(
+            from 86deg,
+            var(--color-blue-500) 0%,
+            var(--color-pink-600) 100%
+        );
+    }
 
-.gradient--conic__sky {
-    background: conic-gradient(
-        from 160deg,
-        var(--color-blue-500) 15%,
-        var(--color-yellow-100),
-        var(--color-pink-600) 95%
-    );
-}
+    .gradient--conic__sky {
+        background: conic-gradient(
+            from 160deg,
+            var(--color-blue-500) 15%,
+            var(--color-yellow-100),
+            var(--color-pink-600) 95%
+        );
+    }
