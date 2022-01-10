@@ -432,23 +432,6 @@ main {
         top: 65%;
     }
 
-    .thing--dhw > .thing--frame-content > .thing--dhw-boiler .gradient {
-        animation-duration: 7s;
-        animation-name: thing-dhw-rotate;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-    }
-
-    @keyframes thing-dhw-rotate {
-        from {
-            transform: rotate(0deg);
-        }
-
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
 .thing--type {
     display: flex;
     height: calc(100vh - var(--space-very-large) - var(--space-large) * 4);
