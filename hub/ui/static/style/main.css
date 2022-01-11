@@ -440,7 +440,7 @@ main {
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-schema {
-        width: 100%;
+        height: 5.5rem;
         vertical-align: bottom;
         margin-bottom: var(--space-small);
     }
@@ -458,24 +458,24 @@ main {
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-after-ground-coupled-heat-exchanger {
-        top: 55%;
-        right: -.3rem;
+        top: 5%;
+        right: 0;
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-after-heat-recovery-exchanger {
-        top: 55%;
-        left: -.3rem;
+        bottom: 10%;
+        right: 0;
         font-size: var(--thing--frame--font-size-primary);
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-extracted {
-        top: 30%;
-        left: -.3rem;
+        bottom: 10%;
+        left: 0;
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-discharged {
-        top: 30%;
-        right: -.3rem;
+        top: 5%;
+        left: 0;
     }
 
 .thing--type {
