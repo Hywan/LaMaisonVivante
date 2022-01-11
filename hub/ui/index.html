@@ -180,10 +180,10 @@
       <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
       <div class="thing--frame-content">
-        <div class="thing--ventilation-after-ground-coupled-heat-exchanger">A</div>
-        <div class="thing--ventilation-after-heat-recovery-exchanger">B</div>
-        <div class="thing--ventilation-extracted">C</div>
-        <div class="thing--ventilation-discharged">D</div>
+        <div class="thing--ventilation-after-ground-coupled-heat-exchanger">?</div>
+        <div class="thing--ventilation-after-heat-recovery-exchanger">?</div>
+        <div class="thing--ventilation-extracted">?</div>
+        <div class="thing--ventilation-discharged">?</div>
 
         <svg class="thing--ventilation-schema" viewBox="0 0 115 82">
           <g class="blender">
@@ -195,11 +195,11 @@
               <rect x="0" y="0" width="115" height="82" fill="#fff" />
 
               <g class="stroked">
-                <path stroke-width="5" d="M3 29 42 4l39 25h0M65 7v10" />
-                <path stroke-width="4" d="M78 46H38" />
-                <path stroke-width="4" d="m78 46-10-8h0m10 8-10 8h0" />
-                <path stroke-width="4" d="M39 71h39" />
-                <path stroke-width="4" d="m38 71 11 8h0m-11-8 11-8h0" />
+                <path stroke-width="4" d="M3 29 42 4l39 25h0M65 7v10" />
+                <path stroke-width="3" d="M78 46H38" />
+                <path stroke-width="3" d="m78 46-10-8h0m10 8-10 8h0" />
+                <path stroke-width="3" d="M39 71h39" />
+                <path stroke-width="3" d="m38 71 11 8h0m-11-8 11-8h0" />
                 <path fill="#000" stroke="none" d="M40.3 21a3.2 3.2 0 0 1 4 1.2 5.7 5.7 0 0 0 1-4.4 5 5 0 0 0-4-4c-1.8-.2-4 .7-4.3 2-.2.8 1.3 1.8 2.1 3l1.2 2.1m-3.6 11c.7-.2.8-2 1.5-3.4l1.2-2a3.3 3.3 0 0 1-.8-4c-1.5-.2-3.2.1-4.4 1.2a5 5 0 0 0-1.4 5.5c.7 1.7 2.6 3.1 3.9 2.7m4.9-4.7a5.7 5.7 0 0 0 3.3 3.2 5 5 0 0 0 5.4-1.5c1.2-1.5 1.4-3.8.4-4.8-.5-.5-2.2.3-3.7.4h-2.3a3.3 3.3 0 0 1-3 2.7"/>
                 <path fill="#000" stroke="none" d="M41.5 21.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5"/>
               </g>
@@ -309,7 +309,13 @@
         </my-thing>
 
         <my-thing>
-          <my-ventilation-thing slot="thing">
+          <my-ventilation-thing
+            slot="thing"
+            data-base="http://192.168.1.128:8093/1"
+            data-after-ground-coupled-heat-exchanger-value="supplied_air_after_ground_coupled_heat_exchanger"
+            data-after-heat-recovery-exchanger-value="supplied_air_after_heat_recovery_exchanger"
+            data-extracted-value="extracted_air"
+            data-discharged-value="discharged_air">
             <span slot="name">Ventilation</span>
           </my-ventilation-thing>
         </my-thing>

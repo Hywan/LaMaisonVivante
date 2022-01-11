@@ -78,11 +78,23 @@ function fire(timeout, func, ...args) {
     func(next, ...args);
 }
 
-async function read_property(base, property_name) {
-    const base_origin = new URL(base).origin;
-    const property_response = await http_get(base);
-    const property_json_response = await property_response.json();
+const READ_PROPERTY_CACHE = {};
 
+async function read_property(base, property_name) {
+    if (READ_PROPERTY_CACHE[base] == undefined) {
+        READ_PROPERTY_CACHE[base] = {};
+    }
+
+    const base_origin = new URL(base).origin;
+
+    if (READ_PROPERTY_CACHE[base][property_name] == undefined) {
+        const property_response = await http_get(base);
+        const property_json_response = await property_response.json();
+
+        READ_PROPERTY_CACHE[base][property_name] = property_json_response;
+    }
+
+    const property_json_response = READ_PROPERTY_CACHE[base][property_name];
     const property_description = property_json_response.properties[property_name];
     const unit = property_description.unit;
     const link = property_description.links[0].href;
@@ -97,7 +109,7 @@ async function read_property(base, property_name) {
         max = property_description.maximum;
     }
 
-    return {
+    return READ_PROPERTY_CACHE[base][property_name] = {
         link,
         unit,
         min,
@@ -122,7 +134,7 @@ async function read_property(base, property_name) {
                 break;
 
             case 'celsius':
-                formatted_value += '°C';
+                formatted_value = Math.round(formatted_value) + '°C';
                 break;
             }
 
@@ -322,9 +334,8 @@ window.customElements.define(
                 );
             }
 
-            const self = this;
-            const base = self.getAttribute('data-base').replace(/\/+$/, '');
-            const primary_property = await read_property(base, self.getAttribute('data-property'));
+            const base = this.getAttribute('data-base').replace(/\/+$/, '');
+            const primary_property = await read_property(base, this.getAttribute('data-property'));
 
             fire(
                 REFRESH_RATE,
@@ -337,8 +348,8 @@ window.customElements.define(
                 true,
             );
 
-            if (self.hasAttribute('data-secondary-property')) {
-                const secondary_property = await read_property(base, self.getAttribute('data-secondary-property'));
+            if (this.hasAttribute('data-secondary-property')) {
+                const secondary_property = await read_property(base, this.getAttribute('data-secondary-property'));
 
                 fire(
                     REFRESH_RATE,
@@ -375,25 +386,18 @@ window.customElements.define(
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
+            const base = this.getAttribute('data-base').replace(/\/+$/, '');
+            const primary_property = await read_property(base, this.getAttribute('data-property'));
+
             let previous_now = new Date(0);
             let sunrise = null;
             let sunset = null;
 
-            async function update(
-                next,
-                thing_value_element,
-                property_value_reader,
-                property_link,
-                property_min,
-                property_max,
-                thing_sunrise_element,
-                thing_sunset_element,
-                thing_sun_element,
-            ) {
-                // `thing_value_element`.
-                const {value, formatted_value} = await property_value_reader();
+            async function update(next) {
+                // `thing_primary_value_element`.
+                const {value, formatted_value} = await (primary_property.value_reader)();
 
-                thing_value_element.innerHTML = formatted_value;
+                thing_primary_value_element.innerHTML = formatted_value;
 
                 // `thing_sunrise_element` + `thing_sunset_element`.
                 let now = new Date();
@@ -433,34 +437,10 @@ window.customElements.define(
                 thing_sun_element.setAttributeNS(null, "cx", pos_point.x);
                 thing_sun_element.setAttributeNS(null, "cy", pos_point.y);
 
-                next(
-                    thing_value_element,
-                    property_value_reader,
-                    property_link,
-                    property_min,
-                    property_max,
-                    thing_sunrise_element,
-                    thing_sunset_element,
-                    thing_sun_element,
-                );
+                next();
             }
 
-            const self = this;
-            const base = self.getAttribute('data-base').replace(/\/+$/, '');
-            const primary_property = await read_property(base, self.getAttribute('data-property'));
-
-            fire(
-                REFRESH_RATE,
-                update,
-                thing_primary_value_element,
-                primary_property.value_reader,
-                primary_property.link,
-                primary_property.min,
-                primary_property.max,
-                thing_sunrise_element,
-                thing_sunset_element,
-                thing_sun_element,
-            );
+            fire(REFRESH_RATE, update);
         }
     }
 );
@@ -482,46 +462,27 @@ window.customElements.define(
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
-            async function update(
-                next,
-                thing_top_value_element,
-                top_value_reader,
-                thing_bottom_value_element,
-                bottom_value_reader,
-            ) {
+            const base = this.getAttribute('data-base').replace(/\/+$/, '');
+            const top_property = await read_property(base, this.getAttribute('data-top-value'));
+            const bottom_property = await read_property(base, this.getAttribute('data-bottom-value'));
+
+            async function update(next) {
                 const {
                     value: top_value,
                     formatted_value: top_formatted_value
-                } = await top_value_reader();
+                } = await (top_property.value_reader)();
                 const {
                     value: bottom_value,
                     formatted_value: bottom_formatted_value
-                } = await bottom_value_reader();
+                } = await (bottom_property.value_reader)();
 
                 thing_top_value_element.innerHTML = top_formatted_value;
                 thing_bottom_value_element.innerHTML = bottom_formatted_value;
 
-                next(
-                    thing_top_value_element,
-                    top_value_reader,
-                    thing_bottom_value_element,
-                    bottom_value_reader,
-                );
+                next();
             }
 
-            const self = this;
-            const base = self.getAttribute('data-base').replace(/\/+$/, '');
-            const top_property = await read_property(base, self.getAttribute('data-top-value'));
-            const bottom_property = await read_property(base, self.getAttribute('data-bottom-value'));
-
-            fire(
-                REFRESH_RATE,
-                update,
-                thing_top_value_element,
-                top_property.value_reader,
-                thing_bottom_value_element,
-                bottom_property.value_reader,
-            );
+            fire(REFRESH_RATE, update);
         }
     }
 );
@@ -537,58 +498,39 @@ window.customElements.define(
             const template = document.getElementById('template--ventilation-thing');
             const template_content = template.content.cloneNode(true);
 
-            /*
-            const thing_top_value_element = template_content.querySelector('.thing--dhw-top-value');
-            const thing_bottom_value_element = template_content.querySelector('.thing--dhw-bottom-value');
-            */
+            const thing_after_ground_coupled_heat_exchanger_element = template_content.querySelector('.thing--ventilation-after-ground-coupled-heat-exchanger');
+            const thing_after_heat_recovery_exchanger_element = template_content.querySelector('.thing--ventilation-after-heat-recovery-exchanger');
+            const thing_extracted_element = template_content.querySelector('.thing--ventilation-extracted');
+            const thing_discharged_element = template_content.querySelector('.thing--ventilation-discharged');
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
-            /*
-            async function update(
-                next,
-                thing_top_value_element,
-                top_value_reader,
-                thing_bottom_value_element,
-                bottom_value_reader,
-            ) {
-                const {
-                    value: top_value,
-                    formatted_value: top_formatted_value
-                } = await top_value_reader();
-                const {
-                    value: bottom_value,
-                    formatted_value: bottom_formatted_value
-                } = await bottom_value_reader();
+            const base = this.getAttribute('data-base').replace(/\/+$/, '');
+            const after_ground_coupled_heat_exchanger_property = await read_property(base, this.getAttribute('data-after-ground-coupled-heat-exchanger-value'));
+            const after_heat_recovery_exchanger_property = await read_property(base, this.getAttribute('data-after-heat-recovery-exchanger-value'));
+            const extracted_property = await read_property(base, this.getAttribute('data-extracted-value'));
+            const discharged_property = await read_property(base, this.getAttribute('data-discharged-value'));
 
-                thing_top_value_element.innerHTML = top_formatted_value;
-                thing_bottom_value_element.innerHTML = bottom_formatted_value;
+            async function update(next) {
+                let formatted_value;
 
-                next(
-                    thing_top_value_element,
-                    top_value_reader,
-                    thing_bottom_value_element,
-                    bottom_value_reader,
-                );
+                ({formatted_value} = await (after_ground_coupled_heat_exchanger_property.value_reader)());
+                thing_after_ground_coupled_heat_exchanger_element.innerHTML = formatted_value;
+
+                ({formatted_value} = await (after_heat_recovery_exchanger_property.value_reader)());
+                thing_after_heat_recovery_exchanger_element.innerHTML = formatted_value;
+
+                ({formatted_value} = await (extracted_property.value_reader)());
+                thing_extracted_element.innerHTML = formatted_value;
+
+                ({formatted_value} = await (discharged_property.value_reader)());
+                thing_discharged_element.innerHTML = formatted_value;
+
+                next();
             }
-            */
 
-            /*
-            const self = this;
-            const base = self.getAttribute('data-base').replace(/\/+$/, '');
-            const top_property = await read_property(base, self.getAttribute('data-top-value'));
-            const bottom_property = await read_property(base, self.getAttribute('data-bottom-value'));
-
-            fire(
-                REFRESH_RATE,
-                update,
-                thing_top_value_element,
-                top_property.value_reader,
-                thing_bottom_value_element,
-                bottom_property.value_reader,
-            );
-            */
+            fire(REFRESH_RATE, update);
         }
     }
 );
