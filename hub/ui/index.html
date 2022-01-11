@@ -104,7 +104,7 @@
 
             <g class="blender--subject">
                 <rect x="0" y="0" width="38" height="38" fill="#fff" />
-                <circle class="meter meter--stroked" r="16" cx="19" cy="19" />
+                <circle class="meter stroked" r="16" cx="19" cy="19" />
             </g>
             </g>
         </svg>
@@ -133,8 +133,8 @@
 
             <g class="blender--subject">
               <rect x="0" y="0" width="38" height="38" fill="#fff" />
-              <circle class="meter meter--stroked" r="16" cx="19" cy="19" />
-              <circle class="meter--stroked" r="16" cx="19" cy="19" stroke-dasharray="30 100" stroke-dashoffset="-10"  />
+              <circle class="meter stroked" r="16" cx="19" cy="19" />
+              <circle class="stroked" r="16" cx="19" cy="19" stroke-dasharray="30 100" stroke-dashoffset="-10"  />
               <circle class="thing--solar-pv-sun" r="3" cx="3" cy="19" />
             </g>
           </g>
@@ -166,6 +166,44 @@
               <path d="M155 0c-3 1-6 3-8 6C79 131 0 239 0 342c0 86 71 151 157 151s157-65 157-151c0-103-80-211-147-336-3-4-7-6-12-6zm2 34c65 119 134 221 134 308 0 74-59 128-134 128S22 416 22 342c0-87 69-189 135-308zM66 325c-6 0-10 5-10 11 0 64 51 112 112 112a11 11 0 1 0 0-22c-50 0-90-38-90-90a11 11 0 0 0-12-11z" />
             </g>
           </g>
+        </svg>
+      </div>
+    </div>
+  </template>
+
+  <template id="template--ventilation-thing">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div class="thing--frame thing--ventilation">
+      <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
+
+      <div class="thing--frame-content">
+        <div class="thing--ventilation-after-ground-coupled-heat-exchanger">A</div>
+        <div class="thing--ventilation-after-heat-recovery-exchanger">B</div>
+        <div class="thing--ventilation-extracted">C</div>
+        <div class="thing--ventilation-discharged">D</div>
+
+        <svg class="thing--ventilation-schema" viewBox="0 0 115 82">
+          <g class="blender">
+            <foreignObject x="0" y="0" width="115" height="82">
+              <div class="gradient gradient--conic__blue_to_red"></div>
+            </foreignObject>
+
+            <g class="blender--subject">
+              <rect x="0" y="0" width="115" height="82" fill="#fff" />
+
+              <g class="stroked">
+                <path stroke-width="5" d="M3 29 42 4l39 25h0M65 7v10" />
+                <path stroke-width="4" d="M78 46H38" />
+                <path stroke-width="4" d="m78 46-10-8h0m10 8-10 8h0" />
+                <path stroke-width="4" d="M39 71h39" />
+                <path stroke-width="4" d="m38 71 11 8h0m-11-8 11-8h0" />
+                <path fill="#000" stroke="none" d="M40.3 21a3.2 3.2 0 0 1 4 1.2 5.7 5.7 0 0 0 1-4.4 5 5 0 0 0-4-4c-1.8-.2-4 .7-4.3 2-.2.8 1.3 1.8 2.1 3l1.2 2.1m-3.6 11c.7-.2.8-2 1.5-3.4l1.2-2a3.3 3.3 0 0 1-.8-4c-1.5-.2-3.2.1-4.4 1.2a5 5 0 0 0-1.4 5.5c.7 1.7 2.6 3.1 3.9 2.7m4.9-4.7a5.7 5.7 0 0 0 3.3 3.2 5 5 0 0 0 5.4-1.5c1.2-1.5 1.4-3.8.4-4.8-.5-.5-2.2.3-3.7.4h-2.3a3.3 3.3 0 0 1-3 2.7"/>
+                <path fill="#000" stroke="none" d="M41.5 21.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5"/>
+              </g>
+            </g>
         </svg>
       </div>
     </div>
@@ -268,6 +306,12 @@
             data-bottom-value="bottom_of_the_tank">
             <span slot="name">Boiler</span>
           </my-dhw-thing>
+        </my-thing>
+
+        <my-thing>
+          <my-ventilation-thing slot="thing">
+            <span slot="name">Ventilation</span>
+          </my-ventilation-thing>
         </my-thing>
       </my-unlocated-things>
 

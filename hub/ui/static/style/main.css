@@ -432,6 +432,51 @@ main {
         top: 65%;
     }
 
+.thing--ventilation {}
+
+    .thing--ventilation > .thing--frame-content {
+        position: relative;
+        text-align: center;
+    }
+
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-schema {
+        width: 100%;
+        vertical-align: bottom;
+        margin-bottom: var(--space-small);
+    }
+
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-after-ground-coupled-heat-exchanger,
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-after-heat-recovery-exchanger,
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-extracted,
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-discharged {
+        --this-height: 1.5rem;
+
+        position: absolute;
+        line-height: var(--this-height);
+        text-align: center;
+        font-size: var(--thing--frame--font-size-primary);
+    }
+
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-after-ground-coupled-heat-exchanger {
+        top: 55%;
+        right: 0;
+    }
+
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-after-heat-recovery-exchanger {
+        top: 55%;
+        left: 0;
+    }
+
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-extracted {
+        top: 30%;
+        left: 0;
+    }
+
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-discharged {
+        top: 30%;
+        right: 0;
+    }
+
 .thing--type {
     display: flex;
     height: calc(100vh - var(--space-very-large) - var(--space-large) * 4);
@@ -578,7 +623,7 @@ button {
     transition: stroke-dasharray 300ms ease-in-out;
 }
 
-.meter--stroked {
+.stroked {
     fill: none;
     filter: drop-shadow(0 0 2px var(--color-light-200));
     stroke: #000;

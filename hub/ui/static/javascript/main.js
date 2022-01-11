@@ -527,6 +527,73 @@ window.customElements.define(
 );
 
 window.customElements.define(
+    'my-ventilation-thing',
+    class extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        async connectedCallback() {
+            const template = document.getElementById('template--ventilation-thing');
+            const template_content = template.content.cloneNode(true);
+
+            /*
+            const thing_top_value_element = template_content.querySelector('.thing--dhw-top-value');
+            const thing_bottom_value_element = template_content.querySelector('.thing--dhw-bottom-value');
+            */
+
+            const shadow_root = this.attachShadow({mode: 'open'})
+                  .appendChild(template_content);
+
+            /*
+            async function update(
+                next,
+                thing_top_value_element,
+                top_value_reader,
+                thing_bottom_value_element,
+                bottom_value_reader,
+            ) {
+                const {
+                    value: top_value,
+                    formatted_value: top_formatted_value
+                } = await top_value_reader();
+                const {
+                    value: bottom_value,
+                    formatted_value: bottom_formatted_value
+                } = await bottom_value_reader();
+
+                thing_top_value_element.innerHTML = top_formatted_value;
+                thing_bottom_value_element.innerHTML = bottom_formatted_value;
+
+                next(
+                    thing_top_value_element,
+                    top_value_reader,
+                    thing_bottom_value_element,
+                    bottom_value_reader,
+                );
+            }
+            */
+
+            /*
+            const self = this;
+            const base = self.getAttribute('data-base').replace(/\/+$/, '');
+            const top_property = await read_property(base, self.getAttribute('data-top-value'));
+            const bottom_property = await read_property(base, self.getAttribute('data-bottom-value'));
+
+            fire(
+                REFRESH_RATE,
+                update,
+                thing_top_value_element,
+                top_property.value_reader,
+                thing_bottom_value_element,
+                bottom_property.value_reader,
+            );
+            */
+        }
+    }
+);
+
+window.customElements.define(
     'my-thing--pulse',
     class extends HTMLElement {
         constructor() {
