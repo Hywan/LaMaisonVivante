@@ -439,16 +439,14 @@ main {
         text-align: center;
     }
 
-    .thing--ventilation > .thing--frame-content > .thing--ventilation-schema {
-        height: 5.5rem;
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-meters {
+        width: 100%;
         vertical-align: bottom;
-        margin-bottom: var(--space-small);
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-after-ground-coupled-heat-exchanger,
     .thing--ventilation > .thing--frame-content > .thing--ventilation-after-heat-recovery-exchanger,
-    .thing--ventilation > .thing--frame-content > .thing--ventilation-extracted,
-    .thing--ventilation > .thing--frame-content > .thing--ventilation-discharged {
+    .thing--ventilation > .thing--frame-content > .thing--ventilation-extracted {
         --this-height: 1.5rem;
 
         position: absolute;
@@ -458,24 +456,22 @@ main {
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-after-ground-coupled-heat-exchanger {
-        top: 5%;
-        right: 0;
+        top: .5rem;
+        right: .5rem;
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-after-heat-recovery-exchanger {
-        bottom: 10%;
-        right: 0;
+        --this-width: 2rem;
+
+        top: calc(50% - var(--thing--frame--font-size-primary) + .1rem /* visual adjustement */);
+        left: calc(50% - var(--this-width) / 2);
+        width: var(--this-width);
         font-size: var(--thing--frame--font-size-primary);
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-extracted {
-        bottom: 10%;
-        left: 0;
-    }
-
-    .thing--ventilation > .thing--frame-content > .thing--ventilation-discharged {
-        top: 5%;
-        left: 0;
+        top: 1.2rem;
+        right: .5rem;
     }
 
 .thing--type {
@@ -663,6 +659,18 @@ button {
         );
     }
 
+    .gradient--conic__ventilation {
+        background: conic-gradient(
+            from 80deg,
+            var(--color-blue-500) 5%,
+            var(--color-green-600) 20%,
+            var(--color-yellow-500) 40%,
+            var(--color-yellow-100) 60%,
+            var(--color-pink-500) 80%,
+            var(--color-blue-500) 95%
+        );
+    }
+    
     .gradient--conic__sky {
         background: conic-gradient(
             from -90deg,

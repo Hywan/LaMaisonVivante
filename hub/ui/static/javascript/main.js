@@ -1,6 +1,7 @@
 const HOME_LATITUDE = 46.78657339107215;
 const HOME_LONGITUDE = 6.806581635522576;
 const REFRESH_RATE = 1000 * 10; // 10 secs
+const LONG_REFRESH_RATE = 1000 * 60; // 1 minute
 
 function http_get(url) {
     return fetch(url, {
@@ -482,7 +483,7 @@ window.customElements.define(
                 next();
             }
 
-            fire(REFRESH_RATE, update);
+            fire(LONG_REFRESH_RATE, update);
         }
     }
 );
@@ -501,7 +502,10 @@ window.customElements.define(
             const thing_after_ground_coupled_heat_exchanger_element = template_content.querySelector('.thing--ventilation-after-ground-coupled-heat-exchanger');
             const thing_after_heat_recovery_exchanger_element = template_content.querySelector('.thing--ventilation-after-heat-recovery-exchanger');
             const thing_extracted_element = template_content.querySelector('.thing--ventilation-extracted');
-            const thing_discharged_element = template_content.querySelector('.thing--ventilation-discharged');
+
+            const thing_after_ground_coupled_heat_exchanger_meter_element = template_content.querySelector('.meter--ventilation-after-ground-coupled-heat-exchanger');
+            const thing_after_heat_recovery_exchanger_meter_element = template_content.querySelector('.meter--ventilation-after-heat-recovery-exchanger');
+            const thing_extracted_meter_element = template_content.querySelector('.meter--ventilation-extracted');
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
@@ -510,27 +514,42 @@ window.customElements.define(
             const after_ground_coupled_heat_exchanger_property = await read_property(base, this.getAttribute('data-after-ground-coupled-heat-exchanger-value'));
             const after_heat_recovery_exchanger_property = await read_property(base, this.getAttribute('data-after-heat-recovery-exchanger-value'));
             const extracted_property = await read_property(base, this.getAttribute('data-extracted-value'));
-            const discharged_property = await read_property(base, this.getAttribute('data-discharged-value'));
+
+            const MAX_TEMPERATURE = 25;
+            const MARGIN = 0.75; // in percent
 
             async function update(next) {
-                let formatted_value;
+                async function subupdate(property, element, meter_element) {
+                    let {value, formatted_value} = await (property.value_reader)();
+                    element.innerHTML = formatted_value;
 
-                ({formatted_value} = await (after_ground_coupled_heat_exchanger_property.value_reader)());
-                thing_after_ground_coupled_heat_exchanger_element.innerHTML = formatted_value;
+                    let max_length = meter_element.getTotalLength();
 
-                ({formatted_value} = await (after_heat_recovery_exchanger_property.value_reader)());
-                thing_after_heat_recovery_exchanger_element.innerHTML = formatted_value;
+                    meter_element.style.strokeDasharray = (value * (max_length * MARGIN)) / MAX_TEMPERATURE + ' ' + max_length;
+                }
 
-                ({formatted_value} = await (extracted_property.value_reader)());
-                thing_extracted_element.innerHTML = formatted_value;
+                subupdate(
+                    after_ground_coupled_heat_exchanger_property,
+                    thing_after_ground_coupled_heat_exchanger_element,
+                    thing_after_ground_coupled_heat_exchanger_meter_element,
+                );
 
-                ({formatted_value} = await (discharged_property.value_reader)());
-                thing_discharged_element.innerHTML = formatted_value;
+                subupdate(
+                    after_heat_recovery_exchanger_property,
+                    thing_after_heat_recovery_exchanger_element,
+                    thing_after_heat_recovery_exchanger_meter_element,
+                );
+
+                subupdate(
+                    extracted_property,
+                    thing_extracted_element,
+                    thing_extracted_meter_element,
+                );
 
                 next();
             }
 
-            fire(REFRESH_RATE, update);
+            fire(LONG_REFRESH_RATE, update);
         }
     }
 );

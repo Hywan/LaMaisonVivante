@@ -97,16 +97,16 @@
         <div class="thing--meter-secondary-value"></div>
 
         <svg class="thing--meter-meter" viewBox="0 0 38 38">
-            <g class="blender">
+          <g class="blender">
             <foreignObject x="0" y="0" width="38" height="38">
-                <slot name="meter-gradient"><div class="gradient gradient--conic_default"></div></slot>
+              <slot name="meter-gradient"><div class="gradient gradient--conic_default"></div></slot>
             </foreignObject>
 
             <g class="blender--subject">
-                <rect x="0" y="0" width="38" height="38" fill="#fff" />
-                <circle class="meter stroked" r="16" cx="19" cy="19" />
+              <rect x="0" y="0" width="38" height="38" fill="#fff" />
+              <circle class="meter stroked" r="16" cx="19" cy="19" />
             </g>
-            </g>
+          </g>
         </svg>
       </div>
     </div>
@@ -183,18 +183,20 @@
         <div class="thing--ventilation-after-ground-coupled-heat-exchanger">?</div>
         <div class="thing--ventilation-after-heat-recovery-exchanger">?</div>
         <div class="thing--ventilation-extracted">?</div>
-        <div class="thing--ventilation-discharged">?</div>
 
-        <svg class="thing--ventilation-schema" viewBox="0 0 619 604">
-          <g class="blender">
-            <foreignObject x="0" y="0" width="619" height="604">
-              <div class="gradient gradient--conic__blue_to_red"></div>
+        <svg class="thing--ventilation-meters" viewBox="0 0 38 38">
+          <g class="blenderr">
+            <foreignObject x="0" y="0" width="38" height="38">
+              <div class="gradient gradient--conic__ventilation"></div>
             </foreignObject>
 
             <g class="blender--subject">
-              <rect x="0" y="0" width="619" height="604" fill="#fff" />
-              <path fill="none" stroke="#000" stroke-linejoin="round" stroke-width="20" d="M279 10c120 54 156 52 80 188-24-10-52-12-78-2zM10 340c54-122 52-156 188-80-10 24-12 52-2 78zm345 254c-122-54-156-52-80-188 24 10 52 12 78 2zm254-330c-54 120-52 156-188 80 10-24 12-52 2-78zM361 374a85 85 0 1 1-88-144 85 85 0 0 1 88 144"/>
+              <rect x="0" y="0" width="38" height="38" fill="#fff" />
+              <circle class="meter stroked meter--ventilation-after-ground-coupled-heat-exchanger" r="9" cx="19" cy="19" />
+              <circle class="meter stroked meter--ventilation-after-heat-recovery-exchanger" r="12.5" cx="19" cy="19" />
+              <circle class="meter stroked meter--ventilation-extracted" r="16" cx="19" cy="19" />
             </g>
+          </g>
         </svg>
       </div>
     </div>
@@ -305,8 +307,7 @@
             data-base="http://192.168.1.128:8093/1"
             data-after-ground-coupled-heat-exchanger-value="supplied_air_after_ground_coupled_heat_exchanger"
             data-after-heat-recovery-exchanger-value="supplied_air_after_heat_recovery_exchanger"
-            data-extracted-value="extracted_air"
-            data-discharged-value="discharged_air">
+            data-extracted-value="extracted_air">
             <span slot="name">Ventilation</span>
           </my-ventilation-thing>
         </my-thing>
