@@ -244,14 +244,12 @@ main {
     display: grid;
     grid-template: "icon action";
     align-content: start;
-    border: 1px red solid;
 }
 
     .thing--actionable > .thing--actionable-icon {
         grid-area: icon;
         justify-self: left;
         text-align: left;
-        border: 1px red solid;
     }
 
     .thing--frame-content > .thing--actionable-icon > .thing--actionable-icon-wrapper {
@@ -259,7 +257,6 @@ main {
         width: 1.5rem;
         color: var(--color-light-300);
         filter: drop-shadow(0 0 3px var(--color-light-200));
-        border: 1px red solid;
     }
 
     .thing--actionable > .thing--actionable-action {
@@ -268,7 +265,6 @@ main {
         text-align: right;
         width: 2.5rem;
         height: 2.5rem;
-        border: 1px red solid;
     }
 
 .thing--expandable {}
