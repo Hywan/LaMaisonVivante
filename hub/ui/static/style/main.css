@@ -170,7 +170,7 @@ strong {
         left: calc(50% - var(--space-small) / 2);
         bottom: var(--space-very-small);
         width: var(--space-small);
-        height: var(--space-small);
+        aspect-ratio: 1 / 1;
         border-radius: 50%;
         background: var(--color-yellow-500);
     }
@@ -216,7 +216,7 @@ main {
 
     box-sizing: border-box;
     width: 9.5rem;
-    height: 9.5rem;
+    aspect-ratio: 1 / 1;
     padding: var(--thing--frame--padding-block) var(--thing--frame--padding-inline);
 
     border-radius: var(--space-very-large);
@@ -253,8 +253,8 @@ main {
     }
 
     .thing--frame-content > .thing--actionable-icon > .thing--actionable-icon-wrapper {
-        height: 2rem;
         width: 2rem;
+        aspect-ratio: 2rem;
         color: var(--color-light-300);
         filter: drop-shadow(0 0 3px var(--color-light-200));
     }
@@ -325,10 +325,10 @@ main {
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
-        margin: 0 auto;
         max-width: 50rem;
-        padding: var(--space-large);
         min-height: 100%;
+        margin: 0 auto;
+        padding: var(--space-large);
     }
 
         .thing--expandable > .thing--long > .thing--name {
