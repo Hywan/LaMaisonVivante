@@ -246,6 +246,7 @@ main {
     display: grid;
     grid-template: "icon action";
     align-content: start;
+    margin-top: var(--space-very-small);
 }
 
     .thing--actionable > .thing--actionable-icon {
