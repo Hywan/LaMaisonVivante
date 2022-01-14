@@ -33,6 +33,8 @@
     --inset-shadow-blur: 10px;
 
     --backdrop-blur: 40px;
+
+    --icon-small: 2rem;
 }
 
 @font-face {
@@ -253,8 +255,8 @@ main {
     }
 
     .thing--frame-content > .thing--actionable-icon > .thing--actionable-icon-wrapper {
-        height: 1.5rem;
-        width: 1.5rem;
+        height: var(--icon-small);
+        width: var(--icon-small);
         color: var(--color-light-300);
         filter: drop-shadow(0 0 3px var(--color-light-200));
     }
@@ -599,8 +601,8 @@ button {
     }
 
     .button__small {
-        width: 2rem;
-        height: 2rem;
+        width: var(--icon-small);
+        height: var(--icon-small);
     }
 
 .icon {
