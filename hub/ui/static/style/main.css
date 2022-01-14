@@ -247,7 +247,6 @@ main {
     display: grid;
     grid-template: "icon action";
     align-content: start;
-    margin-top: var(--space-very-small);
 }
 
     .thing--actionable > .thing--actionable-icon {
@@ -534,10 +533,20 @@ main {
     flex-direction: column;
 }
 
-    .thing--type-blind button {
-        border-radius: 2rem;
-        height: 5.5rem;
-        margin: 1rem 0;
+    .thing--type-blind > button {
+        border-radius: .5rem;
+        width: 100%;
+        height: 1.4rem;
+        color: var(--color-green-300);
+    }
+
+    .thing--type-blind > button + button {
+        margin-top: .35rem;
+    }
+
+    .thing--type-blind > button > .icon {
+        height: .6rem;
+        margin-bottom: .3rem;
     }
 
 iframe {
@@ -579,7 +588,7 @@ button {
     appeareance: none;
     cursor: pointer;
 
-    color: var(--color-dark-500);
+    color: var(--color-green-300);
     font: inherit;
     font-weight: 600;
 
@@ -593,7 +602,7 @@ button {
                 -22px -22px 78px #fff,
                 0 0 4px var(--color-green-300) inset,
                 0 0 12px var(--color-green-300);
-    border: 3px var(--color-green-300) solid
+    border: 2px var(--color-green-300) solid
 }
 
     button:hover,
