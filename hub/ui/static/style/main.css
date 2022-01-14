@@ -226,11 +226,43 @@ main {
 }
 
     .thing--frame > .thing--frame-name {
-        text-align: center;
+        display: flex;
+        flex-direction: column-reverse;
+        align-self: center;
+    }
+
+    .thing--frame > .thing--frame-name > .thing--frame-subname {
+        font-size: 75%;
+        font-weight: normal;
     }
 
     .thing--frame > .thing--frame-content {
         flex: 1;
+    }
+
+.thing--actionable {
+    display: grid;
+    grid-template: "icon action";
+    align-content: start;
+    margin-block: 1rem;
+}
+
+    .thing--actionable > .thing--actionable-icon {
+        grid-area: icon;
+        justify-self: left;
+    }
+
+    .thing--frame-content > .thing--actionable-icon > .thing--actionable-icon-wrapper {
+        height: 2rem;
+        width: 2rem;
+        color: var(--color-light-300);
+        filter: drop-shadow(0 0 3px var(--color-light-200));
+    }
+
+    .thing--actionable > .thing--actionable-action {
+        grid-area: action;
+        justify-self: right;
+        width: 2rem;
     }
 
 .thing--expandable {}
@@ -542,14 +574,16 @@ button {
     -moz-appaerance: none;
     -webkit-appearance: none;
     cursor: pointer;
-    background: linear-gradient(var(--light-direction), var(--color-yellow-100), var(--color-pink-500));
-    padding: var(--space-large) var(--space-very-large);
+
     color: var(--color-dark-500);
     font: inherit;
     font-weight: 600;
-    border: 0;
-    height: 10rem;
-    width: 10rem;
+
+    padding: 20%;
+    margin: 0;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
     background: linear-gradient(145deg, #fff, #e6e6e6);
     box-shadow: 22px 22px 78px #d6d6d6,
                 -22px -22px 78px #fff,
@@ -683,3 +717,8 @@ button {
             var(--color-blue-500) 100%
         );
     }
+
+.svg--symbols {
+    height: 0;
+    width: 0;
+}

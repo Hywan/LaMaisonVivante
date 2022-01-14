@@ -202,21 +202,36 @@
     </div>
   </template>
 
+  <template id="template--actionable-thing">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div class="thing--frame">
+      <h3 class="thing--frame-name">
+        <slot name="location">(unnamed)</slot>
+        <div class="thing--frame-subname"><slot name="name">(unnamed)</slot></div>
+      </h3>
+
+      <div class="thing--frame-content thing--actionable">
+        <div class="thing--actionable-icon">
+          <div class="thing--actionable-icon-wrapper">
+            <slot name="icon"></slot>
+          </div>
+        </div>
+        <div class="thing--actionable-action"><slot name="action"></slot></div>
+      </div>
+    </div>
+  </template>
+
   <template id="template--thing-pulse">
     <style>
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--type thing--type-pulse">
-      <button><svg class="icon"><use href="#icon-tap" /></svg></button>
+    <div class="thing--type-pulse">
+      <button title="Pulse"></button>
     </div>
-
-    <svg>
-      <symbol id="icon-tap" viewBox="0 0 340 532">
-        <path stroke="#000" stroke-width="6" d="M304 243c-8 0-15 2-22 7a36 36 0 0 0-36-36c-8 0-16 2-22 7a36 36 0 0 0-36-36c-8 0-16 2-22 7v-73a36 36 0 0 0-72 0v198c-19-36-42-46-56-49-13-2-25 1-31 7-18 22 4 50 12 60 20 25 28 49 36 72 10 29 20 60 54 91 25 22 58 34 92 34 84 0 139-73 139-187v-66a36 36 0 0 0-36-36zm22 102c0 107-48 173-125 173-31 0-60-11-83-31-31-28-40-55-50-84-8-25-17-50-38-77-23-29-15-38-13-42 6-3 12-4 18-2 12 2 40 13 60 71v1l1 1v1l2 1 2 1h4l1-1 1-1 1-1 1-2V119a22 22 0 1 1 44 0v174a7 7 0 0 0 14 0v-73a22 22 0 0 1 44 0v73a7 7 0 0 0 14 0v-43a22 22 0 0 1 44 0v58a7 7 0 1 0 14 0v-29a22 22 0 0 1 44 0z" />
-        <path d="M70 221a7 7 0 1 0 7-12 105 105 0 1 1 142-35 7 7 0 0 0 3 10c3 2 7 1 9-3a119 119 0 1 0-161 40z" />
-      </symbol>
-    </svg>
   </template>
 
   <template id="template--thing-blind">
@@ -230,7 +245,7 @@
       <button class="thing--type-blind__close"><svg class="icon"><use href="#icon-down" /></svg></button>
     </div>
 
-    <svg>
+    <svg class="svg--symbols">
       <symbol id="icon-up" viewBox="0 0 555 555">
         <path stroke="#000" stroke-miterlimit="10" stroke-width="8" d="M551 277a272 272 0 0 1-274 274A272 272 0 0 1 4 277 272 272 0 0 1 277 4a272 272 0 0 1 274 273zm-525 0a252 252 0 1 0 504 0 252 252 0 0 0-504 0z" />
         <path stroke="#000" stroke-miterlimit="10" stroke-width="18" d="M154 357c0-7 1-13 5-18l88-152a36 36 0 0 1 61 0l88 152c7 11 7 24 0 35-6 12-18 18-31 18H190c-13 0-25-6-31-18-4-5-5-11-5-17zm239 0c0-5-1-10-4-14l-88-152c-5-9-13-14-23-14s-19 5-25 14l-87 152c-6 8-6 19-1 27 5 9 14 14 24 14h176c10 0 19-5 24-14 3-4 4-9 4-13z" />
@@ -317,75 +332,57 @@
         <span slot="location">Pièce de vie</span>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Général</span>
-            <span slot="long-name">Lumières de l'espace de vie</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumières</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/5"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumières</span>
+            <span slot="location">Général</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/5"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Table</span>
-            <span slot="long-name">Lumière de la table à manger</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/7"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumière</span>
+            <span slot="location">Table</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/7"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Îlot</span>
-            <span slot="long-name">Lumière de l'îlot de cuisine</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/8"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumière</span>
+            <span slot="location">Îlot</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/8"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Cuisine</span>
-            <span slot="long-name">Lumière de la niche de la cuisine</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/9"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumières</span>
+            <span slot="location">Cuisine</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/9"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Canapé</span>
-            <span slot="long-name">Prise commandée du canapé</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/6"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumières</span>
+            <span slot="location">Canapé</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/6"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Entrée</span>
-            <span slot="long-name">Lumières du hall d'entrée</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumières</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/4"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumières</span>
+            <span slot="location">Entrée</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/4"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
@@ -417,27 +414,21 @@
         <span slot="location">Salle de bain enfants</span>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">S. de Bain</span>
-            <span slot="long-name">Lumière de la salle de bain des enfants</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/1"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumière</span>
+            <span slot="location">S. de Bain</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/1"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Buanderie</span>
-            <span slot="long-name">Lumière de la buanderie</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/0"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumière</span>
+            <span slot="location">Buanderie</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/0"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
@@ -457,27 +448,21 @@
         <span slot="location">Chambres enfants</span>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Louise</span>
-            <span slot="long-name">Lumière de la chambre de Louise</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/2"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumière</span>
+            <span slot="location">Louise</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/2"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Éli</span>
-            <span slot="long-name">Lumière de la chambre d'Éli</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/3"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumière</span>
+            <span slot="location">Éli</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/3"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
@@ -509,39 +494,30 @@
         <span slot="location">Suite parentale</span>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Chambre</span>
-            <span slot="long-name">Lumière de la chambre parentale</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/12"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumière</span>
+            <span slot="location">Chambre</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/12"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Lit</span>
-            <span slot="long-name">Prises commandées du lit parental</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/10"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumière</span>
+            <span slot="location">Lit</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/10"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">S. de Bain</span>
-            <span slot="long-name">Lumière de la salle de bain des parents</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/11"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumière</span>
+            <span slot="location">S. de Bain</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/11"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
 
         <my-thing>
@@ -561,15 +537,12 @@
         <span slot="location">Serre</span>
 
         <my-thing>
-          <my-expandable-thing slot="thing">
-            <span slot="name">Serre</span>
-            <span slot="long-name">Lumières de la serre</span>
-            <span slot="state-icon"><svg class="icon"><use href="#icon-bulb" /></svg></span>
-            <span slot="state-text">lumière</span>
-            <my-thing--pulse
-              slot="thing"
-              data-base="http://192.168.1.128:8094/13"></my-thing--pulse>
-          </my-expandable-thing>
+          <my-actionable-thing slot="thing">
+            <span slot="name">Lumières</span>
+            <span slot="location">Serre</span>
+            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
+            <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/13"></my-thing--pulse>
+          </my-actionable-thing>
         </my-thing>
       </my-things>
     </section>

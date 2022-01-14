@@ -523,6 +523,7 @@ window.customElements.define(
                     let {value, formatted_value} = await (property.value_reader)();
                     element.innerHTML = formatted_value;
 
+                    value = Math.min(value, MAX_TEMPERATURE);
                     let max_length = meter_element.getTotalLength();
 
                     meter_element.style.strokeDasharray = (value * (max_length * MARGIN)) / MAX_TEMPERATURE + ' ' + max_length;
@@ -550,6 +551,23 @@ window.customElements.define(
             }
 
             fire(LONG_REFRESH_RATE, update);
+        }
+    }
+);
+
+window.customElements.define(
+    'my-actionable-thing',
+    class extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        async connectedCallback() {
+            const template = document.getElementById('template--actionable-thing');
+            const template_content = template.content.cloneNode(true);
+
+            const shadow_root = this.attachShadow({mode: 'open'})
+                  .appendChild(template_content);
         }
     }
 );
