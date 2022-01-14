@@ -236,6 +236,7 @@ main {
     .thing--frame > .thing--frame-name > .thing--frame-subname {
         font-size: 75%;
         font-weight: normal;
+        line-height: 90%;
     }
 
     .thing--frame > .thing--frame-content {
