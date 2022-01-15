@@ -583,7 +583,7 @@ window.customElements.define(
             const template = document.getElementById('template--thing-pulse');
             const template_content = template.content.cloneNode(true);
 
-            const button = template_content.querySelector('.thing--type-pulse button');
+            const button = template_content.querySelector('.thing--pulse');
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
