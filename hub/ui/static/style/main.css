@@ -507,18 +507,19 @@ main {
         right: .5rem;
     }
 
-.thing--pulse {
-    height: var(--thing--action-size);
-    width: var(--thing--action-size);
-}
-
+.thing--pulse,
 .thing--blind {
     height: var(--thing--action-size);
     width: var(--thing--action-size);
 }
 
+    .thing--pulse > .icon {
+        height: calc(var(--thing--action-size) - .8rem);
+        margin-bottom: 2px;
+    }
+
     .thing--blind > .icon {
-        height: calc(var(--thing--action-size) - 1rem);
+        height: calc(var(--thing--action-size) - 1.1rem);
         margin-bottom: 2px;
     }
 
