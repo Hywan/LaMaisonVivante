@@ -1,6 +1,7 @@
 :root {
     --color-light-000-transparent: hsla(0, 0%, 100%, 0.96);
     --color-light-000: hsl(0, 0%, 100%);
+    --color-light-005: hsl(0, 0%, 99.5%);
     --color-light-100: hsl(214, 41%, 97%);
     --color-light-200: hsl(222, 25%, 92%);
     --color-light-300: hsl(217, 48%, 83%);
@@ -34,7 +35,7 @@
 
     --backdrop-blur: 40px;
 
-    --icon-small: 2rem;
+    --icon-small: 1rem;
 }
 
 @font-face {
@@ -239,36 +240,31 @@ main {
         line-height: 90%;
     }
 
+    .thing--frame > .thing--frame-name > .thing--frame-subname > .thing--frame-subname-icon {
+        display: inline-block;
+        color: var(--color-light-300);
+        height: var(--icon-small);
+        width: var(--icon-small);
+        margin-left: calc(-1 * var(--icon-small) - 5px);
+        filter: drop-shadow(0 0 3px var(--color-light-200));
+    }
+
     .thing--frame > .thing--frame-content {
         flex: 1;
     }
 
-.thing--actionable {
-    display: grid;
-    grid-template: "icon action";
-    align-content: start;
+.thing--actionable {}
+
+.thing--actions {
+    --thing--action-size: 1.6rem;
+
+    display: inline-grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--thing--action-size), 1fr));
+    gap: .3rem;
+    justify-items: center;
+    width: 6.5rem;
+    margin-top: .5rem;
 }
-
-    .thing--actionable > .thing--actionable-icon {
-        grid-area: icon;
-        justify-self: left;
-        text-align: left;
-    }
-
-    .thing--frame-content > .thing--actionable-icon > .thing--actionable-icon-wrapper {
-        height: var(--icon-small);
-        width: var(--icon-small);
-        color: var(--color-light-300);
-        filter: drop-shadow(0 0 3px var(--color-light-200));
-    }
-
-    .thing--actionable > .thing--actionable-action {
-        grid-area: action;
-        justify-self: right;
-        text-align: right;
-        width: 2.5rem;
-        height: 2.5rem;
-    }
 
 .thing--expandable {}
 
@@ -511,42 +507,19 @@ main {
         right: .5rem;
     }
 
-.thing--type {
-    display: flex;
-    height: calc(100vh - var(--space-very-large) - var(--space-large) * 4);
-    box-sizing: border-box;
+.thing--pulse {
+    height: var(--thing--action-size);
+    width: var(--thing--action-size);
 }
 
-.thing--type-pulse {
-    justify-content: center;
-    align-items: center;
+.thing--blind {
+    height: var(--thing--action-size);
+    width: var(--thing--action-size);
 }
 
-    .thing--type-pulse button {
-        border-radius: 50%;
-    }
-
-.thing--type-blind {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-    .thing--type-blind > button {
-        border-radius: .5rem;
-        width: 100%;
-        height: 1.4rem;
-        color: var(--color-green-300);
-    }
-
-    .thing--type-blind > button + button {
-        margin-top: .35rem;
-    }
-
-    .thing--type-blind > button > .icon {
-        height: .6rem;
-        margin-bottom: .3rem;
+    .thing--blind > .icon {
+        height: calc(var(--thing--action-size) - 1rem);
+        margin-bottom: 2px;
     }
 
 iframe {
@@ -597,21 +570,19 @@ button {
     width: 100%;
     height: 100%;
 
-    background: linear-gradient(var(--light-direction), var(--color-light-000), var(--color-light-100));
-    box-shadow: 0 0 2px var(--color-green-300) inset,
-                0 0 6px var(--color-green-300);
-    border: 2px var(--color-green-300) solid
+    border: 2px transparent solid;
+    background: transparent;
+
+    border-radius: 50%;
+    background: var(--color-light-005);
+    box-shadow:  2px 2px 5px #eeedf0,
+                 -2px -2px 5px var(--color-light-000);
 }
 
     button:hover,
     button:focus {
         background: linear-gradient(145deg, #e6e6e6, #fff);
         border-color: var(--color-green-600);
-    }
-
-    .button__small {
-        width: var(--icon-small);
-        height: var(--icon-small);
     }
 
 .icon {

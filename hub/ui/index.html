@@ -207,19 +207,21 @@
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--frame">
+    <div class="thing--frame thing--actionable">
       <h3 class="thing--frame-name">
         <slot name="location">(unnamed)</slot>
-        <div class="thing--frame-subname"><slot name="name">(unnamed)</slot></div>
-      </h3>
 
-      <div class="thing--frame-content thing--actionable">
-        <div class="thing--actionable-icon">
-          <div class="thing--actionable-icon-wrapper">
+        <div class="thing--frame-subname">
+          <div class="thing--frame-subname-icon">
             <slot name="icon"></slot>
           </div>
+
+          <slot name="name">(unnamed)</slot>
         </div>
-        <div class="thing--actionable-action"><slot name="action"></slot></div>
+      </h3>
+
+      <div class="thing--frame-content">
+        <slot name="action"></slot>
       </div>
     </div>
   </template>
@@ -229,8 +231,8 @@
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--type-pulse">
-      <button class="button__small" title="Pulse"></button>
+    <div class="thing--actions">
+      <button class="thing--pulse" title="Pulse">•</button>
     </div>
   </template>
 
@@ -239,12 +241,12 @@
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--type-blind">
-      <button class="thing--type-blind__open"><svg class="icon"><use href="#icon-up" /></svg></button>
-      <button class="thing--type-blind__stop"><svg class="icon"><use href="#icon-stop" /></svg></button>
-      <button class="thing--type-blind__close"><svg class="icon"><use href="#icon-down" /></svg></button>
+    <div class="thing--actions">
+      <button class="thing--blind thing--blind-open" title="Open"><svg class="icon"><use href="#icon-up" /></svg></button>
+      <button class="thing--blind thing--blind-stop" title="Stop"><svg class="icon"><use href="#icon-stop" /></svg></button>
+      <button class="thing--blind thing--blind-close" title="Close"><svg class="icon"><use href="#icon-down" /></svg></button>
     </div>
-
+    
     <svg class="svg--symbols">
       <symbol id="icon-up" viewBox="0 0 35 32">
         <path fill="currentColor" stroke="currentColor" stroke-linejoin="round" stroke-width="8" d="m18 4 6 12 7 12H4l7-12z" />
@@ -260,8 +262,8 @@
     </svg>
   </template>
 
-  <script src="static/javascript/sunrise.js"></script>
-  <script src="static/javascript/main.js"></script>
+  <script src="static/javascript/sunrise.js" defer></script>
+  <script src="static/javascript/main.js" defer></script>
 </head>
 <body>
   <header class="header--container">

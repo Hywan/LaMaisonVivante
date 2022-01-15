@@ -613,9 +613,9 @@ window.customElements.define(
             const template = document.getElementById('template--thing-blind');
             const template_content = template.content.cloneNode(true);
 
-            const open_button = template_content.querySelector('.thing--type-blind__open');
-            const stop_button = template_content.querySelector('.thing--type-blind__stop');
-            const close_button = template_content.querySelector('.thing--type-blind__close');
+            const open_button = template_content.querySelector('.thing--blind-open');
+            const stop_button = template_content.querySelector('.thing--blind-stop');
+            const close_button = template_content.querySelector('.thing--blind-close');
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
