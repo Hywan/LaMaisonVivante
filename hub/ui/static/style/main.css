@@ -562,7 +562,7 @@ button {
     appeareance: none;
     cursor: pointer;
 
-    color: var(--color-green-300);
+    color: var(--color-green-600);
     font: inherit;
     font-weight: 600;
 
@@ -576,8 +576,8 @@ button {
 
     border-radius: 50%;
     background: var(--color-light-005);
-    box-shadow:  2px 2px 5px #eeedf0,
-                 -2px -2px 5px var(--color-light-000);
+    box-shadow:  3px 3px 6px #eeedf0,
+                 -3px -3px 6px var(--color-light-000);
 }
 
     button:hover,
