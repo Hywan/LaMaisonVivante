@@ -263,7 +263,7 @@ main {
     flex-flow: row wrap;
     gap: .5rem;
     width: 6.5rem;
-    margin-top: .5rem;
+    margin-top: var(--space);
 }
 
     .thing--actions > * {
