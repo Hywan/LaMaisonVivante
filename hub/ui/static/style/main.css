@@ -258,13 +258,16 @@ main {
 .thing--actions {
     --thing--action-size: 1.6rem;
 
-    display: inline-grid;
-    grid-template-columns: repeat(auto-fill, minmax(var(--thing--action-size), 1fr));
-    gap: .3rem;
-    justify-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    gap: .5rem;
     width: 6.5rem;
     margin-top: .5rem;
 }
+
+    .thing--actions > * {
+        flex: 1;
+    }
 
 .thing--expandable {}
 
@@ -509,6 +512,7 @@ main {
 
 .thing--pulse,
 .thing--blind {
+    border-radius: calc(var(--thing--action-size) / 2);
     height: var(--thing--action-size);
     width: var(--thing--action-size);
 }
@@ -520,7 +524,7 @@ main {
 
     .thing--blind > .icon {
         height: calc(var(--thing--action-size) - 1.1rem);
-        margin-bottom: 2px;
+        margin-bottom: 3px;
     }
 
 iframe {
@@ -576,8 +580,8 @@ button {
 
     border-radius: 50%;
     background: var(--color-light-005);
-    box-shadow:  3px 3px 6px #eeedf0,
-                 -3px -3px 6px var(--color-light-000);
+    box-shadow:  3px 3px 12px #e9e9ea,
+                 -3px -3px 12px var(--color-light-000);
 }
 
     button:hover,
