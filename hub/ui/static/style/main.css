@@ -2,6 +2,7 @@
     --color-light-000-transparent: hsla(0, 0%, 100%, 0.96);
     --color-light-000: hsl(0, 0%, 100%);
     --color-light-005: hsl(0, 0%, 99.5%);
+    --color-light-010: hsl(0, 0%, 99%);
     --color-light-100: hsl(214, 41%, 97%);
     --color-light-200: hsl(222, 25%, 92%);
     --color-light-300: hsl(217, 48%, 83%);
@@ -514,12 +515,10 @@ main {
 .thing--blind {
     border-radius: calc(var(--thing--action-size) / 2);
     height: var(--thing--action-size);
-    width: var(--thing--action-size);
 }
 
     .thing--pulse > .icon {
         height: calc(var(--thing--action-size) - .8rem);
-        margin-bottom: 2px;
     }
 
     .thing--blind > .icon {
@@ -570,24 +569,15 @@ button {
     font: inherit;
     font-weight: 600;
 
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-
-    border: 2px transparent solid;
-    background: transparent;
-
-    border-radius: 50%;
-    background: var(--color-light-005);
-    box-shadow:  3px 3px 12px #e9e9ea,
-                 -3px -3px 12px var(--color-light-000);
+    border: none;
+    background: var(--color-light-010);
+    box-shadow: inset 2px 2px 3px #e9e9e9,
+                inset -2px -2px 3px #ffffff;
 }
 
     button:hover,
     button:focus {
         background: linear-gradient(145deg, #e6e6e6, #fff);
-        border-color: var(--color-green-600);
     }
 
 .icon {
