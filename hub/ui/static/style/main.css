@@ -257,7 +257,7 @@ main {
 .thing--actionable {}
 
 .thing--actions {
-    --thing--action-size: 1.6rem;
+    --thing--action-size: 2rem;
 
     display: flex;
     flex-flow: row wrap;
@@ -513,17 +513,18 @@ main {
 
 .thing--pulse,
 .thing--blind {
+    display: flex;
+    align-items: center;
     border-radius: calc(var(--thing--action-size) / 2);
     height: var(--thing--action-size);
 }
 
     .thing--pulse > .icon {
-        height: calc(var(--thing--action-size) - .8rem);
+        height: calc(var(--thing--action-size) - 1rem);
     }
 
     .thing--blind > .icon {
-        height: calc(var(--thing--action-size) - 1.1rem);
-        margin-bottom: 3px;
+        height: calc(var(--thing--action-size) - 1.4rem);
     }
 
 iframe {
@@ -571,8 +572,8 @@ button {
 
     border: none;
     background: var(--color-light-010);
-    box-shadow: inset 2px 2px 3px #e9e9e9,
-                inset -2px -2px 3px #ffffff;
+    box-shadow: inset 1px 1px 3px #e9e9e9,
+                inset -1px -1px 3px #ffffff;
 }
 
     button:hover,
