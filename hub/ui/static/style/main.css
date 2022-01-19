@@ -82,17 +82,13 @@ body {
                    "main";
     grid-template-rows: auto 1fr;
     margin: 0 auto;
-    padding: 0 var(--space-large);
+    padding: 0 var(--space);
     min-height: 100%;
     max-width: 50rem;
 
     font: 1.1em/1.4em text;
     font-weight: 400;
 }
-
-strong {
-    font-weight: 600;
-} 
 
 .header--container {
     position: sticky;
@@ -205,8 +201,8 @@ main {
     gap: var(--space);
     justify-items: center;
 
-    margin-block-end: var(--space-very-very-large);
-    padding-block-start: var(--space-large);
+    margin-bottom: var(--space-very-very-large);
+    padding-top: var(--space-large);
 }
 
 .thing--frame {
@@ -587,6 +583,10 @@ h3 { font-size: 110% }
 a {
     text-decoration: none;
 }
+
+strong {
+    font-weight: 600;
+} 
 
 button {
     appeareance: none;
