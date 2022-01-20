@@ -211,11 +211,9 @@ main {
     --thing--frame--padding-block: var(--space);
     --thing--frame--padding-inline: var(--space-large);
 
-    position: relative;
-    z-index: 10;
-
     display: flex;
     flex-direction: column-reverse;
+    gap: var(--space-very-small);
 
     box-sizing: border-box;
     width: 9.5rem;
@@ -226,13 +224,9 @@ main {
     box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
                 calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
     background: var(--color-light-000);
-
-    overflow: hidden;
 }
 
     .thing--frame > .thing--frame-name {
-        z-index: 11;
-
         display: flex;
         flex-direction: column-reverse;
         align-self: center;
@@ -241,39 +235,11 @@ main {
     .thing--frame > .thing--frame-name > .thing--frame-subname {
         font-size: 75%;
         font-weight: normal;
-        line-height: 90%;
-    }
-
-    .thing--frame > .thing--frame-name > .thing--frame-subname > .thing--frame-subname-icon {
-        display: inline-block;
-        color: var(--color-light-300);
-        height: var(--icon-small);
-        width: var(--icon-small);
-        margin-left: calc(-1 * var(--icon-small) - 5px);
-        filter: drop-shadow(0 0 3px var(--color-light-200));
+        line-height: 80%;
     }
 
     .thing--frame > .thing--frame-content {
-        z-index: 11;
-
         flex: 1;
-    }
-
-    .thing--frame > .thing--frame-background {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 1;
-    }
-
-    .thing--frame > .thing--frame-background > .thing--frame-background-wrapper {
-        color: var(--color-blue-300);
-        filter: opacity(40%) saturate(80%);
-        width: 50%;
-        height: 80%;
-        transform: translateX(-30%) translateY(20%);
     }
 
 .thing--actionable {}
@@ -284,7 +250,6 @@ main {
     display: flex;
     flex-flow: row wrap;
     gap: .5rem;
-    width: 6.5rem;
     margin-top: var(--space);
 }
 

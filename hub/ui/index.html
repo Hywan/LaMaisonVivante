@@ -212,21 +212,12 @@
         <slot name="location">(unnamed)</slot>
 
         <div class="thing--frame-subname">
-          <div class="thing--frame-subname-icon">
-          </div>
-
           <slot name="name">(unnamed)</slot>
         </div>
       </h3>
 
       <div class="thing--frame-content">
         <slot name="action"></slot>
-      </div>
-
-      <div class="thing--frame-background">
-        <div class="thing--frame-background-wrapper">
-          <slot name="icon"></slot>
-        </div>
       </div>
     </div>
   </template>
@@ -258,7 +249,7 @@
       <button class="thing--blind thing--blind-stop" title="Stop"><svg class="icon"><use href="#icon-stop" /></svg></button>
       <button class="thing--blind thing--blind-close" title="Close"><svg class="icon"><use href="#icon-down" /></svg></button>
     </div>
-    
+
     <svg class="svg--symbols">
       <symbol id="icon-up" viewBox="0 0 35 32">
         <path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="6" d="m18 4 6 12 7 12H4l7-12z" />
@@ -347,7 +338,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumières</span>
             <span slot="location">Général</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/5"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -356,7 +346,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumière</span>
             <span slot="location">Table</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/7"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -365,7 +354,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumière</span>
             <span slot="location">Îlot</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/8"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -374,7 +362,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumières</span>
             <span slot="location">Cuisine</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/9"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -383,7 +370,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumières</span>
             <span slot="location">Canapé</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/6"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -392,7 +378,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumières</span>
             <span slot="location">Entrée</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/4"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -401,7 +386,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">store</span>
             <span slot="location">Terrasse</span>
-            <svg slot="icon" class="icon"><use href="#icon-blind" /></svg>
             <my-thing--blind slot="action" data-base="http://192.168.1.128:8095/1"></my-thing--blind>
           </my-actionable-thing>
         </my-thing>
@@ -410,7 +394,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">store</span>
             <span slot="location">Cuisine</span>
-            <svg slot="icon" class="icon"><use href="#icon-blind" /></svg>
             <my-thing--blind slot="action" data-base="http://192.168.1.128:8095/0"></my-thing--blind>
           </my-actionable-thing>
         </my-thing>
@@ -423,7 +406,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumière</span>
             <span slot="location">S. de Bain</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/1"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -432,7 +414,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumière</span>
             <span slot="location">Buanderie</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/0"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -441,7 +422,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">store</span>
             <span slot="location">S. de Bain</span>
-            <svg slot="icon" class="icon"><use href="#icon-blind" /></svg>
             <my-thing--blind slot="action" data-base="http://192.168.1.128:8095/5"></my-thing--blind>
           </my-actionable-thing>
         </my-thing>
@@ -454,7 +434,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumière</span>
             <span slot="location">Louise</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/2"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -463,7 +442,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumière</span>
             <span slot="location">Éli</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/3"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -472,7 +450,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">store</span>
             <span slot="location">Louise</span>
-            <svg slot="icon" class="icon"><use href="#icon-blind" /></svg>
             <my-thing--blind slot="action" data-base="http://192.168.1.128:8095/4"></my-thing--blind>
           </my-actionable-thing>
         </my-thing>
@@ -481,7 +458,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">store</span>
             <span slot="location">Éli</span>
-            <svg slot="icon" class="icon"><use href="#icon-blind" /></svg>
             <my-thing--blind slot="action" data-base="http://192.168.1.128:8095/3"></my-thing--blind>
           </my-actionable-thing>
         </my-thing>
@@ -494,7 +470,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumière</span>
             <span slot="location">Chambre</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/12"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -503,7 +478,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumière</span>
             <span slot="location">Lit</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/10"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -512,7 +486,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumière</span>
             <span slot="location">S. de Bain</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/11"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -521,7 +494,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">store</span>
             <span slot="location">Chambre</span>
-            <svg slot="icon" class="icon"><use href="#icon-blind" /></svg>
             <my-thing--blind slot="action" data-base="http://192.168.1.128:8095/2"></my-thing--blind>
           </my-actionable-thing>
         </my-thing>
@@ -534,7 +506,6 @@
           <my-actionable-thing slot="thing">
             <span slot="name">lumières</span>
             <span slot="location">Serre</span>
-            <svg slot="icon" class="icon"><use href="#icon-bulb" /></svg>
             <my-thing--pulse slot="action" data-base="http://192.168.1.128:8094/13"></my-thing--pulse>
           </my-actionable-thing>
         </my-thing>
@@ -559,13 +530,6 @@
   </main>
 
   <svg height="0" width="0">
-    <symbol id="icon-bulb" viewBox="0 0 350 560">
-        <path fill="currentColor" d="M175 0a175 175 0 01142 277c-24 31-37 69-37 108a35 35 0 01-35 35H128a12 12 0 00-11 12l-1 81c0 13 11 24 24 24h70c13 0 23-11 23-24v-58a12 12 0 0124 0v61c0 24-22 44-47 44h-70c-25 0-47-20-47-44v-84a35 35 0 0135-35h117a12 12 0 0012-12c0-42 13-83 39-118a152 152 0 10-241 0 199 199 0 0138 106 12 12 0 01-23 0l-2-11c-4-31-16-60-35-85A175 175 0 01175 0z" />
-    </symbol>
-    <symbol id="icon-blind" viewBox="0 0 478 530">
-      <path fill="currentColor" d="M445 392v105H33V392c0-5-3-8-8-8H8c-5 0-8 3-8 8v122c0 8 7 16 16 16h445c10 0 17-8 17-16V392c0-5-4-8-9-8h-16c-5 0-8 3-8 8zM8 323h38c5 0 8 3 8 8v26c0 5-3 9-8 9H16c-9 0-16-9-16-17v-18c0-3 3-8 8-8zm366 8v26c0 5-3 9-8 9H112c-5 0-8-4-8-9v-26c0-5 3-8 8-8h254c5 0 8 5 8 8zm104 0v18c0 8-9 17-17 17h-29c-5 0-9-4-9-9v-26c0-5 4-8 9-8h37c5 0 9 5 9 8zM8 264h38c5 0 8 3 8 8v26c0 5-3 8-8 8H16c-9 0-16-8-16-16v-18c0-5 3-8 8-8Zm366 8v26c0 5-3 8-8 8H112c-5 0-8-3-8-8v-26c0-5 3-8 8-8h254c5 0 8 3 8 8zm104 0v18c0 8-9 16-17 16h-29c-5 0-9-3-9-8v-26c0-5 4-8 9-8h37c5 0 9 3 9 8zM8 203h38c5 0 8 3 8 8v26c0 5-3 8-8 8H16c-9 0-16-6-16-16v-18c0-3 3-8 8-8Zm366 8v26c0 5-3 8-8 8H112c-5 0-8-3-8-8v-26c0-5 3-8 8-8h254c5 0 8 5 8 8zm104 0v18c0 10-9 16-17 16h-29c-5 0-9-3-9-8v-26c0-5 4-8 9-8h37c5 0 9 5 9 8zM8 143h38c5 0 8 4 8 9v28c0 4-3 8-8 8H16c-9 0-16-8-16-17v-19c0-5 3-9 8-9Zm366 9v28c0 4-3 8-8 8H112c-5 0-8-4-8-8v-28c0-5 3-9 8-9h254c5 0 8 4 8 9zm104 0v19c0 9-9 17-17 17h-29c-5 0-9-4-9-8v-28c0-5 4-9 9-9h37c5 0 9 4 9 9zM8 82h38c5 0 8 4 8 9v26c0 5-3 8-8 8H16c-9 0-16-6-16-16V91c0-4 3-9 8-9zm366 9v26c0 5-3 8-8 8H112c-5 0-8-3-8-8V91c0-5 3-9 8-9h254c5 0 8 5 8 9zm104 0v19c0 9-9 17-17 17h-29c-5 0-9-3-9-8V91c0-5 4-9 9-9h37c5 0 9 5 9 9zM374 8v41c0 5-3 9-8 9H112c-5 0-8-4-8-9V8c0-5 3-8 8-8h254c5 0 8 5 8 8zm104 8v25c0 8-9 17-17 17h-29c-5 0-9-4-9-9V8c0-5 4-8 9-8h29c10 0 17 8 17 16zM0 16v25c0 8 9 17 17 17h29c5 0 9-4 9-9V8c0-5-4-8-9-8H17C7 0 0 8 0 16ZM71 0h16v367H71Zm319 0h17v367h-17z" />
-    </symbol>
-
     <symbol id="icon-graph" viewBox="0 0 482 470">
       <path fill="currentColor" d="M241 217a72 72 0 0 0-72 71v111a72 72 0 1 0 144 0V288a72 72 0 0 0-72-71zm38 182a38 38 0 1 1-77 0V288a38 38 0 0 1 77 0zM72 101a72 72 0 0 0-72 72v226a72 72 0 1 0 144 0V173a72 72 0 0 0-72-72Zm38 298a38 38 0 0 1-76 0V173a38 38 0 0 1 76 0zM410 0a72 72 0 0 0-72 72v327a72 72 0 1 0 144 0V72a72 72 0 0 0-72-72Zm38 399a38 38 0 1 1-77 0V72a38 38 0 0 1 77 0z" />
     </symbol>
