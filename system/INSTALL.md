@@ -110,30 +110,10 @@ $ cd LaMaisonVivante
 Now build various programs by following the `README.md`s (likely with
 `cargo build --release`).
 
-## Mozilla IoT
+## Update timezone
 
-To install the [Mozilla IoT
-Gateway](https://github.com/mozilla-iot/gateway), first install
-NodeJS, then clone the repository and install it:
+To update the local time:
 
 ```sh
-$ curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
-$ sudo apt install nodejs
-$ npm config set prefix $HOME
-$ cd $HOME/development
-$ git clone https://github.com/mozilla-iot/gateway mozilla-iot
-$ cd mozilla-iot
-$ sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
-$ sudo setcap cap_net_raw+eip $(eval readlink -f `which python3`)
-$ sudo apt install libboost-python-dev libboost-thread-dev libbluetooth-dev libglib2.0-dev
-$ sudo apt install libusb-1.0-0-dev libudev-dev
-$ sudo apt install autoconf
-$ python3 -m pip install git+https://github.com/mozilla-iot/gateway-addon-python#egg=gateway_addon
-$ npm ci
-```
-
-Finally, start it:
-
-```sh
-$ npm start
+$ sudo timedatectl set-timezone Europe/Zurich
 ```
