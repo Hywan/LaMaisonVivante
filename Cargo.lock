@@ -155,6 +155,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "approx"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f0e60b75072ecd4168020818c0107f2857bb6c4e64252d8d3983f6263b40a5c3"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
 name = "async-trait"
 version = "0.1.51"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -679,6 +688,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6930e04918388a9a2e41d518c25cf679ccafe26733fb4127dbf21993f2575d46"
 dependencies = [
  "backtrace",
+]
+
+[[package]]
+name = "event-automator"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "confy",
+ "diesel",
+ "directories-next",
+ "human-panic",
+ "serde",
+ "structopt",
+ "sunrise",
 ]
 
 [[package]]
@@ -2542,6 +2565,16 @@ dependencies = [
  "proc-macro2 1.0.33",
  "quote 1.0.10",
  "syn 1.0.82",
+]
+
+[[package]]
+name = "sunrise"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "31eab24a5525f35ab4fc2fa1a9bd09a0cfe1e738bcfb1fd400d64a562a7fdf2f"
+dependencies = [
+ "approx",
+ "chrono",
 ]
 
 [[package]]

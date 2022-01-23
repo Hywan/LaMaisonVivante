@@ -5,6 +5,7 @@ members = [
     "dhw-ventilation/nilan/",
     "electricity/victron-reader/",
     "hub/event-aggregator/",
+    "hub/event-automator/",
     "lights/lights-controller/",
     "tanks/tanks-controller/",
 ]
