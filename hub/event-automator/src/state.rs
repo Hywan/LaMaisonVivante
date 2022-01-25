@@ -17,7 +17,7 @@ pub enum SunPeriod {
 
 #[derive(Debug)]
 pub struct SunState {
-    period: SunPeriod,
+    pub period: SunPeriod,
 }
 
 impl Default for SunState {
@@ -61,7 +61,7 @@ impl UpdateState for SunState {
 
 #[derive(Debug, Default)]
 pub struct State {
-    sun: SunState,
+    pub sun: SunState,
 }
 
 impl UpdateState for State {

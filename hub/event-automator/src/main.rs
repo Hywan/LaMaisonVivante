@@ -33,17 +33,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    let database_url = options.database_url.unwrap_or(configuration.database_url);
+    let database_url = {
+        let database_url = options.database_url.unwrap_or(configuration.database_url);
 
-    if database_url.is_empty() {
-        panic!(
-            "The database URL is empty, use `--database-url` or the configuration file to set it"
-        );
-    }
+        if database_url.is_empty() {
+            panic!(
+                "The database URL is empty, use `--database-url` or the configuration file to set it"
+            );
+        }
+
+        database_url
+    };
+
+    let blinds_url = options.blinds_url.unwrap_or(configuration.blinds_url);
 
     let database_connection = PgConnection::establish(&database_url).expect(&format!(
         "Failed to connect to database at `{}`",
-        database_url
+        &database_url
     ));
 
     let result = diesel::sql_query("SELECT * FROM electricity_production LIMIT 1")
@@ -52,7 +58,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     dbg!(&result);
 
-    event_loop::run();
+    event_loop::run(&blinds_url);
 
     Ok(())
 }
