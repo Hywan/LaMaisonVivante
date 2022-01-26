@@ -127,6 +127,7 @@ pub fn aggregate(addresses: Vec<AddressWithRefreshRate>, database_connection: Pg
                         diesel::insert_into(database::schema::air::table)
                             .values(&database::models::Air {
                                 time: &now,
+                                state: air.state,
                                 inside_humidity: air.inside_humidity,
                                 supplied_temperature_after_ground_coupled_heat_exchanger: air
                                     .supplied_temperature_after_ground_coupled_heat_exchanger,

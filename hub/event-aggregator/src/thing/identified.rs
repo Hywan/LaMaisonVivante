@@ -105,6 +105,7 @@ impl TryFrom<&generic::Thing> for Thing {
             }),
 
             "urn:dev:ops:ventilation" => Thing::Air(Air {
+                state: property!(Air.state from generic as_str).to_string(),
                 inside_humidity: property!(Air.inside_air_humidity from generic as_f64),
                 supplied_temperature_after_ground_coupled_heat_exchanger: property!(Air.supplied_air_after_ground_coupled_heat_exchanger from generic as_f64),
                 supplied_temperature_after_heat_recovery_exchanger: property!(Air.supplied_air_after_heat_recovery_exchanger from generic as_f64),
@@ -151,6 +152,7 @@ pub struct DomesticHotWater {
 
 #[derive(Debug)]
 pub struct Air {
+    pub state: String,
     pub inside_humidity: f64,
     pub supplied_temperature_after_ground_coupled_heat_exchanger: f64,
     pub supplied_temperature_after_heat_recovery_exchanger: f64,

@@ -64,6 +64,8 @@ pub struct DomesticHotWater<'a> {
 pub struct Air<'a> {
     pub time: &'a SystemTime,
 
+    pub state: String,
+
     pub inside_humidity: f64,
 
     pub supplied_temperature_after_ground_coupled_heat_exchanger: f64,

@@ -1,4 +1,4 @@
-use crate::{reader, state::VentilationMode};
+use crate::{reader, state::VentilationMode, state::VentilationState};
 use serde_json::{json, Value};
 use std::{
     net::SocketAddr,
@@ -91,10 +91,28 @@ fn make_ventilation() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
         Some(
             json!({
                 "@type": "ThermostatModeProperty",
-                "title": "Ventilation state",
+                "title": "Ventilation mode",
                 "type": "string",
                 "enum": ["auto", "cool", "heat"],
-                "description": "The ventilation state/mode",
+                "description": "The ventilation mode",
+                "readOnly": true
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        ),
+    )));
+    thing.add_property(Box::new(BaseProperty::new(
+        "state".to_owned(),
+        json!(0),
+        None,
+        Some(
+            json!({
+                "@type": "ThermostatModeProperty",
+                "title": "Ventilation state",
+                "type": "string",
+                "enum": ["paused", "running"],
+                "description": "The ventilation state",
                 "readOnly": true
             })
             .as_object()
@@ -315,6 +333,14 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
                     VentilationMode::Auto => "auto",
                     VentilationMode::Cooling => "cool",
                     VentilationMode::Heating => "heat",
+                }
+            );
+            update_property!(
+                ventilation,
+                "state",
+                match ventilation_state.state {
+                    VentilationState::Paused => "paused",
+                    VentilationState::Running => "running",
                 }
             );
             update_property!(

@@ -7,6 +7,7 @@ table! {
         extracted_temperature -> Float8,
         discharged_temperature -> Float8,
         wanted_temperature -> Float8,
+        state -> Nullable<VarChar>,
     }
 }
 
