@@ -1,3 +1,4 @@
+mod actions;
 mod command;
 mod configuration;
 mod database;

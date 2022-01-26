@@ -1,6 +1,6 @@
+use crate::actions;
 use crate::events::Event;
 use crate::state::{State, SunPeriod, UpdateState};
-use reqwest::blocking::Client as HTTPClient;
 use std::{net, thread, time::Duration};
 
 pub fn run(blinds_url: &net::SocketAddr) {
@@ -20,7 +20,7 @@ pub fn run(blinds_url: &net::SocketAddr) {
         for new_event in &new_events {
             match new_event {
                 Event::SunPeriodChange if state.sun.period == SunPeriod::Night => {
-                    close_blinds(&blinds_url)
+                    actions::close_blinds(&blinds_url).unwrap()
                 }
 
                 _ => {
@@ -31,19 +31,10 @@ pub fn run(blinds_url: &net::SocketAddr) {
 
         println!("Sleeping…");
 
-        thread::sleep(Duration::from_secs(3));
-        //
+        thread::sleep(Duration::from_secs(30));
     });
 
     loupe
         .join()
         .expect("Something has failed in the event loop");
-}
-
-fn close_blinds(blinds_url: &str) {
-    let client = HTTPClient::new();
-    let _res = client
-        .post(format!("{}/0/actions/close", blinds_url))
-        .body("{\"open\": {}}")
-        .send();
 }

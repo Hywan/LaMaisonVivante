@@ -40,8 +40,7 @@ impl UpdateState for SunState {
             now.day(),
         );
 
-        let now_utc: DateTime<Utc> = DateTime::from(now);
-        let now_utc_timestamp = now_utc.timestamp();
+        let now_utc_timestamp = DateTime::<Utc>::from(now).timestamp();
 
         let next_state = Self {
             period: if sunrise <= now_utc_timestamp && now_utc_timestamp <= sunset {
