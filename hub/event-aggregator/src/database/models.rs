@@ -1,4 +1,4 @@
-use super::schema::*;
+use super::{enums::*, schema::*};
 use std::time::SystemTime;
 
 #[derive(Insertable)]
@@ -64,7 +64,7 @@ pub struct DomesticHotWater<'a> {
 pub struct Air<'a> {
     pub time: &'a SystemTime,
 
-    pub state: String,
+    pub state: AirState,
 
     pub inside_humidity: f64,
 
