@@ -467,6 +467,7 @@ main {
 
     .thing--ventilation[data-state="paused"] > .thing--frame-content {
         opacity: .3;
+        filter: grayscale(100%);
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-meters {
