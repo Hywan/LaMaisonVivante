@@ -224,6 +224,8 @@ main {
     box-shadow: var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-200),
                 calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-000);
     background: var(--color-light-000);
+
+    overflow: hidden;
 }
 
     .thing--frame > .thing--frame-name {
@@ -461,6 +463,10 @@ main {
     .thing--ventilation > .thing--frame-content {
         position: relative;
         text-align: center;
+    }
+
+    .thing--ventilation[data-state="paused"] > .thing--frame-content {
+        opacity: .3;
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-meters {

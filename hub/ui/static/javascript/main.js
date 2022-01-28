@@ -97,26 +97,28 @@ async function read_property(base, property_name) {
 
     const property_json_response = READ_PROPERTY_CACHE[base][property_name];
     const property_description = property_json_response.properties[property_name];
-    const unit = property_description.unit;
-    const link = property_description.links[0].href;
-    let min = 0;
-    let max = null;
+    const property_link = property_description.links[0].href;
 
-    if (property_description.minimum) {
-        min = property_description.minimum;
-    }
+    let value_reader;
+    const extra_values = {};
 
-    if (property_description.maximum) {
-        max = property_description.maximum;
-    }
+    switch (property_description.type) {
+    case 'integer':
+    case 'number': {
+        const unit = property_description.unit;
+        let min = 0;
+        let max = null;
 
-    return READ_PROPERTY_CACHE[base][property_name] = {
-        link,
-        unit,
-        min,
-        max,
-        value_reader: async function () {
-            const response = await http_get(base_origin + link);
+        if (property_description.minimum) {
+            min = property_description.minimum;
+        }
+
+        if (property_description.maximum) {
+            max = property_description.maximum;
+        }
+
+        value_reader = async function () {
+            const response = await http_get(base_origin + property_link);
             const json_response = await response.json();
             const value = json_response[property_name];
             let formatted_value = Math.round((value + Number.EPSILON) * 100) / 100;
@@ -143,7 +145,28 @@ async function read_property(base, property_name) {
                 value,
                 formatted_value,
             };
-        },
+        };
+
+        break;
+    }
+
+    case 'string': {
+        value_reader = async function () {
+            const response = await http_get(base_origin + property_link);
+            const json_response = await response.json();
+            const value = json_response[property_name];
+
+            return {value};
+        };
+
+        break;
+    }
+    }
+
+    return READ_PROPERTY_CACHE[base][property_name] = {
+        link: property_link,
+        value_reader,
+        ...extra_values
     };
 }
 
@@ -499,6 +522,8 @@ window.customElements.define(
             const template = document.getElementById('template--ventilation-thing');
             const template_content = template.content.cloneNode(true);
 
+            const thing_state_element = template_content.querySelector('[data-state]');
+
             const thing_after_ground_coupled_heat_exchanger_element = template_content.querySelector('.thing--ventilation-after-ground-coupled-heat-exchanger');
             const thing_after_heat_recovery_exchanger_element = template_content.querySelector('.thing--ventilation-after-heat-recovery-exchanger');
             const thing_extracted_element = template_content.querySelector('.thing--ventilation-extracted');
@@ -511,6 +536,8 @@ window.customElements.define(
                   .appendChild(template_content);
 
             const base = this.getAttribute('data-base').replace(/\/+$/, '');
+
+            const state_property = await read_property(base, this.getAttribute('data-state-property'));
             const after_ground_coupled_heat_exchanger_property = await read_property(base, this.getAttribute('data-after-ground-coupled-heat-exchanger-value'));
             const after_heat_recovery_exchanger_property = await read_property(base, this.getAttribute('data-after-heat-recovery-exchanger-value'));
             const extracted_property = await read_property(base, this.getAttribute('data-extracted-value'));
@@ -546,6 +573,9 @@ window.customElements.define(
                     thing_extracted_element,
                     thing_extracted_meter_element,
                 );
+
+                let {value: state_value} = await (state_property.value_reader)();
+                thing_state_element.dataset.state = state_value;
 
                 next();
             }

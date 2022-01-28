@@ -176,7 +176,7 @@
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--frame thing--ventilation">
+    <div class="thing--frame thing--ventilation" data-state="">
       <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
       <div class="thing--frame-content">
@@ -185,7 +185,7 @@
         <div class="thing--ventilation-extracted">?</div>
 
         <svg class="thing--ventilation-meters" viewBox="0 0 38 38">
-          <g class="blenderr">
+          <g class="blender">
             <foreignObject x="0" y="0" width="38" height="38">
               <div class="gradient gradient--conic__ventilation"></div>
             </foreignObject>
@@ -323,6 +323,7 @@
           <my-ventilation-thing
             slot="thing"
             data-base="http://192.168.1.128:8093/1"
+            data-state-property="state"
             data-after-ground-coupled-heat-exchanger-value="supplied_air_after_ground_coupled_heat_exchanger"
             data-after-heat-recovery-exchanger-value="supplied_air_after_heat_recovery_exchanger"
             data-extracted-value="extracted_air">
