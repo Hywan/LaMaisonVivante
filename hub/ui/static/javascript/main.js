@@ -421,15 +421,15 @@ window.customElements.define(
             let sunset = null;
 
             async function update(next) {
-                // `thing_primary_value_element`.
+                // Update `thing_primary_value_element`.
                 const {value, formatted_value} = await (primary_property.value_reader)();
 
                 thing_primary_value_element.innerHTML = formatted_value;
 
-                // `thing_sunrise_element` + `thing_sunset_element`.
+                // Update `thing_sunrise_element` + `thing_sunset_element`.
                 let now = new Date();
 
-                // The day has changed.
+                /// The day has changed.
                 if (previous_now.getDate() != now.getDate() || sunrise == null || sunset == null) {
                     previous_now = now;
 
@@ -451,18 +451,33 @@ window.customElements.define(
                 thing_sunrise_element.innerHTML = sunrise.getHours() + ":" + number_to_2_chars(sunrise.getMinutes());
                 thing_sunset_element.innerHTML = sunset.getHours() + ":" + number_to_2_chars(sunset.getMinutes());
 
-                // `thing_sun_element`.
-                let now_in_minutes = now.getHours() * 60 + now.getMinutes();
-                const min_sun = sunrise.getHours() * 60 + sunrise.getMinutes();
-                const max_sun = sunset.getHours() * 60 + sunset.getMinutes();
-                const min_circle = 50;
-                const max_circle = 100;
+                // Update `thing_sun_element`.
 
-                const pos = ((now_in_minutes - min_sun) / (max_sun - min_sun)) * (max_circle - min_circle) + min_circle;
+                /// No sun!
+                if (now < sunrise || now > sunset) {
+                    if ('false' == thing_sun_element.getAttribute('aria-hidden')) {
+                        thing_sun_element.setAttribute('aria-hidden', 'true');
+                    }
+                }
+                /// Position the sun.
+                else {
+                    if ('true' == thing_sun_element.getAttribute('aria-hidden')) {
+                        thing_sun_element.setAttribute('aria-hidden', 'false');
+                    }
 
-                const pos_point = thing_meter_circle_element.getPointAtLength(pos);
-                thing_sun_element.setAttributeNS(null, "cx", pos_point.x);
-                thing_sun_element.setAttributeNS(null, "cy", pos_point.y);
+                    let now_in_minutes = now.getHours() * 60 + now.getMinutes();
+                    const min_sun = sunrise.getHours() * 60 + sunrise.getMinutes();
+                    const max_sun = sunset.getHours() * 60 + sunset.getMinutes();
+                    const circle_length = thing_meter_circle_element.getTotalLength();
+                    const min_circle = circle_length / 2;
+                    const max_circle = circle_length;
+
+                    const pos = ((now_in_minutes - min_sun) / (max_sun - min_sun)) * (max_circle - min_circle) + min_circle;
+
+                    const pos_point = thing_meter_circle_element.getPointAtLength(pos);
+                    thing_sun_element.setAttributeNS(null, "cx", pos_point.x);
+                    thing_sun_element.setAttributeNS(null, "cy", pos_point.y);
+                }
 
                 next();
             }
