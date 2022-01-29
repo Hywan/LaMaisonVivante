@@ -463,7 +463,7 @@ main {
         position: relative;
     }
 
-    .thing--ventilation[data-state="running"] > .thing--frame-content {
+    .thing--ventilation[data-state="paused"] > .thing--frame-content {
         opacity: .25;
         filter: grayscale(40%);
     }
