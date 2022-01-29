@@ -665,6 +665,14 @@ button {
         );
     }
 
+    .gradient--conic__yellow_to_pink {
+        background: conic-gradient(
+            from 84deg,
+            var(--color-yellow-100) 0%,
+            var(--color-pink-600) 100%
+        );
+    }
+
     .gradient--conic__blue_to_red {
         background: conic-gradient(
             from 90deg,
