@@ -117,6 +117,9 @@ async function read_property(base, property_name) {
             max = property_description.maximum;
         }
 
+        extra_values.min = min;
+        extra_values.max = max;
+
         value_reader = async function () {
             const response = await http_get(base_origin + property_link);
             const json_response = await response.json();
