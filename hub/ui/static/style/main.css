@@ -356,6 +356,10 @@ main {
         font-size: var(--thing--frame--font-size-primary);
     }
 
+    .thing--meter > .thing--frame-content > .thing--meter-primary-value.thing--meter-primary-value-large {
+        top: calc(50% - var(--this-height) / 2);
+    }
+
     .thing--meter > .thing--frame-content > .thing--meter-secondary-value {
         --this-height: 1.5rem;
 

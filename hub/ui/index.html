@@ -330,6 +330,16 @@
             <span slot="name">Ventilation</span>
           </my-ventilation-thing>
         </my-thing>
+
+        <my-thing>
+          <my-meter-thing
+            slot="thing"
+            data-base="http://192.168.1.128:8093/1"
+            data-property="inside_air_humidity">
+            <span slot="name">Humidité</span>
+            <div slot="meter-gradient" class="gradient gradient--conic__blue_to_red"></div>
+          </my-meter-thing>
+        </my-thing>
       </my-unlocated-things>
 
       <my-things>

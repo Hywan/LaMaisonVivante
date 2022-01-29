@@ -329,6 +329,8 @@ window.customElements.define(
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
+            const circle_length = thing_meter_circle_element.getTotalLength();
+
             async function update(
                 next,
                 thing_value_element,
@@ -344,7 +346,7 @@ window.customElements.define(
 
                 if (do_update_thing_meter_circle_element) {
                     if (property_max != null) {
-                        const percent = (value * 100) / property_max;
+                        const percent = (value * circle_length) / property_max;
                         thing_meter_circle_element.style.strokeDasharray = percent + ' 100';
                     } else {
                         thing_meter_circle_element.style.strokeDasharray = '100 100';
@@ -388,6 +390,8 @@ window.customElements.define(
                     secondary_property.max,
                     false,
                 );
+            } else {
+                thing_primary_value_element.classList.add('thing--meter-primary-value-large');
             }
         }
     }
