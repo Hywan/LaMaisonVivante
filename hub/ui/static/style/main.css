@@ -337,7 +337,6 @@ main {
 
     .thing--meter > .thing--frame-content {
         position: relative;
-        text-align: center;
     }
 
     .thing--meter > .thing--frame-content > .thing--meter-meter {
@@ -462,12 +461,11 @@ main {
 
     .thing--ventilation > .thing--frame-content {
         position: relative;
-        text-align: center;
     }
 
-    .thing--ventilation[data-state="paused"] > .thing--frame-content {
-        opacity: .3;
-        filter: grayscale(100%);
+    .thing--ventilation[data-state="running"] > .thing--frame-content {
+        opacity: .25;
+        filter: grayscale(40%);
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-meters {
