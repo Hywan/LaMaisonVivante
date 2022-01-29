@@ -667,7 +667,7 @@ button {
 
     .gradient--conic__yellow_to_pink {
         background: conic-gradient(
-            from 84deg,
+            from 80deg,
             var(--color-yellow-100) 0%,
             var(--color-pink-600) 100%
         );
