@@ -408,6 +408,8 @@ window.customElements.define(
             const template = document.getElementById('template--solar-pv-thing');
             const template_content = template.content.cloneNode(true);
 
+            const thing_frame_content = template_content.querySelector('.thing--frame-content');
+
             const thing_primary_value_element = template_content.querySelector('.thing--solar-pv-primary-value');
             const thing_meter_circle_element = template_content.querySelector('.thing--solar-pv-meter .meter');
             const thing_sunrise_element = template_content.querySelector('.thing--solar-pv-sunrise');
@@ -459,15 +461,13 @@ window.customElements.define(
 
                 /// No sun!
                 if (now < sunrise || now > sunset) {
-                    if ('false' == thing_sun_element.getAttribute('aria-hidden')) {
-                        thing_sun_element.setAttribute('aria-hidden', 'true');
-                    }
+                    thing_sun_element.setAttribute('aria-hidden', true);
+                    thing_frame_content.setAttribute('aria-disabled', true);
                 }
                 /// Position the sun.
                 else {
-                    if ('true' == thing_sun_element.getAttribute('aria-hidden')) {
-                        thing_sun_element.setAttribute('aria-hidden', 'false');
-                    }
+                    thing_sun_element.setAttribute('aria-hidden', false);
+                    thing_frame_content.setAttribute('aria-disabled', false);
 
                     let now_in_minutes = now.getHours() * 60 + now.getMinutes();
                     const min_sun = sunrise.getHours() * 60 + sunrise.getMinutes();
