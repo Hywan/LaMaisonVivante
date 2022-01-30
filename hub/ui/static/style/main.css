@@ -244,6 +244,11 @@ main {
         flex: 1;
     }
 
+    .thing--frame > .thing--frame-content[aria-disabled="true"] {
+        opacity: .25;
+        filter: grayscale(40%);
+    }
+
 .thing--actionable {}
 
 .thing--actions {
@@ -465,11 +470,6 @@ main {
 
     .thing--ventilation > .thing--frame-content {
         position: relative;
-    }
-
-    .thing--ventilation[data-state="paused"] > .thing--frame-content {
-        opacity: .25;
-        filter: grayscale(40%);
     }
 
     .thing--ventilation > .thing--frame-content > .thing--ventilation-meters {

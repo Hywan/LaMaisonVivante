@@ -544,7 +544,7 @@ window.customElements.define(
             const template = document.getElementById('template--ventilation-thing');
             const template_content = template.content.cloneNode(true);
 
-            const thing_state_element = template_content.querySelector('[data-state]');
+            const thing_frame_content = template_content.querySelector('.thing--frame-content');
 
             const thing_after_ground_coupled_heat_exchanger_element = template_content.querySelector('.thing--ventilation-after-ground-coupled-heat-exchanger');
             const thing_after_heat_recovery_exchanger_element = template_content.querySelector('.thing--ventilation-after-heat-recovery-exchanger');
@@ -597,7 +597,12 @@ window.customElements.define(
                 );
 
                 let {value: state_value} = await (state_property.value_reader)();
-                thing_state_element.dataset.state = state_value;
+
+                if ('paused' == state_value) {
+                    thing_frame_content.setAttribute('aria-disabled', true);
+                } else {
+                    thing_frame_content.setAttribute('aria-disabled', false);
+                }
 
                 next();
             }
