@@ -408,7 +408,7 @@ window.customElements.define(
             const template = document.getElementById('template--solar-pv-thing');
             const template_content = template.content.cloneNode(true);
 
-            const thing_frame_content = template_content.querySelector('.thing--frame-content');
+            const thing_frame = template_content.querySelector('.thing--frame');
 
             const thing_primary_value_element = template_content.querySelector('.thing--solar-pv-primary-value');
             const thing_meter_circle_element = template_content.querySelector('.thing--solar-pv-meter .meter');
@@ -462,12 +462,12 @@ window.customElements.define(
                 /// No sun!
                 if (now < sunrise || now > sunset) {
                     thing_sun_element.setAttribute('aria-hidden', true);
-                    thing_frame_content.setAttribute('aria-disabled', true);
+                    thing_frame.setAttribute('aria-disabled', true);
                 }
                 /// Position the sun.
                 else {
                     thing_sun_element.setAttribute('aria-hidden', false);
-                    thing_frame_content.setAttribute('aria-disabled', false);
+                    thing_frame.setAttribute('aria-disabled', false);
 
                     let now_in_minutes = now.getHours() * 60 + now.getMinutes();
                     const min_sun = sunrise.getHours() * 60 + sunrise.getMinutes();
@@ -544,7 +544,7 @@ window.customElements.define(
             const template = document.getElementById('template--ventilation-thing');
             const template_content = template.content.cloneNode(true);
 
-            const thing_frame_content = template_content.querySelector('.thing--frame-content');
+            const thing_frame = template_content.querySelector('.thing--frame');
 
             const thing_after_ground_coupled_heat_exchanger_element = template_content.querySelector('.thing--ventilation-after-ground-coupled-heat-exchanger');
             const thing_after_heat_recovery_exchanger_element = template_content.querySelector('.thing--ventilation-after-heat-recovery-exchanger');
@@ -599,9 +599,9 @@ window.customElements.define(
                 let {value: state_value} = await (state_property.value_reader)();
 
                 if ('paused' == state_value) {
-                    thing_frame_content.setAttribute('aria-disabled', true);
+                    thing_frame.setAttribute('aria-disabled', true);
                 } else {
-                    thing_frame_content.setAttribute('aria-disabled', false);
+                    thing_frame.setAttribute('aria-disabled', false);
                 }
 
                 next();
