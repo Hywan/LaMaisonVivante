@@ -1,7 +1,8 @@
 use crate::unit::*;
 use serde::Serialize;
+use std::convert::TryFrom;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize)]
 pub enum VentilationState {
     Paused,
     Running,
@@ -10,6 +11,27 @@ pub enum VentilationState {
 impl Default for VentilationState {
     fn default() -> Self {
         Self::Running
+    }
+}
+
+impl TryFrom<u16> for VentilationState {
+    type Error = String;
+
+    fn try_from(value: u16) -> Result<Self, Self::Error> {
+        Ok(match value {
+            0 => Self::Running,
+            1 => Self::Paused,
+            v => return Err(format!("Unrecognized ventilation state (`{}`)", v)),
+        })
+    }
+}
+
+impl Into<u16> for VentilationState {
+    fn into(self) -> u16 {
+        match self {
+            Self::Running => 0,
+            Self::Paused => 1,
+        }
     }
 }
 
@@ -23,6 +45,29 @@ pub enum VentilationMode {
 impl Default for VentilationMode {
     fn default() -> Self {
         Self::Auto
+    }
+}
+
+impl TryFrom<u16> for VentilationMode {
+    type Error = String;
+
+    fn try_from(value: u16) -> Result<Self, Self::Error> {
+        Ok(match value {
+            0 => Self::Auto,
+            1 => Self::Cooling,
+            2 => Self::Heating,
+            v => return Err(format!("Unrecognized ventilation mode (`{}`)", v)),
+        })
+    }
+}
+
+impl Into<u16> for VentilationMode {
+    fn into(self) -> u16 {
+        match self {
+            Self::Auto => 0,
+            Self::Cooling => 1,
+            Self::Heating => 2,
+        }
     }
 }
 

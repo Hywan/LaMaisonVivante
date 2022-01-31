@@ -1,13 +1,15 @@
-use crate::{reader, state::VentilationMode, state::VentilationState};
-use serde_json::{json, Value};
+use crate::{reader, state::VentilationMode, state::VentilationState, writer};
+use serde_json::{json, Map, Value};
 use std::{
     net::SocketAddr,
     sync::{Arc, RwLock, Weak},
     thread, time,
 };
 use tokio_modbus::prelude::*;
+use uuid::Uuid;
 use webthing::{
-    server, Action as ThingAction, BaseProperty, BaseThing, Thing, ThingsType, WebThingServer,
+    server, Action as ThingAction, BaseAction, BaseProperty, BaseThing, Thing, ThingsType,
+    WebThingServer,
 };
 
 fn make_domestic_hot_water() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
@@ -251,19 +253,164 @@ fn make_ventilation() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
         ),
     )));
 
+    thing.add_available_action(
+        "stop".to_owned(),
+        json!({
+            "title": "Stop",
+            "description": "Stop the ventilation",
+        })
+        .as_object()
+        .unwrap()
+        .clone(),
+    );
+    thing.add_available_action(
+        "start".to_owned(),
+        json!({
+            "title": "Start",
+            "description": "Start the ventilation",
+        })
+        .as_object()
+        .unwrap()
+        .clone(),
+    );
+
     Arc::new(RwLock::new(Box::new(thing)))
 }
 
-struct Generator;
+struct VentilationAction {
+    inner: BaseAction,
+    address: SocketAddr,
+    new_state: VentilationState,
+}
+
+impl VentilationAction {
+    fn new(
+        input: Option<Map<String, Value>>,
+        thing: Weak<RwLock<Box<dyn Thing>>>,
+        action_name: String,
+        address: SocketAddr,
+        new_state: VentilationState,
+    ) -> Self {
+        Self {
+            inner: BaseAction::new(Uuid::new_v4().to_string(), action_name, input, thing),
+            address,
+            new_state,
+        }
+    }
+}
+
+impl ThingAction for VentilationAction {
+    fn set_href_prefix(&mut self, prefix: String) {
+        self.inner.set_href_prefix(prefix)
+    }
+
+    fn get_id(&self) -> String {
+        self.inner.get_id()
+    }
+
+    fn get_name(&self) -> String {
+        self.inner.get_name()
+    }
+
+    fn get_href(&self) -> String {
+        self.inner.get_href()
+    }
+
+    fn get_status(&self) -> String {
+        self.inner.get_status()
+    }
+
+    fn get_time_requested(&self) -> String {
+        self.inner.get_time_requested()
+    }
+
+    fn get_time_completed(&self) -> Option<String> {
+        self.inner.get_time_completed()
+    }
+
+    fn get_input(&self) -> Option<Map<String, Value>> {
+        self.inner.get_input()
+    }
+
+    fn get_thing(&self) -> Option<Arc<RwLock<Box<dyn Thing>>>> {
+        self.inner.get_thing()
+    }
+
+    fn set_status(&mut self, status: String) {
+        self.inner.set_status(status)
+    }
+
+    fn start(&mut self) {
+        self.inner.start()
+    }
+
+    fn perform_action(&mut self) {
+        let thing = self.get_thing();
+
+        if thing.is_none() {
+            return;
+        }
+
+        let thing = thing.unwrap();
+        let address = self.address.clone();
+        let name = self.get_name();
+        let id = self.get_id();
+        let new_state = self.new_state.clone();
+
+        thread::spawn(move || {
+            let thing = thing.clone();
+            let mut thing = thing.write().unwrap();
+
+            println!("Updating ventilation state to `{:?}`", new_state);
+
+            let mut context = sync::tcp::connect(address).unwrap();
+            writer::set_ventilation_state(&mut context, new_state).unwrap();
+
+            thing.finish_action(name, id);
+        });
+    }
+
+    fn cancel(&mut self) {
+        self.inner.cancel()
+    }
+
+    fn finish(&mut self) {
+        self.inner.finish()
+    }
+}
+
+struct Generator {
+    address: SocketAddr,
+}
 
 impl server::ActionGenerator for Generator {
     fn generate(
         &self,
-        _thing: Weak<RwLock<Box<dyn Thing>>>,
-        _name: String,
-        _input: Option<&Value>,
+        thing: Weak<RwLock<Box<dyn Thing>>>,
+        name: String,
+        input: Option<&Value>,
     ) -> Option<Box<dyn ThingAction>> {
-        None
+        let input = input
+            .and_then(|v| v.as_object())
+            .and_then(|v| Some(v.clone()));
+
+        match name.as_str() {
+            "stop" => Some(Box::new(VentilationAction::new(
+                input,
+                thing,
+                "stop".to_string(),
+                self.address,
+                VentilationState::Paused,
+            ))),
+            "start" => Some(Box::new(VentilationAction::new(
+                input,
+                thing,
+                "start".to_string(),
+                self.address,
+                VentilationState::Running,
+            ))),
+            _ => None,
+        }
     }
 }
 
@@ -396,7 +543,7 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
         port,
         None,
         None,
-        Box::new(Generator),
+        Box::new(Generator { address }),
         None,
         None,
     );

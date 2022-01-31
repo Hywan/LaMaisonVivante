@@ -1,5 +1,5 @@
 use crate::{modbus::*, state::*, unit::*};
-use std::io::Result;
+use std::{convert::TryInto, io::Result};
 use tokio_modbus::prelude::*;
 
 fn read_holding_register(context: &mut sync::Context, address: u16) -> Result<u16> {
@@ -10,17 +10,14 @@ pub fn read_ventilation(mut context: &mut sync::Context) -> Result<Ventilation> 
     context.set_slave(Slave(1));
 
     Ok(Ventilation {
-        mode: match read_holding_register(&mut context, VENTILATION_MODE)? {
-            0 => VentilationMode::Auto,
-            1 => VentilationMode::Cooling,
-            2 => VentilationMode::Heating,
-            v => unreachable!("Unrecognized ventilation mode (`{}`).", v),
-        },
-        state: match read_holding_register(&mut context, VENTILATION_STATE)? {
-            0 => VentilationState::Running,
-            1 => VentilationState::Paused,
-            v => unreachable!("Unrecognized ventilation activity (`{}`)", v),
-        },
+        mode: read_holding_register(&mut context, VENTILATION_MODE)?
+            .try_into()
+            .map_err(|e| unreachable!(e))
+            .unwrap(),
+        state: read_holding_register(&mut context, VENTILATION_STATE)?
+            .try_into()
+            .map_err(|e| unreachable!(e))
+            .unwrap(),
         air_throughput: AirThroughput {
             supplied_air_fan_speed: read_holding_register(&mut context, SUPPLIED_AIR_FAN_SPEED)?
                 .to_rpm(),
