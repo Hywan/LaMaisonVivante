@@ -35,7 +35,7 @@ pub fn run(database_connection: PgConnection, blinds_url: &net::SocketAddr) {
 
         println!("Sleeping…");
 
-        thread::sleep(Duration::from_secs(30));
+        thread::sleep(Duration::from_secs(60 * 2));
     });
 
     loupe
