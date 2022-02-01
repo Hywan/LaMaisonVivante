@@ -1,18 +1,22 @@
 use crate::actions;
 use crate::events::Event;
-use crate::state::{State, SunPeriod, UpdateState};
+use crate::state::{Context, State, SunPeriod, UpdateState};
+use diesel::pg::PgConnection;
 use std::{net, thread, time::Duration};
 
-pub fn run(blinds_url: &net::SocketAddr) {
+pub fn run(database_connection: PgConnection, blinds_url: &net::SocketAddr) {
     let mut new_events = Vec::new();
     let mut state = State::default();
 
     let blinds_url = format!("http://{}", blinds_url);
+    let state_context = Context {
+        database_connection,
+    };
 
     let loupe = thread::spawn(move || loop {
         new_events.clear();
 
-        state = state.update(&mut new_events);
+        state = state.update(&state_context, &mut new_events);
 
         dbg!(&state);
         dbg!(&new_events);

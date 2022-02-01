@@ -1,9 +1,19 @@
+pub use crate::database::enums::AirState as VentilationState;
+use crate::database::models::*;
 use crate::events::Event;
 use chrono::prelude::*;
+use diesel::{pg::PgConnection, prelude::*, sql_query};
 use sunrise;
 
+pub struct Context {
+    pub database_connection: PgConnection,
+}
+
+// That's unsafe. Really.
+unsafe impl Send for Context {}
+
 pub trait UpdateState {
-    fn update(&self, new_events: &mut Vec<Event>) -> Self;
+    fn update(&self, context: &Context, new_events: &mut Vec<Event>) -> Self;
 }
 
 const HOME_LATITUDE: f64 = 46.78657339107215;
@@ -16,11 +26,11 @@ pub enum SunPeriod {
 }
 
 #[derive(Debug)]
-pub struct SunState {
+pub struct Sun {
     pub period: SunPeriod,
 }
 
-impl Default for SunState {
+impl Default for Sun {
     fn default() -> Self {
         Self {
             period: SunPeriod::Day,
@@ -28,8 +38,8 @@ impl Default for SunState {
     }
 }
 
-impl UpdateState for SunState {
-    fn update(&self, new_events: &mut Vec<Event>) -> Self {
+impl UpdateState for Sun {
+    fn update(&self, _context: &Context, new_events: &mut Vec<Event>) -> Self {
         let now: DateTime<Local> = Local::now();
 
         let (sunrise, sunset) = sunrise::sunrise_sunset(
@@ -59,14 +69,35 @@ impl UpdateState for SunState {
 }
 
 #[derive(Debug, Default)]
+pub struct Ventilation {
+    state: VentilationState,
+}
+
+impl UpdateState for Ventilation {
+    fn update(&self, context: &Context, new_events: &mut Vec<Event>) -> Self {
+        let result = sql_query("SELECT * FROM air ORDER BY time DESC LIMIT 1")
+            .load::<Air>(&context.database_connection)
+            .expect("Failed to load `air` latest entry");
+
+        new_events.push(Event::VentilationStatePersist);
+
+        Self {
+            state: result[0].state.clone().unwrap_or_default(),
+        }
+    }
+}
+
+#[derive(Debug, Default)]
 pub struct State {
-    pub sun: SunState,
+    pub sun: Sun,
+    pub ventilation: Ventilation,
 }
 
 impl UpdateState for State {
-    fn update(&self, new_events: &mut Vec<Event>) -> Self {
+    fn update(&self, context: &Context, new_events: &mut Vec<Event>) -> Self {
         Self {
-            sun: self.sun.update(new_events),
+            sun: self.sun.update(context, new_events),
+            ventilation: self.ventilation.update(context, new_events),
         }
     }
 }

@@ -53,13 +53,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         &database_url
     ));
 
-    let result = diesel::sql_query("SELECT * FROM electricity_production LIMIT 1")
-        .load::<database::models::ElectricityProduction>(&database_connection)
-        .expect("Failed to load electricity production");
-
-    dbg!(&result);
-
-    event_loop::run(&blinds_url);
+    event_loop::run(database_connection, &blinds_url);
 
     Ok(())
 }

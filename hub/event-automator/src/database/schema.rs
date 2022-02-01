@@ -1,4 +1,7 @@
 table! {
+    use crate::database::enums::AirStateMapping;
+    use diesel::sql_types::*;
+
     air (time) {
         time -> Timestamp,
         inside_humidity -> Float8,
@@ -7,6 +10,7 @@ table! {
         extracted_temperature -> Float8,
         discharged_temperature -> Float8,
         wanted_temperature -> Float8,
+        state -> Nullable<AirStateMapping>,
     }
 }
 
