@@ -231,6 +231,8 @@ main {
     background: var(--color-light-000);
 
     overflow: hidden;
+
+    transition: box-shadow var(--transition-duration) ease;
 }
 
 .thing--frame[aria-disabled="true"] {
@@ -243,6 +245,8 @@ main {
         display: flex;
         flex-direction: column-reverse;
         align-self: center;
+
+        transition: opacity var(--transition-duration) ease;
     }
 
     .thing--frame > .thing--frame-name > .thing--frame-subname {
@@ -257,6 +261,12 @@ main {
 
     .thing--frame > .thing--frame-content {
         flex: 1;
+
+        transition:
+            opacity var(--transition-duration) ease,
+            transform var(--transition-duration) ease,
+            filter var(--transition-duration) ease;
+
     }
 
     .thing--frame[aria-disabled="true"] > .thing--frame-content {
