@@ -3,7 +3,7 @@ Description=The Hub Event Automator program
 After=network.target
 
 [Service]
-ExecStart=hub-event-automator --database-url='postgres://postgres:raspberry@localhost/la_maison_vivante' --blinds-url 127.0.0.1:8093
+ExecStart=hub-event-automator --database-url='postgres://postgres:raspberry@localhost/la_maison_vivante' --blinds-url 'http://127.0.0.1:8095/' --ventilation-url 'http://127.0.0.1:8093/1/'
 Type=simple
 
 [Install]
