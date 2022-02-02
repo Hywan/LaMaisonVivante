@@ -703,22 +703,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "event-automator"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "confy",
- "diesel",
- "diesel-derive-enum",
- "directories-next",
- "human-panic",
- "reqwest 0.11.7",
- "serde",
- "structopt",
- "sunrise",
-]
-
-[[package]]
 name = "failure"
 version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1111,6 +1095,22 @@ dependencies = [
  "serde",
  "serde_json",
  "structopt",
+]
+
+[[package]]
+name = "hub-event-automator"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "confy",
+ "diesel",
+ "diesel-derive-enum",
+ "directories-next",
+ "human-panic",
+ "reqwest 0.11.7",
+ "serde",
+ "structopt",
+ "sunrise",
 ]
 
 [[package]]
