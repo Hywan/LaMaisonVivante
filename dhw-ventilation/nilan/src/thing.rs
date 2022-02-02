@@ -88,7 +88,7 @@ fn make_ventilation() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
 
     thing.add_property(Box::new(BaseProperty::new(
         "mode".to_owned(),
-        json!(0),
+        json!("auto"),
         None,
         Some(
             json!({
@@ -106,7 +106,7 @@ fn make_ventilation() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
     )));
     thing.add_property(Box::new(BaseProperty::new(
         "state".to_owned(),
-        json!(0),
+        json!("running"),
         None,
         Some(
             json!({
