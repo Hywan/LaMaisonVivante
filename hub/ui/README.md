@@ -20,3 +20,25 @@ Nothing to do. (Yup).
 
 Open `index.html` and enjoy. Of course, the other WebThings programs
 must run, otherwise no data can be fetched.
+
+## Screenshots
+
+It looks like this.
+
+<table>
+  <thead>
+   <tr>
+    <th>Home</th>
+    <th colspan="2">Realtime Metrics</th>
+    <th>Daily Metrics</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr valign="top">
+    <td><img src="./doc/home.png" alt="UI: Home" /></td>
+    <td><img src="./doc/metrics_realtime_part1.png" alt="UI: Real time metrics (1/2)" /></td>
+    <td><img src="./doc/metrics_realtime_part2.png" alt="UI: Real time metrics (2/2)" /></td>
+    <td><img src="./doc/metrics_daily.png" alt="UI: Daily metrics" /></td>
+   </tr>
+  </tbody>
+</table>
