@@ -59,7 +59,7 @@ file.
 To close the living room blind:
 
 ```sh
-$ /target/release/blinds-controller -a 192.168.1.42:23 -s livingroom -x closing
+$ ./target/release/blinds-controller -a 192.168.1.42:23 -s livingroom -x closing
 Sending a Closing to LivingRoom…
 ```
 

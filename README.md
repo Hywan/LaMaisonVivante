@@ -44,6 +44,40 @@ The house uses rain for everything. Rain is collected inside 2 water
 tanks. The `tanks` program runs in an ESP to calculate the remaining
 water in the tanks. [Learn more](tanks/).
 
+## Hub
+
+The hub contains several programs:
+
+### The UI
+
+The UI is a Web application that can be installed natively or run in a
+browser. It can be understood as a WebThing gateway. It provides a
+nice real-time overview of several WebThings, like the battery, the
+solar PV, the ventilation, the domestic hot water, the humidity
+etc. It also adds actions to control several things, like the lights
+and the blinds. [Learn more](hub/ui/).
+
+### The Database
+
+The Database is based on [PostgreSQL](https://www.postgresql.org/) +
+[Timescale](https://www.timescale.com/). It contains time-series of
+the data fetched by the WebThings. It provides metrics, and can be
+used to automate some parts of the house. [Learn more](hub/database/).
+
+The Database is filled by the Event Aggregator.
+
+### The Event Aggregator
+
+The Event Aggregator is a very simple program that fetches data from
+various WebThings, and saves them in the Database. That's it! [Learn
+more](hub/event-aggregator).
+
+### The Event Automator
+
+The Event Automator is an attempt to automate certain actions in the
+house, by looking at the data in the Database to _trigger_ some
+WebThing'_actions_. [Learn more](hub/event-automator/).
+
 ## Services
 
 The `services/` directory contains all service definitions ready to be
