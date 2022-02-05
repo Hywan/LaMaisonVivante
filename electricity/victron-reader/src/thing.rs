@@ -292,7 +292,7 @@ macro_rules! update_property(
 );
 
 pub fn run(mut context: sync::Context, port: Option<u16>) {
-    let mut things: Vec<Arc<RwLock<Box<dyn Thing + 'static>>>> = Vec::with_capacity(1);
+    let mut things: Vec<Arc<RwLock<Box<dyn Thing + 'static>>>> = Vec::with_capacity(6);
 
     let battery = make_battery();
     things.push(battery.clone());
@@ -405,7 +405,7 @@ pub fn run(mut context: sync::Context, port: Option<u16>) {
     );
 
     let mut server = WebThingServer::new(
-        ThingsType::Multiple(things, "Lights".to_owned()),
+        ThingsType::Multiple(things, "Victron".to_owned()),
         port,
         None,
         None,

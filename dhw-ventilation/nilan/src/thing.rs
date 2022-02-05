@@ -430,7 +430,7 @@ macro_rules! update_property(
 );
 
 pub fn run(address: SocketAddr, port: Option<u16>) {
-    let mut things: Vec<Arc<RwLock<Box<dyn Thing + 'static>>>> = Vec::with_capacity(1);
+    let mut things: Vec<Arc<RwLock<Box<dyn Thing + 'static>>>> = Vec::with_capacity(2);
 
     let domestic_hot_water = make_domestic_hot_water();
     things.push(domestic_hot_water.clone());
@@ -539,7 +539,7 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
     );
 
     let mut server = WebThingServer::new(
-        ThingsType::Multiple(things, "Lights".to_owned()),
+        ThingsType::Multiple(things, "Nilan".to_owned()),
         port,
         None,
         None,

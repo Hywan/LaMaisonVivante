@@ -227,7 +227,7 @@ pub fn run<A>(address: A, port: Option<u16>)
 where
     A: 'static + ToSocketAddrs + Copy + Clone + Send + Sync,
 {
-    let mut things: Vec<Arc<RwLock<Box<dyn Thing + 'static>>>> = Vec::with_capacity(1);
+    let mut things: Vec<Arc<RwLock<Box<dyn Thing + 'static>>>> = Vec::with_capacity(6);
 
     things.push(make_blind(Subject::Kitchen));
     things.push(make_blind(Subject::LivingRoom));
