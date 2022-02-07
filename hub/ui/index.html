@@ -202,6 +202,20 @@
     </div>
   </template>
 
+  <template id="template--weather-thing">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <div class="thing--frame thing--weather">
+      <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
+
+      <div class="thing--frame-content">
+        yolo
+      </div>
+    </div>
+  </template>
+
   <template id="template--actionable-thing">
     <style>
       @import "static/style/main.css";
@@ -339,6 +353,11 @@
             <span slot="name">Humidité</span>
             <div slot="meter-gradient" class="gradient gradient--conic__yellow_to_pink"></div>
           </my-meter-thing>
+        </my-thing>
+
+        <my-thing>
+          <my-weather-thing slot="thing">
+            <span slot="name">Météo</span>
         </my-thing>
       </my-unlocated-things>
 

@@ -218,7 +218,7 @@ fn make_ventilation() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
         None,
         Some(
             json!({
-                "@type": "LevelProperty",
+                "@type": "HumidityProperty",
                 "title": "Inside air humidity",
                 "type": "integer",
                 "description": "The inside air humidity",

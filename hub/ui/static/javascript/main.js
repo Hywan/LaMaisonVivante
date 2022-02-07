@@ -613,6 +613,23 @@ window.customElements.define(
 );
 
 window.customElements.define(
+    'my-weather-thing',
+    class extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            let template = document.getElementById('template--weather-thing');
+            let template_content = template.content.cloneNode(true);
+
+            this.attachShadow({mode: 'closed'})
+                .appendChild(template_content);
+        }
+    }
+);
+
+window.customElements.define(
     'my-actionable-thing',
     class extends HTMLElement {
         constructor() {

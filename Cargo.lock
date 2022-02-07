@@ -340,6 +340,7 @@ dependencies = [
  "libc",
  "num-integer",
  "num-traits",
+ "serde",
  "time",
  "winapi 0.3.9",
 ]
@@ -2447,6 +2448,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde_repr"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "98d0516900518c29efa217c298fa1f4e6c6ffc85ae29fd7f4ee48f176e1a9ed5"
+dependencies = [
+ "proc-macro2 1.0.33",
+ "quote 1.0.10",
+ "syn 1.0.82",
+]
+
+[[package]]
 name = "serde_urlencoded"
 version = "0.5.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3457,6 +3469,22 @@ name = "wasm-bindgen-shared"
 version = "0.2.78"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0237232789cf037d5480773fe568aac745bfe2afbc11a863e97901780a6b47cc"
+
+[[package]]
+name = "weather"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "confy",
+ "directories-next",
+ "human-panic",
+ "reqwest 0.11.7",
+ "serde",
+ "serde_json",
+ "serde_repr",
+ "structopt",
+ "webthing",
+]
 
 [[package]]
 name = "web-sys"
