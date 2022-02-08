@@ -572,6 +572,7 @@ main {
         place-self: center;
         width: 2.6rem;
         margin-right: var(--space-small);
+        filter: invert(50%) sepia(100%) saturate(200%) hue-rotate(218deg) drop-shadow(0 0 1px var(--color-light-300));
     }
 
 .thing--pulse,
