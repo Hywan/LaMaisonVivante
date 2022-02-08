@@ -1,6 +1,6 @@
 use chrono::{prelude::*, serde::ts_seconds::deserialize as from_timestamp};
 use serde::Deserialize;
-use serde_repr::Deserialize_repr;
+use serde_repr::{Deserialize_repr, Serialize_repr};
 
 pub const HOME_LATITUDE: f32 = 46.78657339107215;
 pub const HOME_LONGITUDE: f32 = 6.806581635522576;
@@ -39,7 +39,7 @@ impl Default for Weather {
     }
 }
 
-#[derive(Deserialize_repr, PartialEq, Debug)]
+#[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
 #[repr(u16)]
 pub enum WeatherConditionId {
     ThunderstormWithLightRain = 200,
@@ -108,9 +108,6 @@ pub enum WeatherConditionId {
 #[derive(Debug, Deserialize)]
 pub struct WeatherCondition {
     pub description: String,
-    pub icon: String,
-    #[serde(rename(deserialize = "main"))]
-    pub category: String,
     pub id: WeatherConditionId,
 }
 
@@ -118,8 +115,6 @@ impl Default for WeatherCondition {
     fn default() -> Self {
         Self {
             description: "".to_string(),
-            icon: "".to_string(),
-            category: "".to_string(),
             id: WeatherConditionId::ClearSky,
         }
     }
@@ -150,9 +145,9 @@ impl Default for Alert {
 
 #[derive(Debug, Default, Deserialize)]
 pub struct State {
+    pub alerts: Option<Vec<Alert>>,
     #[serde(rename(deserialize = "current"))]
     pub current_weather: Weather,
     #[serde(rename(deserialize = "hourly"))]
     pub hourly_weather: Vec<Weather>,
-    pub alerts: Option<Vec<Alert>>,
 }

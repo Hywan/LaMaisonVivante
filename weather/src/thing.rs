@@ -1,12 +1,22 @@
 use crate::{reader, state};
 use serde_json::{json, Value};
 use std::{
+    cmp::PartialOrd,
     sync::{Arc, RwLock, Weak},
     thread, time,
 };
 use webthing::{
     server, Action as ThingAction, BaseProperty, BaseThing, Thing, ThingsType, WebThingServer,
 };
+
+#[inline]
+pub fn min<T: PartialOrd>(a: T, b: T) -> T {
+    if a < b {
+        a
+    } else {
+        b
+    }
+}
 
 fn make_current_weather() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
     let mut thing = BaseThing::new(
@@ -302,31 +312,38 @@ pub fn run(openweathermap_api_key: &str, port: Option<u16>) {
     let openweathermap_api_key = openweathermap_api_key.to_string();
 
     thread::spawn(move || loop {
-        thread::sleep(time::Duration::from_secs(60));
+        thread::sleep(time::Duration::from_secs(60 * 30));
 
         // Reading the current state.
         let state = reader::read(&openweathermap_api_key).unwrap_or_else(|_| Default::default());
 
         // Current weather.
-        /*
         {
-            let domestic_hot_water_state = state.domestic_hot_water;
-            let storage_temperatures = domestic_hot_water_state.storage_temperatures;
-            let domestic_hot_water = domestic_hot_water.clone();
+            let current_weather = current_weather.clone();
+            let state = &state.current_weather;
 
+            update_property!(current_weather, "clouds", state.clouds);
+            update_property!(current_weather, "temperature", state.temperature);
             update_property!(
-                domestic_hot_water,
-                "top_of_the_tank",
-                storage_temperatures.top_of_the_tank
+                current_weather,
+                "apparent_temperature",
+                state.apparent_temperature
             );
+            update_property!(current_weather, "humidity", state.humidity);
+            update_property!(current_weather, "dew_point", state.dew_point);
+            update_property!(current_weather, "pressure", state.pressure);
             update_property!(
-                domestic_hot_water,
-                "bottom_of_the_tank",
-                storage_temperatures.bottom_of_the_tank
+                current_weather,
+                "sunrise",
+                state.sunrise.unwrap_or_default()
             );
-            update_property!(domestic_hot_water, "wanted", storage_temperatures.wanted);
+            update_property!(current_weather, "sunset", state.sunset.unwrap_or_default());
+            update_property!(current_weather, "uv_index", min(state.uv_index, 12.));
+            update_property!(current_weather, "visibility", state.visibility);
+            update_property!(current_weather, "wind_degree", state.wind_degree);
+            update_property!(current_weather, "wind_speed", state.wind_speed);
+            update_property!(current_weather, "condition", state.conditions[0].id);
         }
-        */
     });
 
     println!(
