@@ -535,6 +535,45 @@ main {
         right: .5rem;
     }
 
+.thing--weather {}
+
+    .thing--weather > .thing--frame-content {
+        display: grid;
+        grid-template: "condition condition"
+                       "icon temperature"
+                       "icon apparent-temperature";
+    }
+
+    .thing--weather > .thing--frame-content > .thing--weather-temperature {
+        grid-area: temperature;
+        align-self: center;
+        font-size: var(--thing--frame--font-size-primary);
+    }
+
+    .thing--weather > .thing--frame-content > .thing--weather-apparent-temperature {
+        grid-area: apparent-temperature;
+        font-size: var(--thing--frame--font-size-secondary);
+        line-height: 1;
+    }
+
+    .thing--weather > .thing--frame-content > .thing--weather-condition {
+        grid-area: condition;
+        justify-self: center;
+        font-size: var(--thing--frame--font-size-primary);
+    }
+
+    .thing--weather > .thing--frame-content > .thing--weather-condition-icon {
+        grid-area: icon;
+        align-self: center;
+    }
+
+    .thing--weather > .thing--frame-content > .thing--weather-condition-icon > img {
+        display: grid;
+        place-self: center;
+        width: 2.6rem;
+        margin-right: var(--space-small);
+    }
+
 .thing--pulse,
 .thing--blind {
     display: flex;

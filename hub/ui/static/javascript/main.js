@@ -2,6 +2,7 @@ const HOME_LATITUDE = 46.78657339107215;
 const HOME_LONGITUDE = 6.806581635522576;
 const REFRESH_RATE = 1000 * 10; // 10 secs
 const LONG_REFRESH_RATE = 1000 * 60; // 1 minute
+const VERY_LONG_REFRESH_RATE = 1000 * 60 * 60; // 1 hour
 
 function http_get(url) {
     return fetch(url, {
@@ -614,17 +615,112 @@ window.customElements.define(
 
 window.customElements.define(
     'my-weather-thing',
-    class extends HTMLElement {
-        constructor() {
-            super();
-        }
+    new function() {
+        const WEATHER_CONDITIONS = {
+            0: { text: '(inconnue)', icon: '' },
 
-        connectedCallback() {
-            let template = document.getElementById('template--weather-thing');
-            let template_content = template.content.cloneNode(true);
+            200: { text: 'Orage avec légère pluie', icon: '11d' },
+            201: { text: 'Orage avec pluie', icon: '11d' },
+            202: { text: 'Orage avec pluie importante', icon: '11d' },
+            210: { text: 'Orage léger', icon: '11d' },
+            211: { text: 'Orage', icon: '11d' },
+            212: { text: 'Orage important', icon: '11d' },
+            221: { text: 'Orage violent', icon: '11d' },
+            230: { text: 'Orage avec bruine légère', icon: '11d' },
+            231: { text: 'Orange avec bruine', icon: '11d' },
+            232: { text: 'Orage avec bruine importante', icon: '11d' },
 
-            this.attachShadow({mode: 'closed'})
-                .appendChild(template_content);
+            300: { text: 'Légère bruine', icon: '09d' },
+            301: { text: 'Bruine', icon: '09d' },
+            302: { text: 'Bruine dense', icon: '09d' },
+            310: { text: 'Pluie légère', icon: '09d' },
+            311: { text: 'Pluie légère', icon: '09d' },
+            312: { text: 'Pluie légère', icon: '09d' },
+            313: { text: 'Douche de bruine', icon: '09d' },
+            314: { text: 'Douche de bruine', icon: '09d' },
+            321: { text: 'Douche de bruine', icon: '09d' },
+
+            500: { text: 'Légère pluie', icon: '10d' },
+            501: { text: 'Pluie modérée', icon: '10d' },
+            502: { text: 'Pluie intense', icon: '10d' },
+            503: { text: 'La douche', icon: '10d' },
+            504: { text: 'Pluie extrême', icon: '10d' },
+            511: { text: 'Pluie glaçante', icon: '13d' },
+            520: { text: 'Pluie légère', icon: '09d' },
+            521: { text: 'Pluie dense', icon: '09d' },
+            522: { text: 'Pluie dense', icon: '09d' },
+            531: { text: 'Pluie éparse', icon: '09d' },
+
+            600: { text: 'Légère neige', icon: '13d' },
+            601: { text: 'Neige', icon: '13d' },
+            602: { text: 'Neige intense', icon: '13d' },
+            611: { text: 'Neige fondue', icon: '13d' },
+            612: { text: 'Légère neige fondue', icon: '13d' },
+            613: { text: 'Neige fondue intense', icon: '13d' },
+            615: { text: 'Légère pluie et neige', icon: '13d' },
+            616: { text: 'Pluie et neige', icon: '13d' },
+            620: { text: 'Neige', icon: '13d' },
+            621: { text: 'Neige', icon: '13d' },
+            622: { text: 'Neige intense', icon: '13d' },
+
+            701: { text: 'Brume', icon: '50d' },
+            711: { text: 'Brume intense', icon: '50d' },
+            721: { text: 'Brouillard', icon: '50d' },
+            731: { text: 'Tourbillon de poussières', icon: '50d' },
+            741: { text: 'Brouillard', icon: '50d' },
+            751: { text: 'Sable', icon: '50d' },
+            761: { text: 'Poussière', icon: '50d' },
+            762: { text: 'Cendres volcanique', icon: '50d' },
+            771: { text: 'Bourrasques', icon: '50d' },
+            781: { text: 'Tonarde', icon: '50d' },
+
+            800: { text: 'Ciel dégagé', icon: '01d' },
+            801: { text: 'Ciel partiellement nuageux', icon: '02d' },
+            802: { text: 'Ciel parsemé de nuages', icon: '03d' },
+            803: { text: 'Ciel nuageux', icon: '04d' },
+            804: { text: 'Ciel couvert', icon: '04d' },
+        };
+
+        return class extends HTMLElement {
+            constructor() {
+                super();
+            }
+
+            async connectedCallback() {
+                let template = document.getElementById('template--weather-thing');
+                let template_content = template.content.cloneNode(true);
+
+                const thing_frame = template_content.querySelector('.thing--frame');
+
+                const thing_temperature_element = template_content.querySelector('.thing--weather-temperature');
+                const thing_apparent_temperature_element = template_content.querySelector('.thing--weather-apparent-temperature > span');
+                const thing_condition_element = template_content.querySelector('.thing--weather-condition');
+                const thing_condition_icon_element = template_content.querySelector('.thing--weather-condition-icon > img');
+
+                this.attachShadow({mode: 'closed'})
+                    .appendChild(template_content);
+
+                const base = this.getAttribute('data-base').replace(/\/+$/, '');
+                const temperature_property = await read_property(base, this.getAttribute('data-temperature-value'));
+                const apparent_temperature_property = await read_property(base, this.getAttribute('data-apparent-temperature-value'));
+                const condition_property = await read_property(base, this.getAttribute('data-condition-value'));
+
+                async function update(next) {
+                    const { formatted_value: temperature_formatted_value } = await (temperature_property.value_reader)();
+                    const { formatted_value: apparent_temperature_formatted_value } = await (apparent_temperature_property.value_reader)();
+                    const { formatted_value: condition_formatted_value } = await (condition_property.value_reader)();
+
+                    const weather_condition = WEATHER_CONDITIONS[condition_formatted_value] || WEATHER_CONDITIONS[0];
+                    thing_temperature_element.innerHTML = temperature_formatted_value;
+                    thing_apparent_temperature_element.innerHTML = apparent_temperature_formatted_value;
+                    thing_condition_element.innerHTML = weather_condition.text;
+                    thing_condition_icon_element.setAttribute('src', 'static/icons/weather/' + weather_condition.icon + '.svg');
+
+                    next();
+                }
+
+                fire(VERY_LONG_REFRESH_RATE, update);
+            }
         }
     }
 );
