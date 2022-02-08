@@ -1,4 +1,4 @@
-use crate::{reader, state};
+use crate::reader;
 use serde_json::{json, Value};
 use std::{
     cmp::PartialOrd,
@@ -312,8 +312,6 @@ pub fn run(openweathermap_api_key: &str, port: Option<u16>) {
     let openweathermap_api_key = openweathermap_api_key.to_string();
 
     thread::spawn(move || loop {
-        thread::sleep(time::Duration::from_secs(60 * 30));
-
         // Reading the current state.
         let state = reader::read(&openweathermap_api_key).unwrap_or_else(|_| Default::default());
 
@@ -344,6 +342,8 @@ pub fn run(openweathermap_api_key: &str, port: Option<u16>) {
             update_property!(current_weather, "wind_speed", state.wind_speed);
             update_property!(current_weather, "condition", state.conditions[0].id);
         }
+
+        thread::sleep(time::Duration::from_secs(60 * 30));
     });
 
     println!(

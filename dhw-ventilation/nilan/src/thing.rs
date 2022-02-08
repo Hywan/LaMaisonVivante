@@ -439,8 +439,6 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
     things.push(ventilation.clone());
 
     thread::spawn(move || loop {
-        thread::sleep(time::Duration::from_secs(60));
-
         let mut context = match sync::tcp::connect(address) {
             Ok(e) => e,
             _ => return, // silently fail
@@ -530,6 +528,8 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
                 ventilation_state.inside_co2_level
             );
         }
+
+        thread::sleep(time::Duration::from_secs(60));
     });
 
     println!(

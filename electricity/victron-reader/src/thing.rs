@@ -313,8 +313,6 @@ pub fn run(mut context: sync::Context, port: Option<u16>) {
     things.push(house.clone());
 
     thread::spawn(move || loop {
-        thread::sleep(time::Duration::from_secs(10));
-
         // Reading the current state.
         let state = reader::read(&mut context).unwrap();
         let vebus_state = state.vebus.unwrap_or_else(|| Default::default());
@@ -396,6 +394,8 @@ pub fn run(mut context: sync::Context, port: Option<u16>) {
             update_property!(house, "l2_power", house_state.l2);
             update_property!(house, "l3_power", house_state.l3);
         }
+
+        thread::sleep(time::Duration::from_secs(10));
     });
 
     println!(

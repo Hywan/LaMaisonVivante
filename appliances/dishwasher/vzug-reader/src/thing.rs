@@ -137,8 +137,6 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
     things.push(dishwasher.clone());
 
     thread::spawn(move || loop {
-        thread::sleep(time::Duration::from_secs(2));
-
         let state = runtime::Runtime::new()
             .unwrap()
             .block_on(reader::read(&address))
@@ -164,6 +162,8 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
 
         // Program.
         {}
+
+        thread::sleep(time::Duration::from_secs(2));
     });
 
     println!(
