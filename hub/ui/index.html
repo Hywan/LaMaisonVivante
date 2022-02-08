@@ -69,17 +69,11 @@
     </style>
 
     <div class="thing--expandable" aria-expanded="false">
-      <div class="thing--frame thing--summary thing--expander">
-        <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
-
-        <div class="thing--frame-content">
-          <span class="thing--state-icon"><slot name="state-icon">(❓)</slot></span>
-          <span class="thing--state-text"><slot name="state-text">(??)</slot></span>
-        </div>
+      <div class="thing--expandable-summary">
+        <slot name="short-thing">(short)</slot>
       </div>
-      <div class="thing--long">
-        <h3 class="thing--name"><slot name="long-name">(unnamed)</slot></h3>
-        <slot name="thing" class="thing--thing">(component)</slot>
+      <div class="thing--expandable-long">
+        <slot name="long-thing">(long)</slot>
       </div>
     </div>
   </template>
@@ -207,16 +201,21 @@
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--frame thing--weather">
-      <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
+    <my-expandable-thing>
+      <div slot="short-thing" class="thing--frame thing--weather">
+        <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
-      <div class="thing--frame-content">
-        <div class="thing--weather-temperature">?</div>
-        <div class="thing--weather-apparent-temperature">ressentie <span>?</span></div>
-        <div class="thing--weather-condition">?</div>
-        <div class="thing--weather-condition-icon"><img src="" alt="icon" /></div>
+        <div class="thing--frame-content">
+          <div class="thing--weather-temperature">?</div>
+          <div class="thing--weather-apparent-temperature">ressentie <span>?</span></div>
+          <div class="thing--weather-condition">?</div>
+          <div class="thing--weather-condition-icon"><img src="" alt="icon" /></div>
+        </div>
       </div>
-    </div>
+      <div slot="long-thing">
+        <h1>hello</h1>
+      </div>
+    </my-expandable-thing>
   </template>
 
   <template id="template--actionable-thing">

@@ -291,7 +291,7 @@ window.customElements.define(
 
             const self = this;
 
-            thing.querySelector('.thing--expander').addEventListener(
+            thing.querySelector('.thing--expandable-summary').addEventListener(
                 'click',
                 () => {
                     const nav = document.getElementById('nav');
@@ -301,8 +301,6 @@ window.customElements.define(
                     };
 
                     if (thing.getAttribute('aria-expanded') == 'false') {
-                        const thing_name = self.querySelector('span[slot="name"]').textContent;
-
                         thing.setAttribute('aria-expanded', 'true');
                         nav.enter('Tous les objets', leaving);
                     }

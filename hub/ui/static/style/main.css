@@ -292,43 +292,17 @@ main {
 
 .thing--expandable {}
 
-    .thing--expandable[aria-expanded = "false"] > .thing--long {
+    .thing--expandable > .thing--expandable-summary {
+        cursor: pointer;
+    }
+
+    .thing--expandable[aria-expanded = "false"] > .thing--expandable-long {
         display: none;
     }
 
-    .thing--expandable[aria-expanded = "true"] > .thing--summary {
+    .thing--expandable[aria-expanded = "true"] > .thing--expandable-summary {
         display: none;
     }
-
-        .thing--expandable[aria-expanded = "false"] > .thing--summary > .thing--frame-content {
-            display: grid;
-            grid-template: "state-icon"
-                           "state-text";
-            grid-template-rows: 1fr auto auto;
-            justify-items: center;
-            align-items: center;
-
-            cursor: pointer;
-            color: inherit;
-        }
-
-        .thing--expandable[aria-expanded = "false"]:hover > .thing--summary, .thing[aria-expanded = "false"]:focus > .thing--summary {
-            box-shadow:
-                var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--color-light-300),
-                calc(-1 * var(--shadow-distance)) calc(-1 * var(--shadow-distance)) var(--shadow-blur) var(--color-light-100);
-            background:
-                linear-gradient(var(--light-direction), var(--color-blue-300), var(--color-pink-300)) no-repeat;
-
-            color: var(--color-light-000);
-        }
-
-        .thing--expandable > .thing--summary > .thing--frame-content > .thing--state-icon {
-            grid-area: state-icon;
-        }
-
-        .thing--expandable > .thing--summary > .thing--frame-content > .thing--state-text {
-            grid-area: state-text;
-        }
 
     .thing--expandable[aria-expanded = "true"] {
         position: fixed;
@@ -347,24 +321,6 @@ main {
             background: transparent;
         }
     }
-
-    .thing--expandable > .thing--long {
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        margin: 0 auto;
-        max-width: 50rem;
-        padding: var(--space-large);
-        min-height: 100%;
-    }
-
-        .thing--expandable > .thing--long > .thing--name {
-            margin-block-end: var(--space-large);
-        }
-
-        .thing--expandable > .thing--long > .thing--thing {
-            flex: 1;
-        }
 
 .thing--meter {}
 
