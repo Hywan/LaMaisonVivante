@@ -226,7 +226,6 @@ main {
     flex-direction: column-reverse;
     gap: var(--space-very-small);
 
-    box-sizing: border-box;
     width: 9.5rem;
     height: 9.5rem;
     padding: var(--thing--frame--padding-block) var(--thing--frame--padding-inline);
@@ -296,32 +295,42 @@ main {
         flex: 1;
     }
 
-.thing--expandable {}
+.thing--expandable {
+}
 
     .thing--expandable > .thing--expandable-summary {
         cursor: pointer;
     }
 
     .thing--expandable[aria-expanded = "false"] > .thing--expandable-long {
-        display: none;
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(70vh);
+        height: 0;
+        width: 0;
     }
 
-    .thing--expandable[aria-expanded = "true"] > .thing--expandable-summary {
-        display: none;
-    }
-
-    .thing--expandable[aria-expanded = "true"] {
+    .thing--expandable[aria-expanded = "true"] > .thing--expandable-long {
         position: fixed;
         z-index: 9;
         top: var(--space-very-large);
         right: 0;
         bottom: 0;
         left: 0;
+
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+
+        transition:
+            transform var(--transition-duration) ease-in-out,
+            opacity var(--transition-duration) ease-in-out;
+
         background: var(--color-light-000-transparent);
     }
 
     @supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)) {
-        .thing--expandable[aria-expanded = "true"] {
+        .thing--expandable[aria-expanded = "true"] > .thing--expandable-long {
             backdrop-filter: blur(var(--backdrop-blur));
             -webkit-backdrop-filter: blur(var(--backdrop-blur));
             background: transparent;
@@ -522,6 +531,7 @@ main {
         grid-area: condition;
         justify-self: center;
         font-size: var(--thing--frame--font-size-primary);
+        line-height: 1;
     }
 
     .thing--weather > .thing--frame-content > .thing--weather-condition-icon {
@@ -535,6 +545,32 @@ main {
         width: 2.6rem;
         margin-right: var(--space-small);
         filter: invert(50%) sepia(100%) saturate(200%) hue-rotate(218deg) drop-shadow(0 0 1px var(--color-light-300));
+    }
+
+.thing--weather-forecast {
+    --thing--weather-forecast--gutter: var(--space-large);
+
+    border: 1px red solid;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(48, 6rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /*
+    scroll-padding: var(--thing--weather-forecast--gutter);
+*/
+}
+
+.thing--weather-forecast > .thing--weather-one-forecast {
+    padding: 0 var(--thing--weather-forecast--gutter) 3rem;
+    scroll-snap-align: start;
+}
+
+    .thing--weather-forecast > .thing--weather-one-forecast:first-child {
+        position: sticky;
+        left: 0;
+        background: var(--color-light-000-transparent);
+        border: 1px orange solid;
     }
 
 .thing--pulse,

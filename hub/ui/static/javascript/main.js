@@ -165,6 +165,16 @@ async function read_property(base, property_name) {
 
         break;
     }
+
+    case 'object': {
+        value_reader = async function() {
+            const response = await http_get(base_origin + property_link);
+            const json_response = await response.json();
+            const value = json_response[property_name];
+
+            return {value};
+        };
+    }
     }
 
     return READ_PROPERTY_CACHE[base][property_name] = {
@@ -694,25 +704,47 @@ window.customElements.define(
                 const thing_apparent_temperature_element = template_content.querySelector('.thing--weather-apparent-temperature > span');
                 const thing_condition_element = template_content.querySelector('.thing--weather-condition');
                 const thing_condition_icon_element = template_content.querySelector('.thing--weather-condition-icon > img');
+                const thing_forecast_element = template_content.querySelector('.thing--weather-forecast');
 
                 this.attachShadow({mode: 'closed'})
                     .appendChild(template_content);
 
                 const base = this.getAttribute('data-base').replace(/\/+$/, '');
+                const forecast_base = this.getAttribute('data-forecast-base').replace(/\/+$/, '');
+
                 const temperature_property = await read_property(base, this.getAttribute('data-temperature-value'));
                 const apparent_temperature_property = await read_property(base, this.getAttribute('data-apparent-temperature-value'));
                 const condition_property = await read_property(base, this.getAttribute('data-condition-value'));
-
+                const forecast_property = await read_property(forecast_base, this.getAttribute('data-forecast-value'));
                 async function update(next) {
                     const { formatted_value: temperature_formatted_value } = await (temperature_property.value_reader)();
                     const { formatted_value: apparent_temperature_formatted_value } = await (apparent_temperature_property.value_reader)();
-                    const { formatted_value: condition_formatted_value } = await (condition_property.value_reader)();
+                    const { value: condition_value } = await (condition_property.value_reader)();
+                    const { value: forecast_value } = await (forecast_property.value_reader)();
 
-                    const weather_condition = WEATHER_CONDITIONS[condition_formatted_value] || WEATHER_CONDITIONS[0];
+                    const weather_condition = WEATHER_CONDITIONS[condition_value] || WEATHER_CONDITIONS[0];
                     thing_temperature_element.innerHTML = temperature_formatted_value;
                     thing_apparent_temperature_element.innerHTML = apparent_temperature_formatted_value;
                     thing_condition_element.innerHTML = weather_condition.text;
                     thing_condition_icon_element.setAttribute('src', 'static/icons/weather/' + weather_condition.icon + '.svg');
+
+                    let formatted_forecast = `<div class="thing--weather-one-forecast">
+  <h5 class="thing--weather-one-forecast--datetime">Heure</h5>
+  <div class="thing--weather-one-forecast--temperature">Temp.</div>
+</div>`;
+
+                    const current_day = new Date().getDate();
+
+                    for (const f of forecast_value) {
+                        const date = adjust_time_to_local(f.datetime * 1000);
+
+                        formatted_forecast += `<div class="thing--weather-one-forecast">
+  <h5 class="thing--weather-one-forecast--datetime">${date.getHours()}h</h5>
+  <div class="thing--weather-one-forecast--temperature">${Math.round((f.temperature + Number.EPSILON) * 100) / 100}°C</div>
+</div>`;
+                    }
+                    
+                    thing_forecast_element.innerHTML += formatted_forecast;
 
                     next();
                 }

@@ -275,6 +275,37 @@ fn make_current_weather() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
     Arc::new(RwLock::new(Box::new(thing)))
 }
 
+fn make_forecast() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
+    let mut thing = BaseThing::new(
+        "urn:dev:ops:forecast".to_owned(),
+        "Forecast".to_owned(),
+        Some(vec![
+            "ForecastSensor".to_owned(), // not standard
+        ]),
+        None,
+    );
+
+    thing.add_property(Box::new(BaseProperty::new(
+        "hourly".to_owned(),
+        json!({}),
+        None,
+        Some(
+            json!({
+                "@type": "HeterogeneousCollectionProperty", // not standard
+                "title": "Forecast",
+                "type": "object",
+                "description": "Hourly forecast",
+                "readOnly": true
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        ),
+    )));
+
+    Arc::new(RwLock::new(Box::new(thing)))
+}
+
 struct Generator;
 
 impl server::ActionGenerator for Generator {
@@ -309,6 +340,9 @@ pub fn run(openweathermap_api_key: &str, port: Option<u16>) {
     let current_weather = make_current_weather();
     things.push(current_weather.clone());
 
+    let forecast = make_forecast();
+    things.push(forecast.clone());
+
     let openweathermap_api_key = openweathermap_api_key.to_string();
 
     thread::spawn(move || loop {
@@ -341,6 +375,14 @@ pub fn run(openweathermap_api_key: &str, port: Option<u16>) {
             update_property!(current_weather, "wind_degree", state.wind_degree);
             update_property!(current_weather, "wind_speed", state.wind_speed);
             update_property!(current_weather, "condition", state.conditions[0].id);
+        }
+
+        // Forecast.
+        {
+            let forecast = forecast.clone();
+            let state = &state.hourly_weather;
+
+            update_property!(forecast, "hourly", state);
         }
 
         thread::sleep(time::Duration::from_secs(60 * 30));

@@ -1,15 +1,15 @@
-use chrono::{prelude::*, serde::ts_seconds::deserialize as from_timestamp};
-use serde::Deserialize;
+use chrono::{prelude::*, serde::ts_seconds};
+use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 pub const HOME_LATITUDE: f32 = 46.78657339107215;
 pub const HOME_LONGITUDE: f32 = 6.806581635522576;
 pub const HOME_LANGUAGE: &str = "fr";
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Weather {
     pub clouds: i32,
-    #[serde(rename(deserialize = "dt"), deserialize_with = "from_timestamp")]
+    #[serde(rename(deserialize = "dt"), with = "ts_seconds")]
     pub datetime: DateTime<Utc>,
     #[serde(rename(deserialize = "temp"))]
     pub temperature: f32,
@@ -105,7 +105,7 @@ pub enum WeatherConditionId {
     OvercastClouds = 804,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct WeatherCondition {
     pub description: String,
     pub id: WeatherConditionId,
@@ -120,12 +120,12 @@ impl Default for WeatherCondition {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Alert {
     pub description: String,
-    #[serde(deserialize_with = "from_timestamp")]
+    #[serde(with = "ts_seconds")]
     pub start: DateTime<Utc>,
-    #[serde(deserialize_with = "from_timestamp")]
+    #[serde(with = "ts_seconds")]
     pub end: DateTime<Utc>,
     #[serde(rename(deserialize = "sender_name"))]
     pub sender: String,
@@ -143,7 +143,7 @@ impl Default for Alert {
     }
 }
 
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct State {
     pub alerts: Option<Vec<Alert>>,
     #[serde(rename(deserialize = "current"))]
