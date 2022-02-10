@@ -728,19 +728,54 @@ window.customElements.define(
                     thing_condition_element.innerHTML = weather_condition.text;
                     thing_condition_icon_element.setAttribute('src', 'static/icons/weather/' + weather_condition.icon + '.svg');
 
+                    /*
                     let formatted_forecast = `<div class="thing--weather-one-forecast">
   <h5 class="thing--weather-one-forecast--datetime">Heure</h5>
+  <div class="thing--weather-one-forecast--condition-icon">Cond.</div>
+  <div class="thing--weather-one-forecast--condition">Cond.</div>
   <div class="thing--weather-one-forecast--temperature">Temp.</div>
+  <div class="thing--weather-one-forecast--apparent-temperature">Temp. ress.</div>
+  <div class="thing--weather-one-forecast--humidity">Hum.</div>
+  <div class="thing--weather-one-forecast--pressure">Press.</div>
+  <div class="thing--weather-one-forecast--visibility">Vis.</div>
+  <div class="thing--weather-one-forecast--cloudiness">Néb.</div>
+  <div class="thing--weather-one-forecast--wind-speed">Vent</div>
+  <div class="thing--weather-one-forecast--wind-degree">Vent°</div>
+  <div class="thing--weather-one-forecast--uv-index">UV idx.</div>
 </div>`;
+                    */
+                    let formatted_forecast = '';
 
-                    const current_day = new Date().getDate();
+                    const today = new Date();
+                    today.setHours(0);
+                    today.setMinutes(0);
+                    today.setSeconds(0);
+                    today.setMilliseconds(0);
+                    console.log(today);
 
                     for (const f of forecast_value) {
                         const date = adjust_time_to_local(f.datetime * 1000);
+                        const conditions = WEATHER_CONDITIONS[f.conditions[0].id] || WEATHER_CONDITIONS[0];
+
+                        let date_extra = '';
+
+                        if (today.getDate() != date.getDate()) {
+                            date_extra = ` <small>(+${Math.floor((date - today) / (1000 * 60 * 60 * 24))}j)</small>`;
+                        }
 
                         formatted_forecast += `<div class="thing--weather-one-forecast">
-  <h5 class="thing--weather-one-forecast--datetime">${date.getHours()}h</h5>
-  <div class="thing--weather-one-forecast--temperature">${Math.round((f.temperature + Number.EPSILON) * 100) / 100}°C</div>
+  <h5 class="thing--weather-one-forecast--datetime">${date.getHours()}h${date_extra}</h5>
+  <div class="thing--weather-one-forecast--condition-icon"><img src="static/icons/weather/${conditions.icon}.svg" alt="condition icon" /></div>
+  <div class="thing--weather-one-forecast--condition">${conditions.text}</div>
+  <div class="thing--weather-one-forecast--temperature"><abbr title="température" class="thing--weather-one-forecast--title">temp.</abbr> ${Math.round((f.temperature + Number.EPSILON) * 10) / 10}°C</div>
+  <div class="thing--weather-one-forecast--apparent-temperature"><abbr title="température ressentie" class="thing--weather-one-forecast--title">res.</abbr> ${Math.round((f.apparent_temperature + Number.EPSILON) * 10) / 10}°C</div>
+  <div class="thing--weather-one-forecast--humidity"><abbr title="humidité" class="thing--weather-one-forecast--title">hum.</abbr> ${f.humidity}%</div>
+  <div class="thing--weather-one-forecast--pressure"><abbr title="pression" class="thing--weather-one-forecast--title">press.</abbr> ${Math.round((f.pressure / 1000 + Number.EPSILON) * 10) / 10}khPa</div>
+  <div class="thing--weather-one-forecast--visibility"><abbr title="visibilité" class="thing--weather-one-forecast--title">vis.</abbr> ${Math.round((f.visibility / 1000 + Number.EPSILON) * 10) / 10}km</div>
+  <div class="thing--weather-one-forecast--cloudiness"><abbr title="nébulosité" class="thing--weather-one-forecast--title">néb.</abbr> ${f.clouds}</div>
+  <div class="thing--weather-one-forecast--wind-speed"><span class="thing--weather-one-forecast--title">vent</span> ${Math.round((f.wind_speed + Number.EPSILON) * 100) / 100}</div>
+  <div class="thing--weather-one-forecast--wind-degree">${f.wind_degree}</div>
+  <div class="thing--weather-one-forecast--uv-index"><abbr title="indice UV" class="thing--weather-one-forecast--title">UV</abbr> ${Math.round((f.uv_index + Number.EPSILON) * 100) / 100}</div>
 </div>`;
                     }
                     
