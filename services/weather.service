@@ -1,0 +1,10 @@
+[Unit]
+Description=The Weather controller
+After=network.target
+
+[Service]
+ExecStart=weather --openweathermap-api-key "<foo>" --thing-port=8096 --into-thing
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
