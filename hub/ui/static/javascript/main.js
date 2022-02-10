@@ -683,10 +683,10 @@ window.customElements.define(
             781: { text: 'Tonarde', icon: '50d' },
 
             800: { text: 'Ciel dégagé', icon: '01d' },
-            801: { text: 'Ciel partiellement nuageux', icon: '02d' },
-            802: { text: 'Ciel parsemé de nuages', icon: '03d' },
-            803: { text: 'Ciel nuageux', icon: '04d' },
-            804: { text: 'Ciel couvert', icon: '04d' },
+            801: { text: 'Partiellement nuageux', icon: '02d' },
+            802: { text: 'Parsemé de nuages', icon: '03d' },
+            803: { text: 'Nuageux', icon: '04d' },
+            804: { text: 'Couvert', icon: '04d' },
         };
 
         return class extends HTMLElement {
