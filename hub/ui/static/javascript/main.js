@@ -757,7 +757,7 @@ window.customElements.define(
   <div class="thing--weather-one-forecast--pressure"><abbr title="pression" class="thing--weather-one-forecast--title">press.</abbr> ${Math.round((f.pressure / 1000 + Number.EPSILON) * 10) / 10}khPa</div>
   <div class="thing--weather-one-forecast--visibility"><abbr title="visibilité" class="thing--weather-one-forecast--title">vis.</abbr> ${Math.round((f.visibility / 1000 + Number.EPSILON) * 10) / 10}km</div>
   <div class="thing--weather-one-forecast--cloudiness"><abbr title="nébulosité" class="thing--weather-one-forecast--title">néb.</abbr> ${f.clouds}</div>
-  <div class="thing--weather-one-forecast--wind-speed"><span class="thing--weather-one-forecast--title">vent</span> ${Math.round((f.wind_speed + Number.EPSILON) * 10) / 10}km/h</div>
+  <div class="thing--weather-one-forecast--wind-speed"><span class="thing--weather-one-forecast--title">vent</span> ${Math.round((f.wind_speed + Number.EPSILON) * 10) / 10}m/s</div>
   <div class="thing--weather-one-forecast--wind-degree"><svg class="icon" style="transform: rotate(${f.wind_degree}deg)"><use href="#icon-compass" /></div>
   <div class="thing--weather-one-forecast--uv-index"><abbr title="indice UV" class="thing--weather-one-forecast--title">UV</abbr> ${Math.round((f.uv_index + Number.EPSILON) * 100) / 100}</div>
 </div>`;
