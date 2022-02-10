@@ -728,22 +728,6 @@ window.customElements.define(
                     thing_condition_element.innerHTML = weather_condition.text;
                     thing_condition_icon_element.setAttribute('src', 'static/icons/weather/' + weather_condition.icon + '.svg');
 
-                    /*
-                    let formatted_forecast = `<div class="thing--weather-one-forecast">
-  <h5 class="thing--weather-one-forecast--datetime">Heure</h5>
-  <div class="thing--weather-one-forecast--condition-icon">Cond.</div>
-  <div class="thing--weather-one-forecast--condition">Cond.</div>
-  <div class="thing--weather-one-forecast--temperature">Temp.</div>
-  <div class="thing--weather-one-forecast--apparent-temperature">Temp. ress.</div>
-  <div class="thing--weather-one-forecast--humidity">Hum.</div>
-  <div class="thing--weather-one-forecast--pressure">Press.</div>
-  <div class="thing--weather-one-forecast--visibility">Vis.</div>
-  <div class="thing--weather-one-forecast--cloudiness">Néb.</div>
-  <div class="thing--weather-one-forecast--wind-speed">Vent</div>
-  <div class="thing--weather-one-forecast--wind-degree">Vent°</div>
-  <div class="thing--weather-one-forecast--uv-index">UV idx.</div>
-</div>`;
-                    */
                     let formatted_forecast = '';
 
                     const today = new Date();
