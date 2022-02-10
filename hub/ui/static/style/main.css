@@ -607,6 +607,7 @@ main {
     }
 
     .thing--weather-forecast .thing--weather-one-forecast--datetime {
+        flex: 2;
         font-size: var(--font-size-primary);
         text-align: center;
     }
