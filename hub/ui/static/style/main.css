@@ -558,8 +558,7 @@ main {
 
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 5rem;
-    gap: var(--thing--weather-forecast--gutter);
+    grid-auto-columns: 6rem;
     overflow-x: auto;
     overscroll-behavior-inline: contain;
     scroll-snap-type: x mandatory;
@@ -580,15 +579,14 @@ main {
         padding: var(--thing--weather-forecast-one--gutter);
 
         scroll-snap-align: start;
-        border-radius: var(--space-small);
     }
 
     .thing--weather-forecast > .thing--weather-one-forecast:nth-child(2n+1) {
-        background: var(--color-light-100);
+        background: var(--color-light-300);
     }
 
     .thing--weather-forecast > .thing--weather-one-forecast:nth-child(2n) {
-        background: var(--color-light-010);
+        background: var(--color-light-200);
     }
 
     .thing--weather-forecast > .thing--weather-one-forecast > * {
@@ -600,7 +598,7 @@ main {
     .thing--weather-forecast > .thing--weather-one-forecast > .thing--weather-one-forecast--category {
         flex: 2;
         font-size: var(--font-size-secondary);
-        margin: var(--space-small) 0;
+        margin: var(--space) 0 var(--space-very-small);
         position: relative;
         visibility: hidden;
     }
