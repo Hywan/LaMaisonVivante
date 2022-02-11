@@ -749,17 +749,20 @@ window.customElements.define(
 
                         formatted_forecast += `<div class="thing--weather-one-forecast">
   <h5 class="thing--weather-one-forecast--datetime">${date.getHours()}h${date_extra}</h5>
+  <h6 class="thing--weather-one-forecast--category"><span>Ciel</span></h6>
   <div class="thing--weather-one-forecast--condition-icon"><img src="static/icons/weather/${conditions.icon}.svg" alt="condition icon" /></div>
   <div class="thing--weather-one-forecast--condition">${conditions.text}</div>
-  <div class="thing--weather-one-forecast--temperature"><abbr title="température" class="thing--weather-one-forecast--title">temp.</abbr> ${Math.round((f.temperature + Number.EPSILON) * 10) / 10}°C</div>
-  <div class="thing--weather-one-forecast--apparent-temperature"><abbr title="température ressentie" class="thing--weather-one-forecast--title">res.</abbr> ${Math.round((f.apparent_temperature + Number.EPSILON) * 10) / 10}°C</div>
-  <div class="thing--weather-one-forecast--humidity"><abbr title="humidité" class="thing--weather-one-forecast--title">hum.</abbr> ${f.humidity}%</div>
-  <div class="thing--weather-one-forecast--pressure"><abbr title="pression" class="thing--weather-one-forecast--title">press.</abbr> ${Math.round((f.pressure / 1000 + Number.EPSILON) * 10) / 10}khPa</div>
-  <div class="thing--weather-one-forecast--visibility"><abbr title="visibilité" class="thing--weather-one-forecast--title">vis.</abbr> ${Math.round((f.visibility / 1000 + Number.EPSILON) * 10) / 10}km</div>
-  <div class="thing--weather-one-forecast--cloudiness"><abbr title="nébulosité" class="thing--weather-one-forecast--title">néb.</abbr> ${f.clouds}</div>
-  <div class="thing--weather-one-forecast--wind-speed"><span class="thing--weather-one-forecast--title">vent</span> ${Math.round((f.wind_speed + Number.EPSILON) * 10) / 10}m/s</div>
-  <div class="thing--weather-one-forecast--wind-degree"><svg class="icon" style="transform: rotate(${f.wind_degree}deg)"><use href="#icon-compass" /></div>
-  <div class="thing--weather-one-forecast--uv-index"><abbr title="indice UV" class="thing--weather-one-forecast--title">UV</abbr> ${Math.round((f.uv_index + Number.EPSILON) * 100) / 100}</div>
+  <div class="thing--weather-one-forecast--cloudiness">${f.clouds} octa</div>
+
+  <div class="thing--weather-one-forecast--uv-index">${Math.round((f.uv_index + Number.EPSILON) * 100) / 100}UV<sub>ix</sub></div>
+  <h6 class="thing--weather-one-forecast--category"><span>Températures</span></h6>
+  <div class="thing--weather-one-forecast--temperature">${Math.round((f.temperature + Number.EPSILON) * 10) / 10}°C</div>
+  <div class="thing--weather-one-forecast--apparent-temperature">(${Math.round((f.apparent_temperature + Number.EPSILON) * 10) / 10}°C)</div>
+  <h6 class="thing--weather-one-forecast--category"><span>Air</span></h6>
+  <div class="thing--weather-one-forecast--humidity">${f.humidity}%H</div>
+  <h6 class="thing--weather-one-forecast--category"><span>Vent</span></h6>
+  <div class="thing--weather-one-forecast--wind-speed">${Math.round((f.wind_speed + Number.EPSILON) * 10) / 10}m/s</div>
+  <div class="thing--weather-one-forecast--wind-degree"><svg class="icon" style="transform: rotate(${f.wind_degree + 180}deg)"><use href="#icon-compass" /></div>
 </div>`;
                     }
                     
