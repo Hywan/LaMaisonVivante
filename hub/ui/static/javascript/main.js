@@ -735,7 +735,6 @@ window.customElements.define(
                     today.setMinutes(0);
                     today.setSeconds(0);
                     today.setMilliseconds(0);
-                    console.log(today);
 
                     for (const f of forecast_value) {
                         const date = adjust_time_to_local(f.datetime * 1000);
@@ -747,20 +746,28 @@ window.customElements.define(
                             date_extra = ` <small>(+${Math.floor((date - today) / (1000 * 60 * 60 * 24))}j)</small>`;
                         }
 
+                        let octas = Math.floor(f.clouds / 12.5);
+                        let formatted_octas = `${octas} octa`;
+
+                        if (octas > 1) {
+                            formatted_octas += 's';
+                        }
+
                         formatted_forecast += `<div class="thing--weather-one-forecast">
   <h5 class="thing--weather-one-forecast--datetime">${date.getHours()}h${date_extra}</h5>
-  <h6 class="thing--weather-one-forecast--category"><span>Ciel</span></h6>
+  <h6 class="thing--weather-one-forecast--title"><span>Ciel</span></h6>
   <div class="thing--weather-one-forecast--condition-icon"><img src="static/icons/weather/${conditions.icon}.svg" alt="condition icon" /></div>
   <div class="thing--weather-one-forecast--condition">${conditions.text}</div>
-  <div class="thing--weather-one-forecast--cloudiness">${f.clouds} octa</div>
+  <div class="thing--weather-one-forecast--cloudiness">${formatted_octas}</div>
 
   <div class="thing--weather-one-forecast--uv-index">${Math.round((f.uv_index + Number.EPSILON) * 100) / 100}UV<sub>ix</sub></div>
-  <h6 class="thing--weather-one-forecast--category"><span>Températures</span></h6>
+  <h6 class="thing--weather-one-forecast--title"><span>Températures</span></h6>
   <div class="thing--weather-one-forecast--temperature">${Math.round((f.temperature + Number.EPSILON) * 10) / 10}°C</div>
   <div class="thing--weather-one-forecast--apparent-temperature">(${Math.round((f.apparent_temperature + Number.EPSILON) * 10) / 10}°C)</div>
-  <h6 class="thing--weather-one-forecast--category"><span>Air</span></h6>
+  <h6 class="thing--weather-one-forecast--title"><span>Air</span></h6>
   <div class="thing--weather-one-forecast--humidity">${f.humidity}%H</div>
-  <h6 class="thing--weather-one-forecast--category"><span>Vent</span></h6>
+  <div class="thing--weather-one-forecast--pressure">${f.pressure}hPa</div>
+  <h6 class="thing--weather-one-forecast--title"><span>Vent</span></h6>
   <div class="thing--weather-one-forecast--wind-speed">${Math.round((f.wind_speed + Number.EPSILON) * 10) / 10}m/s</div>
   <div class="thing--weather-one-forecast--wind-degree"><svg class="icon" style="transform: rotate(${f.wind_degree + 180}deg)"><use href="#icon-compass" /></div>
 </div>`;
