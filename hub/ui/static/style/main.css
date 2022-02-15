@@ -8,15 +8,18 @@
     --color-light-300: hsl(217, 48%, 83%);
     --color-blue-300: hsl(213, 100%, 88%);
     --color-blue-500: hsl(213, 100%, 74%);
-    --color-blue-800: hsl(213, 100%, 25%);
+    --color-blue-600: hsl(213, 100%, 60%);
     --color-yellow-000: hsl(47, 100%, 92%);
     --color-yellow-100: hsl(47, 81%, 75%);
     --color-yellow-500: hsl(47, 100%, 58%);
+    --color-yellow-600: hsl(41, 100%, 62%);
     --color-pink-300: hsl(324, 77%, 88%);
     --color-pink-500: hsl(324, 77%, 75%);
     --color-pink-600: hsl(331, 64%, 64%);
     --color-green-300: hsl(114, 57%, 70%);
     --color-green-600: hsl(114, 57%, 48%);
+    --color-red-300: hsl(11, 100%, 62%);
+    --color-red-600: hsl(11, 100%, 55%);
     --color-dark-500: hsl(0, 0%, 26%);
     --color-dark: hsl(0, 100%, 0%);
 
@@ -571,6 +574,9 @@ main {
     .thing--weather-forecast > .thing--weather-one-forecast {
         --thing--weather-forecast-one--gutter: var(--space-small);
 
+        --__color-from: var(--color-light-000);
+        --__color-to: var(--color-light-000);
+
         display: flex;
         flex-direction: column;
         gap: calc(var(--thing--weather-forecast--gutter) / 5);
@@ -580,14 +586,42 @@ main {
         padding: var(--thing--weather-forecast-one--gutter);
 
         scroll-snap-align: start;
+
+        border-radius: var(--space-small);
+        border: 3px solid transparent;
+        background:
+            linear-gradient(var(--color-light-000), var(--color-light-000)) padding-box,
+            linear-gradient(var(--light-direction), var(--__color-from), var(--__color-to)) border-box;
     }
 
-    .thing--weather-forecast > .thing--weather-one-forecast:nth-child(2n+1) {
-        background: var(--color-light-300);
+    .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="0"] {
+        --__color-from: var(--color-blue-500);
+        --__color-to: var(--color-blue-600);
     }
 
-    .thing--weather-forecast > .thing--weather-one-forecast:nth-child(2n) {
-        background: var(--color-light-200);
+    .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="1"] {
+        --__color-from: var(--color-blue-300);
+        --__color-to: var(--color-blue-500);
+    }
+
+    .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="2"] {
+        --__color-from: var(--color-yellow-000);
+        --__color-to: var(--color-yellow-100);
+    }
+
+    .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="3"] {
+        --__color-from: var(--color-yellow-100);
+        --__color-to: var(--color-yellow-500);
+    }
+
+    .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="4"] {
+        --__color-from: var(--color-yellow-500);
+        --__color-to: var(--color-yellow-600);
+    }
+
+    .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="5"] {
+        --__color-from: var(--color-red-300);
+        --__color-to: var(--color-red-600);
     }
 
     .thing--weather-forecast > .thing--weather-one-forecast > * {
@@ -702,7 +736,7 @@ a {
 
 strong {
     font-weight: 600;
-} 
+}
 
 button {
     appeareance: none;
@@ -737,7 +771,7 @@ button {
 .tabs {
     text-align: center;
 }
-    
+
     .tabs > [role="tablist"] {
         display: inline-block;
         list-style: none;
@@ -837,7 +871,7 @@ button {
             var(--color-blue-500) 95%
         );
     }
-    
+
     .gradient--conic__sky {
         background: conic-gradient(
             from -90deg,

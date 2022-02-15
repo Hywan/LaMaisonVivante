@@ -184,6 +184,16 @@ async function read_property(base, property_name) {
     };
 }
 
+function value_into_range(value, from_range_min, from_range_max, to_range_min, to_range_max) {
+    let new_value = Math.min(Math.max(value, from_range_min), from_range_max);
+
+    new_value = (
+        ((new_value - from_range_min) * (to_range_max - to_range_min)) / (from_range_max - from_range_min)
+    ) + to_range_min;
+
+    return new_value;
+}
+
 window.customElements.define(
     'my-nav',
     class extends HTMLElement {
@@ -485,7 +495,7 @@ window.customElements.define(
                     const min_circle = circle_length / 2;
                     const max_circle = circle_length;
 
-                    const pos = ((now_in_minutes - min_sun) / (max_sun - min_sun)) * (max_circle - min_circle) + min_circle;
+                    const pos = value_into_range(now_in_minutes, min_sun, max_sun, min_circle, max_circle);
 
                     const pos_point = thing_meter_circle_element.getPointAtLength(pos);
                     thing_sun_element.setAttributeNS(null, "cx", pos_point.x);
@@ -753,7 +763,7 @@ window.customElements.define(
                             formatted_octas += 's';
                         }
 
-                        formatted_forecast += `<div class="thing--weather-one-forecast">
+                        formatted_forecast += `<div class="thing--weather-one-forecast" data-temperature-category="${Math.round(value_into_range(f.temperature, 0, 30, 0, 5))}">
   <h5 class="thing--weather-one-forecast--datetime">${date.getHours()}h${date_extra}</h5>
   <h6 class="thing--weather-one-forecast--title"><span>Ciel</span></h6>
   <div class="thing--weather-one-forecast--condition-icon"><img src="static/icons/weather/${conditions.icon}.svg" alt="condition icon" /></div>
