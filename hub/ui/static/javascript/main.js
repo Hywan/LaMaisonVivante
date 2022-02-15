@@ -763,12 +763,15 @@ window.customElements.define(
                             formatted_octas += 's';
                         }
 
+                        const precipitations = (f.rain || f.snow || {one_hour: 0}).one_hour;
+
                         formatted_forecast += `<div class="thing--weather-one-forecast" data-temperature-category="${Math.round(value_into_range(f.temperature, 0, 30, 0, 5))}">
   <h5 class="thing--weather-one-forecast--datetime">${date.getHours()}h${date_extra}</h5>
   <h6 class="thing--weather-one-forecast--title"><span>Ciel</span></h6>
   <div class="thing--weather-one-forecast--condition-icon"><img src="static/icons/weather/${conditions.icon}.svg" alt="condition icon" /></div>
   <div class="thing--weather-one-forecast--condition">${conditions.text}</div>
   <div class="thing--weather-one-forecast--cloudiness">${formatted_octas}</div>
+  <div class="thing--weather-one-forecast--precipitations">${Math.round((precipitations + Number.EPSILON) * 100) / 100}mm</div>
 
   <div class="thing--weather-one-forecast--uv-index">${Math.round((f.uv_index + Number.EPSILON) * 100) / 100}UV<sub>ix</sub></div>
   <h6 class="thing--weather-one-forecast--title"><span>Températures</span></h6>
