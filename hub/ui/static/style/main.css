@@ -320,6 +320,8 @@ main {
     }
 
     .thing--expandable[aria-expanded = "true"] > .thing--expandable-long {
+        --thing--expandable-long--gutter: var(--space-large);
+
         position: fixed;
         z-index: 9;
         top: var(--space-very-large);
@@ -331,6 +333,8 @@ main {
         opacity: 1;
         transform: translateY(0);
         overflow: auto;
+
+        padding: var(--space) var(--thing--expandable-long--gutter);
 
         transition:
             transform var(--transition-duration) ease-in-out,
@@ -563,20 +567,16 @@ main {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: 6rem;
-    gap: var(--space-small);
     overflow-x: auto;
     overscroll-behavior-inline: contain;
     scroll-snap-type: x mandatory;
-    scroll-padding: 0 var(--thing--weather-forecast--gutter);
 
-    padding: var(--space-very-large) var(--thing--weather-forecast--gutter);
+    margin: var(--space-very-large) 0;
+    border-radius: var(--space-small);
 }
 
     .thing--weather-forecast > .thing--weather-one-forecast {
         --thing--weather-forecast-one--gutter: var(--space-small);
-
-        --__color-from: var(--color-light-000);
-        --__color-to: var(--color-light-000);
 
         display: flex;
         flex-direction: column;
@@ -584,45 +584,43 @@ main {
         line-height: 1;
 
         font-size: var(--font-size-secondary);
-        padding: var(--thing--weather-forecast-one--gutter);
+        padding: calc(2 * var(--thing--weather-forecast-one--gutter)) var(--thing--weather-forecast-one--gutter);
 
         scroll-snap-align: start;
 
-        border-radius: var(--space-small);
-        border: 3px solid transparent;
-        background:
-            linear-gradient(var(--color-light-000), var(--color-light-000)) padding-box,
-            linear-gradient(var(--light-direction), var(--__color-from), var(--__color-to)) border-box;
+        --__pastel_tone: var(--color-light-000);
+        background: var(--__pastel_tone);
     }
 
+    /**
+     * To create this gradient, I've taken 2 colors in the “pastel
+     * tones” (see https://youtu.be/GyVMoejbGFg?t=1071). Then I've
+     * created a gradient in the LAB space with 6 stops (with
+     * https://colordesigner.io/gradient-generator).
+     */
+
     .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="0"] {
-        --__color-from: var(--color-blue-500);
-        --__color-to: var(--color-blue-600);
+        --__pastel_tone: hsla(180, 71.83%, 86.08%, .3);
     }
 
     .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="1"] {
-        --__color-from: var(--color-blue-300);
-        --__color-to: var(--color-blue-500);
+        --__pastel_tone: hsla(177.14, 29.58%, 86.08%, .3);
     }
 
     .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="2"] {
-        --__color-from: var(--color-yellow-000);
-        --__color-to: var(--color-yellow-100);
+        --__pastel_tone: hsla(8.57, 9.09%, 84.9%, .3);
     }
 
     .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="3"] {
-        --__color-from: var(--color-yellow-100);
-        --__color-to: var(--color-yellow-500);
+        --__pastel_tone: hsla(3.64, 39.76%, 83.73%, .3);
     }
 
     .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="4"] {
-        --__color-from: var(--color-yellow-500);
-        --__color-to: var(--color-yellow-600);
+        --__pastel_tone: hsla(1.05, 62.64%, 82.16%, .3);
     }
 
     .thing--weather-forecast > .thing--weather-one-forecast[data-temperature-category="5"] {
-        --__color-from: var(--color-red-300);
-        --__color-to: var(--color-red-600);
+        --__pastel_tone: hsla(0, 78%, 80.39%, .3);
     }
 
     .thing--weather-forecast > .thing--weather-one-forecast > * {
@@ -651,7 +649,15 @@ main {
     .thing--weather-forecast > .thing--weather-one-forecast:first-child > .thing--weather-one-forecast--title > span {
         visibility: visible;
         position: fixed;
-        left: calc(var(--thing--weather-forecast--gutter) + var(--thing--weather-forecast-one--gutter));
+        transform: translateY(-.5rem);
+        left: var(--thing--expandable-long--gutter);
+        right: var(--thing--expandable-long--gutter);
+
+        padding: .2rem 0 .2rem .5rem;
+        text-align: start;
+        background: var(--color-light-000-transparent);
+
+        pointer-events: none;
     }
 
     .thing--weather-forecast .thing--weather-one-forecast--datetime {
@@ -663,15 +669,8 @@ main {
     .thing--weather-forecast .thing--weather-one-forecast--condition,
     .thing--weather-forecast .thing--weather-one-forecast--condition-icon {
         flex: 3;
-    }
-
-    .thing--weather-forecast .thing--weather-one-forecast--condition {
-        line-height: 1;
         font-size: var(--font-size-tertiary);
-    }
-
-    .thing--weather-forecast .thing--weather-one-forecast--condition,
-    .thing--weather-forecast .thing--weather-one-forecast--condition-icon {
+        line-height: 1;
         text-align: center;
         margin-bottom: var(--space-small);
     }
