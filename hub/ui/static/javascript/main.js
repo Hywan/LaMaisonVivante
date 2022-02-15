@@ -783,7 +783,7 @@ window.customElements.define(
 </div>`;
                     }
                     
-                    thing_forecast_element.innerHTML += formatted_forecast;
+                    thing_forecast_element.innerHTML = formatted_forecast;
 
                     next();
                 }
