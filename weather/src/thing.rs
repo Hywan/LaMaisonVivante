@@ -244,7 +244,26 @@ fn make_current_weather() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
                 "type": "number",
                 "description": "The wind speed",
                 "minimum": 0,
-                "unit": "km/sec",
+                "unit": "m/sec",
+                "readOnly": true
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        ),
+    )));
+    thing.add_property(Box::new(BaseProperty::new(
+        "wind_gust".to_owned(),
+        json!(0),
+        None,
+        Some(
+            json!({
+                "@type": "LevelProperty",
+                "title": "Wind gust",
+                "type": "number",
+                "description": "The wind gust",
+                "minimum": 0,
+                "unit": "m/sec",
                 "readOnly": true
             })
             .as_object()
@@ -264,6 +283,44 @@ fn make_current_weather() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
                 "description": "The weather condition ID",
                 "minimum": 200,
                 "maximum": 900,
+                "readOnly": true
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        ),
+    )));
+    thing.add_property(Box::new(BaseProperty::new(
+        "snow".to_owned(),
+        json!(0.0),
+        None,
+        Some(
+            json!({
+                "@type": "LevelProperty",
+                "title": "Snow precipitation",
+                "type": "number",
+                "description": "The snow precipitation",
+                "minimum": 0,
+                "unit": "mm",
+                "readOnly": true
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        ),
+    )));
+    thing.add_property(Box::new(BaseProperty::new(
+        "rain".to_owned(),
+        json!(0.0),
+        None,
+        Some(
+            json!({
+                "@type": "LevelProperty",
+                "title": "Rain precipitation",
+                "type": "number",
+                "description": "The rain precipitation",
+                "minimum": 0,
+                "unit": "mm",
                 "readOnly": true
             })
             .as_object()
@@ -374,6 +431,21 @@ pub fn run(openweathermap_api_key: &str, port: Option<u16>) {
             update_property!(current_weather, "visibility", state.visibility);
             update_property!(current_weather, "wind_degree", state.wind_degree);
             update_property!(current_weather, "wind_speed", state.wind_speed);
+            update_property!(
+                current_weather,
+                "wind_gust",
+                state.wind_gust.unwrap_or_default()
+            );
+            update_property!(
+                current_weather,
+                "snow",
+                state.snow.as_ref().map_or(0., |s| s.one_hour)
+            );
+            update_property!(
+                current_weather,
+                "rain",
+                state.rain.as_ref().map_or(0., |r| dbg!(r.one_hour))
+            );
             update_property!(current_weather, "condition", state.conditions[0].id);
         }
 

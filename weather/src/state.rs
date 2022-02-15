@@ -6,6 +6,14 @@ pub const HOME_LATITUDE: f32 = 46.78657339107215;
 pub const HOME_LONGITUDE: f32 = 6.806581635522576;
 pub const HOME_LANGUAGE: &str = "fr";
 
+#[derive(Debug, Default, Serialize, Deserialize, Clone)]
+pub struct Precipitation {
+    #[serde(rename(deserialize = "1h"))]
+    pub one_hour: f32,
+    #[serde(rename(deserialize = "3h"))]
+    pub three_hour: Option<f32>,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Weather {
     pub clouds: i32,
@@ -26,6 +34,9 @@ pub struct Weather {
     #[serde(rename(deserialize = "wind_deg"))]
     pub wind_degree: i32,
     pub wind_speed: f32,
+    pub wind_gust: Option<f32>,
+    pub snow: Option<Precipitation>,
+    pub rain: Option<Precipitation>,
     #[serde(rename(deserialize = "weather"))]
     pub conditions: Vec<WeatherCondition>,
 }
