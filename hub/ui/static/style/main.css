@@ -634,6 +634,15 @@ main {
     .thing--weather-forecast > .thing--weather-one-forecast > .thing--weather-one-forecast--title {
         flex: 2;
         font-size: var(--font-size-secondary);
+        text-shadow:
+            2px 0 0 var(--color-light-000),
+            -2px 0 0 var(--color-light-000),
+            0 2px 0 var(--color-light-000),
+            0 -2px 0 var(--color-light-000),
+            1px 1px var(--color-light-000),
+            -1px -1px 0 var(--color-light-000),
+            1px -1px 0 var(--color-light-000),
+            -1px 1px 0 var(--color-light-000);
         margin: var(--space) 0 var(--space-very-small);
         position: relative;
         visibility: hidden;
