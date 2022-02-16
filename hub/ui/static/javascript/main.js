@@ -356,11 +356,11 @@ window.customElements.define(
             const thing_primary_value_element = template_content.querySelector('.thing--meter-primary-value');
             const thing_secondary_value_element = template_content.querySelector('.thing--meter-secondary-value');
             const thing_meter_circle_element = template_content.querySelector('.thing--meter-meter .meter');
-            const circle_length = thing_meter_circle_element.getTotalLength();
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
+            const circle_length = thing_meter_circle_element.getTotalLength();
             const base = this.getAttribute('data-base').replace(/\/+$/, '');
 
             const primary_property_name = this.getAttribute('data-property');
