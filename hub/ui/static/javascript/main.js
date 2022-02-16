@@ -80,107 +80,119 @@ function fire(timeout, func, ...args) {
     func(next, ...args);
 }
 
-const READ_PROPERTY_CACHE = {};
+const SCHEMAS_CACHE = {};
 
-async function read_property(base, property_name) {
-    if (READ_PROPERTY_CACHE[base] == undefined) {
-        READ_PROPERTY_CACHE[base] = {};
-    }
-
+async function fetch_properties(base, ...property_names) {
     const base_origin = new URL(base).origin;
 
-    if (READ_PROPERTY_CACHE[base][property_name] == undefined) {
-        const property_response = await http_get(base);
-        const property_json_response = await property_response.json();
+    if (SCHEMAS_CACHE[base] == undefined) {
+        const raw_schema = await http_get(base);
+        const schema = await raw_schema.json();
 
-        READ_PROPERTY_CACHE[base][property_name] = property_json_response;
+        SCHEMAS_CACHE[base] = schema;
     }
 
-    const property_json_response = READ_PROPERTY_CACHE[base][property_name];
-    const property_description = property_json_response.properties[property_name];
-    const property_link = property_description.links[0].href;
+    const schema = SCHEMAS_CACHE[base];
 
-    let value_reader;
-    const extra_values = {};
+    let properties_values = {};
 
-    switch (property_description.type) {
-    case 'integer':
-    case 'number': {
-        const unit = property_description.unit;
-        let min = 0;
-        let max = null;
+    async function refresh_properties_values() {
+        const raw_properties_values = await http_get(base + '/properties');
+        properties_values = await raw_properties_values.json();
+    }
 
-        if (property_description.minimum) {
-            min = property_description.minimum;
+    let properties = {};
+
+    for (const property_name of property_names) {
+        if (undefined == property_name) {
+            continue;
         }
 
-        if (property_description.maximum) {
-            max = property_description.maximum;
-        }
+        const property_description = schema.properties[property_name];
 
-        extra_values.min = min;
-        extra_values.max = max;
+        let value_reader;
+        const extra_values = {};
 
-        value_reader = async function () {
-            const response = await http_get(base_origin + property_link);
-            const json_response = await response.json();
-            const value = json_response[property_name];
-            let formatted_value = Math.round((value + Number.EPSILON) * 100) / 100;
+        switch (property_description.type) {
+        case 'integer':
+        case 'number': {
+            const unit = property_description.unit;
+            let min = 0;
+            let max = null;
 
-            switch (unit) {
-            case 'percent':
-                formatted_value += '%';
-                break;
-
-            case 'watt':
-                formatted_value += 'W';
-                break;
-
-            case 'ampere':
-                formatted_value += 'A';
-                break;
-
-            case 'celsius':
-                formatted_value = Math.round(formatted_value) + '°C';
-                break;
+            if (property_description.minimum) {
+                min = property_description.minimum;
             }
 
-            return {
-                value,
-                formatted_value,
+            if (property_description.maximum) {
+                max = property_description.maximum;
+            }
+
+            extra_values.min = min;
+            extra_values.max = max;
+
+            value_reader = function () {
+                const value = properties_values[property_name];
+                let formatted_value = Math.round((value + Number.EPSILON) * 100) / 100;
+
+                switch (unit) {
+                case 'percent':
+                    formatted_value += '%';
+                    break;
+
+                case 'watt':
+                    formatted_value += 'W';
+                    break;
+
+                case 'ampere':
+                    formatted_value += 'A';
+                    break;
+
+                case 'celsius':
+                    formatted_value = Math.round(formatted_value) + '°C';
+                    break;
+                }
+
+                return {
+                    value,
+                    formatted_value,
+                };
             };
+
+            break;
+        }
+
+        case 'string': {
+            value_reader = function () {
+                const value = properties_values[property_name];
+
+                return {value};
+            };
+
+            break;
+        }
+
+        case 'object': {
+            value_reader = function() {
+                const value = properties_values[property_name];
+
+                return {value};
+            };
+        }
+        }
+
+        properties[property_name] = {
+            value_reader,
+            ...extra_values
         };
-
-        break;
     }
 
-    case 'string': {
-        value_reader = async function () {
-            const response = await http_get(base_origin + property_link);
-            const json_response = await response.json();
-            const value = json_response[property_name];
+    return {
+        async read_properties() {
+            await refresh_properties_values();
 
-            return {value};
-        };
-
-        break;
-    }
-
-    case 'object': {
-        value_reader = async function() {
-            const response = await http_get(base_origin + property_link);
-            const json_response = await response.json();
-            const value = json_response[property_name];
-
-            return {value};
-        };
-    }
-    }
-
-    return READ_PROPERTY_CACHE[base][property_name] = {
-        link: property_link,
-        value_reader,
-        ...extra_values
+            return properties;
+        }
     };
 }
 
@@ -344,72 +356,61 @@ window.customElements.define(
             const thing_primary_value_element = template_content.querySelector('.thing--meter-primary-value');
             const thing_secondary_value_element = template_content.querySelector('.thing--meter-secondary-value');
             const thing_meter_circle_element = template_content.querySelector('.thing--meter-meter .meter');
+            const circle_length = thing_meter_circle_element.getTotalLength();
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
-            const circle_length = thing_meter_circle_element.getTotalLength();
+            const base = this.getAttribute('data-base').replace(/\/+$/, '');
 
-            async function update(
-                next,
-                thing_value_element,
-                property_value_reader,
-                property_link,
-                property_min,
-                property_max,
-                do_update_thing_meter_circle_element
-            ) {
-                const {value, formatted_value} = await property_value_reader();
+            const primary_property_name = this.getAttribute('data-property');
+            const secondary_property_name = this.getAttribute('data-secondary-property');
 
-                thing_value_element.innerHTML = formatted_value;
+            const fetched_properties = await fetch_properties(
+                base,
+                primary_property_name,
+                secondary_property_name,
+            );
 
-                if (do_update_thing_meter_circle_element) {
-                    if (property_max != null) {
-                        const percent = (value * circle_length) / property_max;
-                        thing_meter_circle_element.style.strokeDasharray = percent + ' 100';
-                    } else {
-                        thing_meter_circle_element.style.strokeDasharray = '100 100';
+            async function update(next) {
+                // Read all fetched properties.
+                const properties = await fetched_properties.read_properties();
+
+                async function subupdate(
+                    property_name,
+                    thing_value_element,
+                    do_update_thing_meter_circle_element
+                ) {
+                    const property = properties[property_name];
+                    
+                    const max = property.max;
+                    const {value, formatted_value} = (property.value_reader)();
+                    thing_value_element.innerHTML = formatted_value;
+
+                    if (do_update_thing_meter_circle_element) {
+                        if (null != max) {
+                            const percent = (value * circle_length) / max;
+                            thing_meter_circle_element.style.strokeDasharray = percent + ' 100';
+                        } else {
+                            thing_meter_circle_element.style.strokeDasharray = '100 100';
+                        }
                     }
                 }
 
-                next(
-                    thing_value_element,
-                    property_value_reader, 
-                    property_link,
-                    property_min,
-                    property_max,
-                    do_update_thing_meter_circle_element,
-                );
+                // Update values.
+
+                subupdate(primary_property_name, thing_primary_value_element, true);
+
+                if (undefined != secondary_property_name) {
+                    subupdate(secondary_property_name, thing_secondary_value_element, false);
+                }
+
+                next();
             }
 
-            const base = this.getAttribute('data-base').replace(/\/+$/, '');
-            const primary_property = await read_property(base, this.getAttribute('data-property'));
+            fire(REFRESH_RATE, update);
 
-            fire(
-                REFRESH_RATE,
-                update,
-                thing_primary_value_element,
-                primary_property.value_reader,
-                primary_property.link,
-                primary_property.min,
-                primary_property.max,
-                true,
-            );
-
-            if (this.hasAttribute('data-secondary-property')) {
-                const secondary_property = await read_property(base, this.getAttribute('data-secondary-property'));
-
-                fire(
-                    REFRESH_RATE,
-                    update,
-                    thing_secondary_value_element,
-                    secondary_property.value_reader,
-                    secondary_property.link,
-                    secondary_property.min,
-                    secondary_property.max,
-                    false,
-                );
-            } else {
+            if (undefined == secondary_property_name) {
                 thing_primary_value_element.classList.add('thing--meter-primary-value-large');
             }
         }
@@ -439,16 +440,21 @@ window.customElements.define(
                   .appendChild(template_content);
 
             const base = this.getAttribute('data-base').replace(/\/+$/, '');
-            const primary_property = await read_property(base, this.getAttribute('data-property'));
+
+            const primary_property_name = this.getAttribute('data-property');
+            const fetched_properties = await fetch_properties(base, primary_property_name);
 
             let previous_now = new Date(0);
             let sunrise = null;
             let sunset = null;
 
             async function update(next) {
-                // Update `thing_primary_value_element`.
-                const {value, formatted_value} = await (primary_property.value_reader)();
+                // Read all fetched properties.
+                const properties = await fetched_properties.read_properties();
+                const property = properties[primary_property_name];
 
+                // Update `thing_primary_value_element`.
+                const {formatted_value} = (property.value_reader)();
                 thing_primary_value_element.innerHTML = formatted_value;
 
                 // Update `thing_sunrise_element` + `thing_sunset_element`.
@@ -528,19 +534,21 @@ window.customElements.define(
                   .appendChild(template_content);
 
             const base = this.getAttribute('data-base').replace(/\/+$/, '');
-            const top_property = await read_property(base, this.getAttribute('data-top-value'));
-            const bottom_property = await read_property(base, this.getAttribute('data-bottom-value'));
+
+            const top_property_name = this.getAttribute('data-top-value');
+            const bottom_property_name = this.getAttribute('data-bottom-value');
+
+            const fetched_properties = await fetch_properties(base, top_property_name, bottom_property_name);
 
             async function update(next) {
-                const {
-                    value: top_value,
-                    formatted_value: top_formatted_value
-                } = await (top_property.value_reader)();
-                const {
-                    value: bottom_value,
-                    formatted_value: bottom_formatted_value
-                } = await (bottom_property.value_reader)();
+                // Read all fetched properties.
+                const properties = await fetched_properties.read_properties();
 
+                // Get formatted values.
+                const { formatted_value: top_formatted_value } = (properties[top_property_name].value_reader)();
+                const { formatted_value: bottom_formatted_value } = (properties[bottom_property_name].value_reader)();
+
+                // Update values.
                 thing_top_value_element.innerHTML = top_formatted_value;
                 thing_bottom_value_element.innerHTML = bottom_formatted_value;
 
@@ -578,17 +586,28 @@ window.customElements.define(
 
             const base = this.getAttribute('data-base').replace(/\/+$/, '');
 
-            const state_property = await read_property(base, this.getAttribute('data-state-property'));
-            const after_ground_coupled_heat_exchanger_property = await read_property(base, this.getAttribute('data-after-ground-coupled-heat-exchanger-value'));
-            const after_heat_recovery_exchanger_property = await read_property(base, this.getAttribute('data-after-heat-recovery-exchanger-value'));
-            const extracted_property = await read_property(base, this.getAttribute('data-extracted-value'));
+            const state_property_name = this.getAttribute('data-state-property');
+            const after_ground_coupled_heat_exchanger_property_name = this.getAttribute('data-after-ground-coupled-heat-exchanger-value');
+            const after_heat_recovery_exchanger_property_name = this.getAttribute('data-after-heat-recovery-exchanger-value');
+            const extracted_property_name = this.getAttribute('data-extracted-value');
 
+            const fetched_properties = await fetch_properties(
+                base,
+                state_property_name,
+                after_ground_coupled_heat_exchanger_property_name,
+                after_heat_recovery_exchanger_property_name,
+                extracted_property_name,
+            );
+            
             const MAX_TEMPERATURE = 25;
             const MARGIN = 0.75; // in percent
 
             async function update(next) {
-                async function subupdate(property, element, meter_element) {
-                    let {value, formatted_value} = await (property.value_reader)();
+                // Read all properties.
+                const properties = await fetched_properties.read_properties();
+
+                async function subupdate(property_name, element, meter_element) {
+                    let {value, formatted_value} = (properties[property_name].value_reader)();
                     element.innerHTML = formatted_value;
 
                     value = Math.min(value, MAX_TEMPERATURE);
@@ -597,25 +616,27 @@ window.customElements.define(
                     meter_element.style.strokeDasharray = (value * (max_length * MARGIN)) / MAX_TEMPERATURE + ' ' + max_length;
                 }
 
+                // Update values.
+
                 subupdate(
-                    after_ground_coupled_heat_exchanger_property,
+                    after_ground_coupled_heat_exchanger_property_name,
                     thing_after_ground_coupled_heat_exchanger_element,
                     thing_after_ground_coupled_heat_exchanger_meter_element,
                 );
 
                 subupdate(
-                    after_heat_recovery_exchanger_property,
+                    after_heat_recovery_exchanger_property_name,
                     thing_after_heat_recovery_exchanger_element,
                     thing_after_heat_recovery_exchanger_meter_element,
                 );
 
                 subupdate(
-                    extracted_property,
+                    extracted_property_name,
                     thing_extracted_element,
                     thing_extracted_meter_element,
                 );
 
-                let {value: state_value} = await (state_property.value_reader)();
+                let { value: state_value } = (properties[state_property_name].value_reader)();
 
                 if ('paused' == state_value) {
                     thing_frame.setAttribute('aria-disabled', true);
@@ -722,15 +743,39 @@ window.customElements.define(
                 const base = this.getAttribute('data-base').replace(/\/+$/, '');
                 const forecast_base = this.getAttribute('data-forecast-base').replace(/\/+$/, '');
 
-                const temperature_property = await read_property(base, this.getAttribute('data-temperature-value'));
+                const temperature_property_name = this.getAttribute('data-temperature-value');
+                const apparent_temperature_property_name = this.getAttribute('data-apparent-temperature-value');
+                const condition_property_name = this.getAttribute('data-condition-value');
+                const forecast_property_name = this.getAttribute('data-forecast-value');
+
+                /*
+                const temperature_property = await read_property(base, );
                 const apparent_temperature_property = await read_property(base, this.getAttribute('data-apparent-temperature-value'));
                 const condition_property = await read_property(base, this.getAttribute('data-condition-value'));
                 const forecast_property = await read_property(forecast_base, this.getAttribute('data-forecast-value'));
+                */
+
+                const fetched_properties = await fetch_properties(
+                    base,
+                    temperature_property_name,
+                    apparent_temperature_property_name,
+                    condition_property_name,
+                );
+                const fetched_forecast_properties = await fetch_properties(
+                    forecast_base,
+                    forecast_property_name,
+                );
+
                 async function update(next) {
-                    const { formatted_value: temperature_formatted_value } = await (temperature_property.value_reader)();
-                    const { formatted_value: apparent_temperature_formatted_value } = await (apparent_temperature_property.value_reader)();
-                    const { value: condition_value } = await (condition_property.value_reader)();
-                    const { value: forecast_value } = await (forecast_property.value_reader)();
+                    // Read all fetched properties.
+                    const properties = await fetched_properties.read_properties();
+                    const forecast_properties = await fetched_forecast_properties.read_properties();
+
+                    // Get values.
+                    const { formatted_value: temperature_formatted_value } = (properties[temperature_property_name].value_reader)();
+                    const { formatted_value: apparent_temperature_formatted_value } = (properties[apparent_temperature_property_name].value_reader)();
+                    const { value: condition_value } = (properties[condition_property_name].value_reader)();
+                    const { value: forecast_value } = (forecast_properties[forecast_property_name].value_reader)();
 
                     const weather_condition = WEATHER_CONDITIONS[condition_value] || WEATHER_CONDITIONS[0];
                     thing_temperature_element.innerHTML = temperature_formatted_value;
