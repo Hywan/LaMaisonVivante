@@ -133,7 +133,7 @@ async function fetch_properties(base, ...property_names) {
 
             value_reader = function () {
                 const value = properties_values[property_name];
-                let formatted_value = Math.round((value + Number.EPSILON) * 100) / 100;
+                let formatted_value = value.round(2);
 
                 switch (unit) {
                 case 'percent':
@@ -205,6 +205,12 @@ function value_into_range(value, from_range_min, from_range_max, to_range_min, t
 
     return new_value;
 }
+
+Number.prototype.round = function (precision) {
+    precision = Math.pow(10, precision);
+
+    return Math.round((this + Number.EPSILON) * precision) / precision;
+};
 
 window.customElements.define(
     'my-nav',
@@ -729,12 +735,37 @@ window.customElements.define(
                 let template = document.getElementById('template--weather-thing');
                 let template_content = template.content.cloneNode(true);
 
+                // Insert the OpenWeatherMap API key.
+                {
+                    const all_srcs = template_content.querySelectorAll('[src*="{openweathermap_api_key}"]');
+
+                    all_srcs.forEach((element) => {
+                        element.setAttribute(
+                            'src',
+                            element.getAttribute('src').replace(
+                                /\{openweathermap_api_key\}/,
+                                OPENWEATHERMAP_API_KEY,
+                            )
+                        );
+                    });
+                }
+
                 const thing_frame = template_content.querySelector('.thing--frame');
 
                 const thing_temperature_element = template_content.querySelector('.thing--weather-temperature');
                 const thing_apparent_temperature_element = template_content.querySelector('.thing--weather-apparent-temperature > span');
                 const thing_condition_element = template_content.querySelector('.thing--weather-condition');
                 const thing_condition_icon_element = template_content.querySelector('.thing--weather-condition-icon > img');
+                const thing_now_temperature_element = template_content.querySelector('.thing--weather-now-temperature');
+                const thing_now_apparent_temperature_element = template_content.querySelector('.thing--weather-now-apparent-temperature');
+                const thing_now_condition_element = template_content.querySelector('.thing--weather-now-condition');
+                const thing_now_condition_icon_element = template_content.querySelector('.thing--weather-now-condition-icon');
+                const thing_now_precipitation_element = template_content.querySelector('.thing--weather-now-precipitation');
+                const thing_now_uv_index_element = template_content.querySelector('.thing--weather-now-uv-index');
+                const thing_now_humidity_element = template_content.querySelector('.thing--weather-now-humidity');
+                const thing_now_dew_point_element = template_content.querySelector('.thing--weather-now-dew-point');
+                const thing_wind_degree_element = template_content.querySelector('.thing--weather-wind-degree');
+                const thing_wind_text_element = template_content.querySelector('.thing--weather-wind-text');
                 const thing_forecast_element = template_content.querySelector('.thing--weather-forecast');
 
                 this.attachShadow({mode: 'closed'})
@@ -746,20 +777,29 @@ window.customElements.define(
                 const temperature_property_name = this.getAttribute('data-temperature-value');
                 const apparent_temperature_property_name = this.getAttribute('data-apparent-temperature-value');
                 const condition_property_name = this.getAttribute('data-condition-value');
+                const wind_degree_property_name = this.getAttribute('data-wind-degree-value');
+                const wind_speed_property_name = this.getAttribute('data-wind-speed-value');
+                const wind_gust_property_name = this.getAttribute('data-wind-gust-value');
+                const rain_property_name = this.getAttribute('data-rain-value');
+                const snow_property_name = this.getAttribute('data-snow-value');
+                const uv_index_property_name = this.getAttribute('data-uv-index-value');
+                const humidity_property_name = this.getAttribute('data-humidity-value');
+                const dew_point_property_name = this.getAttribute('data-dew-point-value');
                 const forecast_property_name = this.getAttribute('data-forecast-value');
-
-                /*
-                const temperature_property = await read_property(base, );
-                const apparent_temperature_property = await read_property(base, this.getAttribute('data-apparent-temperature-value'));
-                const condition_property = await read_property(base, this.getAttribute('data-condition-value'));
-                const forecast_property = await read_property(forecast_base, this.getAttribute('data-forecast-value'));
-                */
 
                 const fetched_properties = await fetch_properties(
                     base,
                     temperature_property_name,
                     apparent_temperature_property_name,
                     condition_property_name,
+                    wind_degree_property_name,
+                    wind_speed_property_name,
+                    wind_gust_property_name,
+                    rain_property_name,
+                    snow_property_name,
+                    uv_index_property_name,
+                    humidity_property_name,
+                    dew_point_property_name,
                 );
                 const fetched_forecast_properties = await fetch_properties(
                     forecast_base,
@@ -775,13 +815,31 @@ window.customElements.define(
                     const { formatted_value: temperature_formatted_value } = (properties[temperature_property_name].value_reader)();
                     const { formatted_value: apparent_temperature_formatted_value } = (properties[apparent_temperature_property_name].value_reader)();
                     const { value: condition_value } = (properties[condition_property_name].value_reader)();
+                    const { value: wind_degree_value } = (properties[wind_degree_property_name].value_reader)();
+                    const { formatted_value: wind_speed_value } = (properties[wind_speed_property_name].value_reader)();
+                    const { formatted_value: wind_gust_value } = (properties[wind_gust_property_name].value_reader)();
+                    const { value: rain_value } = (properties[rain_property_name].value_reader)();
+                    const { value: snow_value } = (properties[snow_property_name].value_reader)();
+                    const { value: uv_index_value } = (properties[uv_index_property_name].value_reader)();
+                    const { value: humidity_value } = (properties[humidity_property_name].value_reader)();
+                    const { value: dew_point_value } = (properties[dew_point_property_name].value_reader)();
                     const { value: forecast_value } = (forecast_properties[forecast_property_name].value_reader)();
 
                     const weather_condition = WEATHER_CONDITIONS[condition_value] || WEATHER_CONDITIONS[0];
                     thing_temperature_element.innerHTML = temperature_formatted_value;
                     thing_apparent_temperature_element.innerHTML = apparent_temperature_formatted_value;
                     thing_condition_element.innerHTML = weather_condition.text;
-                    thing_condition_icon_element.setAttribute('src', 'static/icons/weather/' + weather_condition.icon + '.svg');
+                    thing_condition_icon_element.setAttribute('src', `static/icons/weather/${weather_condition.icon}.svg`);
+                    thing_now_temperature_element.innerHTML = `Mesurée ${temperature_formatted_value}`;
+                    thing_now_apparent_temperature_element.innerHTML = `Ressentie ${apparent_temperature_formatted_value}`;
+                    thing_now_condition_element.innerHTML = weather_condition.text;
+                    thing_now_condition_icon_element.setAttribute('src', `static/icons/weather/${weather_condition.icon}.svg`);
+                    thing_now_precipitation_element.innerHTML = `${(rain_value + snow_value).round(2)}mm`;
+                    thing_now_uv_index_element.innerHTML = uv_index_value.round(1);
+                    thing_now_humidity_element.innerHTML = `${humidity_value.round(0)}%`;
+                    thing_now_dew_point_element.innerHTML = `${dew_point_value.round(1)}°C`;
+                    thing_wind_degree_element.style.transform = `rotate(${wind_degree_value + 180}deg)`;
+                    thing_wind_text_element.innerHTML = `${wind_speed_value.round(1)}m/s<br /><abbr title="rafales">raf.</abbr> ${wind_gust_value.round(0)}m/s`;
 
                     let formatted_forecast = '';
 
@@ -816,19 +874,19 @@ window.customElements.define(
   <div class="thing--weather-one-forecast--condition-icon"><img src="static/icons/weather/${conditions.icon}.svg" alt="condition icon" /></div>
   <div class="thing--weather-one-forecast--condition">${conditions.text}</div>
   <div class="thing--weather-one-forecast--cloudiness">${formatted_octas}</div>
-  <div class="thing--weather-one-forecast--precipitations">${Math.round((precipitations + Number.EPSILON) * 100) / 100}mm</div>
+  <div class="thing--weather-one-forecast--precipitations">${precipitations.round(2)}mm</div>
 
-  <div class="thing--weather-one-forecast--uv-index">${Math.round((f.uv_index + Number.EPSILON) * 10) / 10}UV<sub>ix</sub></div>
+  <div class="thing--weather-one-forecast--uv-index">${f.uv_index.round(1)}UV<sub>ix</sub></div>
   <h6 class="thing--weather-one-forecast--title"><span>Températures</span></h6>
-  <div class="thing--weather-one-forecast--temperature">${Math.round((f.temperature + Number.EPSILON) * 10) / 10}°C</div>
-  <div class="thing--weather-one-forecast--apparent-temperature">(${Math.round((f.apparent_temperature + Number.EPSILON) * 10) / 10}°C)</div>
+  <div class="thing--weather-one-forecast--temperature">${f.temperature.round(1)}°C</div>
+  <div class="thing--weather-one-forecast--apparent-temperature">(${f.apparent_temperature.round(1)}°C)</div>
   <h6 class="thing--weather-one-forecast--title"><span>Air</span></h6>
   <div class="thing--weather-one-forecast--humidity">${f.humidity}%H</div>
   <div class="thing--weather-one-forecast--pressure">${f.pressure}hPa</div>
-  <div class="thing--weather-one-forecast--dew-point">${Math.round((f.dew_point + Number.EPSILON) * 10) / 10}°C</div>
+  <div class="thing--weather-one-forecast--dew-point">${f.dew_point.round(1)}°C</div>
   <h6 class="thing--weather-one-forecast--title"><span>Vent</span></h6>
-  <div class="thing--weather-one-forecast--wind-speed">${Math.round((f.wind_speed + Number.EPSILON) * 10) / 10}m/s</div>
-  <div class="thing--weather-one-forecast--wind-gust">(${Math.round((f.wind_gust + Number.EPSILON) * 10) / 10}m/s)</div>
+  <div class="thing--weather-one-forecast--wind-speed">${f.wind_speed.round(1)}m/s</div>
+  <div class="thing--weather-one-forecast--wind-gust">(${f.wind_gust.round(1)}m/s)</div>
   <div class="thing--weather-one-forecast--wind-degree"><svg class="icon" style="transform: rotate(${f.wind_degree + 180}deg)"><use href="#icon-compass" /></div>
 </div>`;
                     }
@@ -942,7 +1000,7 @@ window.addEventListener(
     'DOMContentLoaded',
     () => {
         // Implement tabs for the navigation.
-        new function() {
+        {
             const all_tablists = document.querySelectorAll('[role="tablist"]');
 
             all_tablists.forEach(
@@ -972,6 +1030,6 @@ window.addEventListener(
                     );
                 }
             );
-        };
+        }
     }
 );
