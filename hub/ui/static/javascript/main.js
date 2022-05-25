@@ -189,6 +189,71 @@ async function fetch_properties(base, ...property_names) {
                 return {value};
             };
         }
+
+            // Non-standard.
+        case 'recurrence': {
+            const regex = /RRULE:FREQ=(?<freq>[A-Z]+);INTERVAL=(?<interval>[0-9]+);(?<by>[A-Z]+)=(?<by_value>[A-Z]+);AT=(?<at>[0-9]+)/;
+
+            value_reader = function() {
+                const value = properties_values[property_name];
+                let formatted_value;
+                const matches = value.match(regex);
+
+                if (matches) {
+                    const m = matches.groups;
+
+                    if ('OFF' == m.freq) {
+                        formatted_value = 'jamais';
+                    } else {
+                        formatted_value = `chaque ${m.freq == 'MONTHLY' ? 'mois' : (m.freq == 'WEEKLY' ? 'semaine' : '(inconnu)')}`;
+
+                        if ('BYDAY' == m.by) {
+                            let day = '';
+
+                            switch (m.by_value) {
+                            case 'MO':
+                                day = 'lundi';
+                                break;
+
+                            case 'TU':
+                                day = 'mardi';
+                                break;
+
+                            case 'WE':
+                                day = 'mercredi';
+                                break;
+
+                            case 'TH':
+                                day = 'jeudi';
+                                break;
+
+                            case 'FR':
+                                day = 'vendredi';
+                                break;
+                                
+                            case 'SA':
+                                day = 'samedi';
+                                break;
+
+                            case 'SU':
+                                day = 'dimanche';
+                                break;
+
+                            default:
+                                day = '(inconnu)';
+                            }
+
+                            formatted_value += `, le ${day} à ${m.at}h`;
+                        }
+                    }
+
+                    return {
+                        value,
+                        formatted_value,
+                    };
+                }
+            }
+        }
         }
 
         properties[property_name] = {
@@ -547,6 +612,7 @@ window.customElements.define(
             const thing_bottom_value_element = template_content.querySelector('.thing--dhw-bottom-value');
             const thing_wanted_value_element = template_content.querySelector('.thing--dhw-wanted-value');
             const thing_anti_legionella_started_manually_value_element = template_content.querySelector('.thing--dhw-anti-legionella-started-manually-value');
+            const thing_anti_legionella_schedule_value_element = template_content.querySelector('.thing--dhw-anti-legionella-schedule-value');
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
@@ -557,13 +623,15 @@ window.customElements.define(
             const bottom_property_name = this.getAttribute('data-bottom-value');
             const wanted_property_name = this.getAttribute('data-wanted-value');
             const anti_legionella_started_manually_property_name = this.getAttribute('data-anti-legionella-started-manually-value');
+            const anti_legionella_schedule_property_name = this.getAttribute('data-anti-legionella-schedule-value');
 
             const fetched_properties = await fetch_properties(
                 base,
                 top_property_name,
                 bottom_property_name,
                 wanted_property_name,
-                anti_legionella_started_manually_property_name
+                anti_legionella_started_manually_property_name,
+                anti_legionella_schedule_property_name
             );
 
             async function update(next) {
@@ -575,6 +643,7 @@ window.customElements.define(
                 const { formatted_value: bottom_formatted_value } = (properties[bottom_property_name].value_reader)();
                 const { formatted_value: wanted_formatted_value } = (properties[wanted_property_name].value_reader)();
                 const { value: anti_legionella_started_manually_value } = (properties[anti_legionella_started_manually_property_name].value_reader)();
+                const { formatted_value: anti_legionella_schedule_value } = (properties[anti_legionella_schedule_property_name].value_reader)();
 
                 // Update values.
                 thing_top_value_element.innerHTML = top_formatted_value;
@@ -582,10 +651,12 @@ window.customElements.define(
                 thing_wanted_value_element.innerHTML = wanted_formatted_value;
 
                 if (anti_legionella_started_manually_value) {
-                    thing_anti_legionella_started_manually_value_element.innerHTML = 'Démarré manuellement';
+                    thing_anti_legionella_started_manually_value_element.innerHTML = 'oui';
                 } else {
-                    thing_anti_legionella_started_manually_value_element.innerHTML = 'Démarage automatique';
+                    thing_anti_legionella_started_manually_value_element.innerHTML = 'non';
                 }
+
+                thing_anti_legionella_schedule_value_element.innerHTML = anti_legionella_schedule_value;
 
                 next();
             }

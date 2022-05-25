@@ -145,7 +145,7 @@ body {
 }
 
     .header--title a {
-        color: inherit;
+        text-decoration: none;
     }
 
     .header--title {
@@ -799,11 +799,11 @@ main {
     height: var(--thing--action-size);
 }
 
-    .thing--pulse > .icon {
+    .thing--pulse .icon {
         height: calc(var(--thing--action-size) - 1rem);
     }
 
-    .thing--blind > .icon {
+    .thing--blind .icon {
         height: calc(var(--thing--action-size) - 1.4rem);
     }
 
@@ -841,8 +841,21 @@ h3 { font-size: 110% }
     }
 
 a {
-    text-decoration: none;
+    color: inherit;
+    text-decoration-thickness: from-font;
 }
+
+ul {
+    margin-left: var(--space);
+}
+
+    ul > li::marker {
+        color: var(--color-light-300);
+    }
+
+    h4 ~ ul {
+        margin-top: var(--space);
+    }
 
 strong {
     font-weight: 600;

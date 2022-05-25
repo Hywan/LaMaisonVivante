@@ -1,4 +1,8 @@
-use crate::{reader, state::VentilationMode, state::VentilationState, writer};
+use crate::{
+    reader,
+    state::{AntiLegionellaFrequency, VentilationMode, VentilationState},
+    writer,
+};
 use serde_json::{json, Map, Value};
 use std::{
     net::SocketAddr,
@@ -84,6 +88,23 @@ fn make_domestic_hot_water() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
                 "title": "Anti-Legionella Manual Status",
                 "type": "boolean",
                 "description": "Whether the anti-legionella protection has been started manually",
+                "readOnly": true,
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        ),
+    )));
+    thing.add_property(Box::new(BaseProperty::new(
+        "anti_legionella_schedule".to_owned(),
+        json!(""),
+        None,
+        Some(
+            json!({
+                "@type": "RecurrenceProperty", // non-standard
+                "title": "Anti-Legionella Schedule",
+                "type": "recurrence",
+                "description": "Anti-Legionella Schedule (as `RRULE` from the iCalendar specification)",
                 "readOnly": true,
             })
             .as_object()
@@ -468,6 +489,7 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
         {
             let domestic_hot_water_state = state.domestic_hot_water;
             let storage_temperatures = domestic_hot_water_state.storage_temperatures;
+            let anti_legionella = domestic_hot_water_state.anti_legionella;
             let domestic_hot_water = domestic_hot_water.clone();
 
             update_property!(
@@ -481,6 +503,38 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
                 storage_temperatures.bottom_of_the_tank
             );
             update_property!(domestic_hot_water, "wanted", storage_temperatures.wanted);
+            update_property!(
+                domestic_hot_water,
+                "anti_legionella_started_manually",
+                anti_legionella.started_manually
+            );
+            update_property!(
+                domestic_hot_water,
+                "anti_legionella_schedule",
+                format!(
+                    "RRULE:FREQ={frequency};INTERVAL={interval};{by}={by_value};AT={hour}",
+                    frequency = match anti_legionella.frequency {
+                        AntiLegionellaFrequency::Off => "OFF",
+                        AntiLegionellaFrequency::Weekly => "WEEKLY",
+                        AntiLegionellaFrequency::Monthly => "MONTHLY",
+                    },
+                    interval = "1",
+                    by = "BYDAY",
+                    by_value = match anti_legionella.day {
+                        0 => "SU",
+                        1 => "MO",
+                        2 => "TU",
+                        3 => "WE",
+                        4 => "TH",
+                        5 => "FR",
+                        6 => "SA",
+                        _ => unreachable!("Unknown day"), // TODO: refactor.
+                    },
+                    hour = anti_legionella.hour,
+                )
+            );
+
+            // RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO
         }
 
         // Ventilation

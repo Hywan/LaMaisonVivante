@@ -174,14 +174,25 @@
                 <p class="thing--dhw-wanted-value">?</p>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="thing--frame thing--text">
-              <h3 class="thing--frame-name">Anti-légionellose</h3>
+        <h4>Cycles anti-légionellose (<a href="https://fr.wikipedia.org/wiki/L%C3%A9gionellose">en savois plus</a>)</h4>
 
-              <div class="thing--frame-content">
-                <p class="thing--dhw-anti-legionella-started-manually-value">?</p>
-              </div>
-            </div>
+        <ul>
+          <li>Démarré manuellement : <span class="thing--dhw-anti-legionella-started-manually-value">?</span></li>
+          <li>Démarrage automatique : <span class="thing--dhw-anti-legionella-schedule-value">?</span></li>
+        </ul>
+
+        <div class="things">
+          <div class="things--list">
+            <my-thing>
+              <my-actionable-thing slot="thing">
+                <span slot="name">basculer</span>
+                <span slot="location">Cycle</span>
+                <my-thing--pulse slot="action" data-base="http://192.168.1.128:8095/1"></my-thing--blind>
+              </my-actionable-thing>
+            </my-thing>
           </div>
         </div>
       </div>
@@ -428,7 +439,7 @@
     </style>
 
     <div class="thing--actions">
-      <button class="thing--pulse" title="Pulse"><svg class="icon"><use href="#icon-power" /></svg></button>
+      <button class="thing--pulse" title="Pulse"><slot name="button"><svg class="icon"><use href="#icon-power" /></svg></slot></button>
     </div>
 
     <svg class="svg--symbols">
@@ -510,14 +521,18 @@
           </my-solar-pv-thing>
         </my-thing>
 
+        <!--
+        data-base="http://192.168.1.128:8093/0"
+        -->
         <my-thing>
           <my-dhw-thing
             slot="thing"
-            data-base="http://192.168.1.128:8093/0"
+            data-base="http://127.0.0.1:8093/0"
             data-top-value="top_of_the_tank"
             data-bottom-value="bottom_of_the_tank"
             data-wanted-value="wanted"
-            data-anti-legionella-started-manually-value="anti_legionella_started_manually">
+            data-anti-legionella-started-manually-value="anti_legionella_started_manually"
+            data-anti-legionella-schedule-value="anti_legionella_schedule">
             <span slot="name">Boiler</span>
           </my-dhw-thing>
         </my-thing>
@@ -562,6 +577,7 @@
             data-forecast-base="http://192.168.1.128:8096/1"
             data-forecast-value="hourly">
             <span slot="name">Météo</span>
+          </my-weather-thing>
         </my-thing>
       </my-unlocated-things>
 
