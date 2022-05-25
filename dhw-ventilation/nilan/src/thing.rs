@@ -74,6 +74,23 @@ fn make_domestic_hot_water() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
             .clone(),
         ),
     )));
+    thing.add_property(Box::new(BaseProperty::new(
+        "anti_legionella_started_manually".to_owned(),
+        json!(false),
+        None,
+        Some(
+            json!({
+                "@type": "OnOffProperty",
+                "title": "Anti-Legionella Manual Status",
+                "type": "boolean",
+                "description": "Whether the anti-legionella protection has been started manually",
+                "readOnly": true,
+            })
+            .as_object()
+            .unwrap()
+            .clone(),
+        ),
+    )));
 
     Arc::new(RwLock::new(Box::new(thing)))
 }

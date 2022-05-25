@@ -114,6 +114,16 @@ async function fetch_properties(base, ...property_names) {
         const extra_values = {};
 
         switch (property_description.type) {
+        case 'boolean': {
+            value_reader = function () {
+                const value = properties_values[property_name];
+
+                return {value};
+            };
+
+            break;
+        }
+
         case 'integer':
         case 'number': {
             const unit = property_description.unit;
@@ -535,6 +545,8 @@ window.customElements.define(
 
             const thing_top_value_element = template_content.querySelector('.thing--dhw-top-value');
             const thing_bottom_value_element = template_content.querySelector('.thing--dhw-bottom-value');
+            const thing_wanted_value_element = template_content.querySelector('.thing--dhw-wanted-value');
+            const thing_anti_legionella_started_manually_value_element = template_content.querySelector('.thing--dhw-anti-legionella-started-manually-value');
 
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
@@ -543,8 +555,16 @@ window.customElements.define(
 
             const top_property_name = this.getAttribute('data-top-value');
             const bottom_property_name = this.getAttribute('data-bottom-value');
+            const wanted_property_name = this.getAttribute('data-wanted-value');
+            const anti_legionella_started_manually_property_name = this.getAttribute('data-anti-legionella-started-manually-value');
 
-            const fetched_properties = await fetch_properties(base, top_property_name, bottom_property_name);
+            const fetched_properties = await fetch_properties(
+                base,
+                top_property_name,
+                bottom_property_name,
+                wanted_property_name,
+                anti_legionella_started_manually_property_name
+            );
 
             async function update(next) {
                 // Read all fetched properties.
@@ -553,10 +573,19 @@ window.customElements.define(
                 // Get formatted values.
                 const { formatted_value: top_formatted_value } = (properties[top_property_name].value_reader)();
                 const { formatted_value: bottom_formatted_value } = (properties[bottom_property_name].value_reader)();
+                const { formatted_value: wanted_formatted_value } = (properties[wanted_property_name].value_reader)();
+                const { value: anti_legionella_started_manually_value } = (properties[anti_legionella_started_manually_property_name].value_reader)();
 
                 // Update values.
                 thing_top_value_element.innerHTML = top_formatted_value;
                 thing_bottom_value_element.innerHTML = bottom_formatted_value;
+                thing_wanted_value_element.innerHTML = wanted_formatted_value;
+
+                if (anti_legionella_started_manually_value) {
+                    thing_anti_legionella_started_manually_value_element.innerHTML = 'Démarré manuellement';
+                } else {
+                    thing_anti_legionella_started_manually_value_element.innerHTML = 'Démarage automatique';
+                }
 
                 next();
             }

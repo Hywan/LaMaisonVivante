@@ -277,6 +277,7 @@ main {
         display: flex;
         flex-direction: column-reverse;
         align-self: center;
+        text-align: center;
 
         transition: opacity var(--transition-duration) ease;
     }

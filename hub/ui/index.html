@@ -142,27 +142,50 @@
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--frame thing--dhw">
-      <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
+    <my-expandable-thing>
+      <div slot="short-thing" class="thing--frame thing--dhw">
+        <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
-      <div class="thing--frame-content">
-        <div class="thing--dhw-top-value">?</div>
-        <div class="thing--dhw-bottom-value">?</div>
+        <div class="thing--frame-content">
+          <div class="thing--dhw-top-value">?</div>
+          <div class="thing--dhw-bottom-value">?</div>
 
-        <svg class="thing--dhw-boiler" viewBox="0 0 314 493">
-          <g class="blender">
-            <foreignObject x="0" y="0" width="314" height="493">
-              <div class="gradient gradient--conic__blue_to_red"></div>
-            </foreignObject>
+          <svg class="thing--dhw-boiler" viewBox="0 0 314 493">
+            <g class="blender">
+              <foreignObject x="0" y="0" width="314" height="493">
+                <div class="gradient gradient--conic__blue_to_red"></div>
+              </foreignObject>
 
-            <g class="blender--subject">
-              <rect x="0" y="0" width="314" height="493" fill="#fff" />
-              <path d="M155 0c-3 1-6 3-8 6C79 131 0 239 0 342c0 86 71 151 157 151s157-65 157-151c0-103-80-211-147-336-3-4-7-6-12-6zm2 34c65 119 134 221 134 308 0 74-59 128-134 128S22 416 22 342c0-87 69-189 135-308zM66 325c-6 0-10 5-10 11 0 64 51 112 112 112a11 11 0 1 0 0-22c-50 0-90-38-90-90a11 11 0 0 0-12-11z" />
+              <g class="blender--subject">
+                <rect x="0" y="0" width="314" height="493" fill="#fff" />
+                <path d="M155 0c-3 1-6 3-8 6C79 131 0 239 0 342c0 86 71 151 157 151s157-65 157-151c0-103-80-211-147-336-3-4-7-6-12-6zm2 34c65 119 134 221 134 308 0 74-59 128-134 128S22 416 22 342c0-87 69-189 135-308zM66 325c-6 0-10 5-10 11 0 64 51 112 112 112a11 11 0 1 0 0-22c-50 0-90-38-90-90a11 11 0 0 0-12-11z" />
+              </g>
             </g>
-          </g>
-        </svg>
+          </svg>
+        </div>
       </div>
-    </div>
+      <div slot="long-thing">
+        <div class="things">
+          <div class="things--list">
+            <div class="thing--frame thing--text">
+              <h3 class="thing--frame-name">Cible</h3>
+
+              <div class="thing--frame-content">
+                <p class="thing--dhw-wanted-value">?</p>
+              </div>
+            </div>
+
+            <div class="thing--frame thing--text">
+              <h3 class="thing--frame-name">Anti-légionellose</h3>
+
+              <div class="thing--frame-content">
+                <p class="thing--dhw-anti-legionella-started-manually-value">?</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </my-expandable-thing>
   </template>
 
   <template id="template--ventilation-thing">
@@ -492,7 +515,9 @@
             slot="thing"
             data-base="http://192.168.1.128:8093/0"
             data-top-value="top_of_the_tank"
-            data-bottom-value="bottom_of_the_tank">
+            data-bottom-value="bottom_of_the_tank"
+            data-wanted-value="wanted"
+            data-anti-legionella-started-manually-value="anti_legionella_started_manually">
             <span slot="name">Boiler</span>
           </my-dhw-thing>
         </my-thing>
