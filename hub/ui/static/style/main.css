@@ -873,10 +873,20 @@ button {
     background: var(--color-light-010);
     box-shadow: inset 1px 1px 3px #e9e9e9,
                 inset -1px -1px 3px #ffffff;
+
+    transition:
+        opacity var(--transition-duration) ease-in-out,
+        filter var(--transition-duration) ease-in-out;
 }
 
-    button:hover,
-    button:focus {
+    button[disabled] {
+        opacity: 70%;
+        filter: grayscale(80%);
+        cursor: not-allowed;
+    }
+
+    button:not([disabled]):hover,
+    button:not([disabled]):focus {
         background: var(--color-light-000);
     }
 

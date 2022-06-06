@@ -1037,11 +1037,21 @@ window.customElements.define(
 
             const self = this;
             const base = self.getAttribute('data-base').replace(/\/+$/, '');
+            const inactive_for = parseInt(self.getAttribute('data-inactive-for') || 0) * 1000;
             const url = base + '/properties/pulse';
 
             button.addEventListener(
                 'click',
                 () => {
+                    button.setAttribute('disabled', true);
+                    window.setTimeout(
+                        () => {
+                            button.removeAttribute('disabled');
+                        },
+                        inactive_for,
+                        false
+                    )
+
                     http_put(url, '{"pulse": true}')
                 }
             );
