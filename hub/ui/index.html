@@ -4,8 +4,6 @@
 <head>
   <title>Hub — La Maison Vivante</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <meta http-equiv="content-type" content="text/javascript; charset=utf-8" />
-  <meta http-equiv="content-type" content="text/css; charset=utf-8" />
   <meta name="viewport" content="width=device-width, user-scalable=no" />
   <meta name="theme-color" content="#b24646" />
   <link rel="icon" type="image/png" href="static/images/robot.png" />
@@ -190,7 +188,7 @@
               <my-actionable-thing slot="thing">
                 <span slot="name">basculer</span>
                 <span slot="location">Cycle</span>
-                <my-thing--pulse slot="action" data-base="http://192.168.1.128:8095/1" data-inactive-for="180"></my-thing--blind>
+                <my-thing--pulse slot="action" data-base="http://192.168.1.128:8095/1" data-inactive-for="180"></my-thing--pulse>
               </my-actionable-thing>
             </my-thing>
           </div>
@@ -523,6 +521,7 @@
 
         <!--
         data-base="http://192.168.1.128:8093/0"
+            data-base="http://127.0.0.1:8093/0"
         -->
         <my-thing>
           <my-dhw-thing
@@ -774,8 +773,13 @@
         </ul>
       </div>
 
-      <iframe id="metrics-live-panel" role="tabpanel" tabindex="1" aria-labelledby="tab-of-metrics-live-panel" aria-hidden="false" src="http://192.168.1.128:3000/d/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&kiosk"></iframe>
-      <iframe id="metrics-daily-panel" role="tabpanel" tabindex="2" aria-labelledby="tab-of-metrics-daily-panel" aria-hidden="true" src="http://192.168.1.128:3000/d/gosssXkgz/daily-view?orgId=1&from=now-7d&to=now&theme=light&kiosk"></iframe>
+      <div id="metrics-live-panel" role="tabpanel" tabindex="1" aria-labelledby="tab-of-metrics-live-panel" aria-hidden="false">
+        <iframe src="http://192.168.1.128:3000/d/Mxk-7RWgk/live?orgId=1&refresh=10s&theme=light&kiosk"></iframe>
+      </div>
+
+      <div id="metrics-daily-panel" role="tabpanel" tabindex="2" aria-labelledby="tab-of-metrics-daily-panel" aria-hidden="true">
+        <iframe src="http://192.168.1.128:3000/d/gosssXkgz/daily-view?orgId=1&from=now-7d&to=now&theme=light&kiosk"></iframe>
+      </div>
     </section>
   </main>
 

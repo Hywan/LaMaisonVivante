@@ -815,7 +815,7 @@ iframe {
     display: block;
 }
 
-#metrics-panel > iframe {
+#metrics-panel [role="tabpanel"] > iframe {
     height: calc(100vh - var(--space-very-large) * 4);
     border: 4px solid transparent;
     border-radius: var(--space);
