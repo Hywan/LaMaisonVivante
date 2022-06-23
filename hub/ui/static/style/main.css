@@ -336,6 +336,7 @@ main {
         transform: translateY(70vh);
         height: 0;
         width: 0;
+        overflow: hidden;
     }
 
     .thing--expandable[aria-expanded = "true"] > .thing--expandable-long {
