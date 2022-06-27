@@ -188,9 +188,11 @@ async function fetch_properties(base, ...property_names) {
 
                 return {value};
             };
+
+            break;
         }
 
-            // Non-standard.
+        // Non-standard.
         case 'recurrence': {
             const regex = /RRULE:FREQ=(?<freq>[A-Z]+);INTERVAL=(?<interval>[0-9]+);(?<by>[A-Z]+)=(?<by_value>[A-Z]+);AT=(?<at>[0-9]+)/;
 
