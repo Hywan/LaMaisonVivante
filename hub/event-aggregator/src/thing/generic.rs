@@ -114,4 +114,8 @@ pub enum PropertyType {
     Video,
     #[serde(rename(deserialize = "VoltageProperty"))]
     Voltage,
+
+    // Non-standard.
+    #[serde(rename(deserialize = "RecurrenceProperty"))]
+    Recurrence,
 }
