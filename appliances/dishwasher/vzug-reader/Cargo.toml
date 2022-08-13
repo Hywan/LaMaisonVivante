@@ -2,7 +2,7 @@
 name = "vzug-reader"
 version = "0.1.0"
 authors = ["Ivan Enderlin <ivan@mnt.io>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 reqwest = { version = "0.10", features = ["json"] }

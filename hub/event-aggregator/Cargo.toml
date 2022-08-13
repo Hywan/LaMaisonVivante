@@ -2,7 +2,7 @@
 name = "hub-event-aggregator"
 version = "0.1.0"
 authors = ["Ivan Enderlin <ivan@mnt.io>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 structopt = "0.3"

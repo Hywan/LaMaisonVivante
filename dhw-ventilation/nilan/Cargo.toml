@@ -2,7 +2,7 @@
 name = "nilan"
 version = "1.0.0"
 authors = ["Ivan Enderlin <ivan@mnt.io>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 tokio-modbus = { version = "0.5.1", default-features = false, features = ["tcp", "sync"] }
