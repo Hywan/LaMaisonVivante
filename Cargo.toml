@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "appliances/dishwasher/vzug-reader/",
-    "blinds/blinds-controller/",
+    "blinds/blinds/",
     "dhw-ventilation/nilan/",
     "electricity/victron-reader/",
     "hub/event-aggregator/",

@@ -26,11 +26,10 @@ $ printf '%b\t%b' '\x02' '\x04' | nc 192.168.1.42 23 -v
 ```
 
 _Hopefully_, there is a [Rust](https://www.rust-lang.org/) program to
-control the blinds! Please, welcome `blinds-controller`. Here is a
-basic usage, but check [its documentation to learn
-more](blinds-controller/).
+control the blinds! Please, welcome `blinds`. Here is a basic usage, but check
+[its documentation to learn more](blinds/).
 
 ```sh
-$ blinds-controller --address 192.168.1.42:23 --subject livingroom --action closing
+$ blinds --address 192.168.1.42:23 --subject livingroom --action closing
 ```
 

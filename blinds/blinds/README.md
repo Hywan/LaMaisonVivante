@@ -1,4 +1,4 @@
-# Blinds Controller
+# Blinds
 
 This program aims at controlling the blinds in our house, by talking
 to the `blinds.ino` program that lands in a Controllino. To learn more
@@ -14,17 +14,17 @@ $ cargo build --release
 ```
 
 The executable binary is located in
-`./target/release/blinds-controller`.
+`./target/release/blinds`.
 
 ## Usage
 
 Use `-h`/`--help` to get help:
 
 ```
-blinds-controller 0.1.0
+blinds 1.0.0
 
 USAGE:
-    blinds-controller [FLAGS] [OPTIONS]
+    blinds [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help                 Prints help information
@@ -59,7 +59,7 @@ file.
 To close the living room blind:
 
 ```sh
-$ ./target/release/blinds-controller -a 192.168.1.42:23 -s livingroom -x closing
+$ ./target/release/blinds -a 192.168.1.42:23 -s livingroom -x closing
 Sending a Closing to LivingRoom…
 ```
 
@@ -74,7 +74,7 @@ Gateway](https://iot.mozilla.org/gateway/) to interact with the
 blinds. Enjoy!
 
 ```sh
-$ ./target/release/blinds-controller --address 192.168.1.42:23 --into-thing --thing-port 8085
+$ ./target/release/blinds --address 192.168.1.42:23 --into-thing --thing-port 8085
 Starting the Things server (port 8085)…
 ```
 

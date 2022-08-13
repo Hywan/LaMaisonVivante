@@ -1,6 +1,6 @@
 [package]
-name = "blinds-controller"
-version = "0.1.0"
+name = "blinds"
+version = "1.0.0"
 authors = ["Ivan Enderlin <ivan@mnt.io>"]
 edition = "2018"
 
