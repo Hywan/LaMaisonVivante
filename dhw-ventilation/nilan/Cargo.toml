@@ -1,6 +1,6 @@
 [package]
 name = "nilan"
-version = "0.3.0"
+version = "1.0.0"
 authors = ["Ivan Enderlin <ivan@mnt.io>"]
 edition = "2018"
 
