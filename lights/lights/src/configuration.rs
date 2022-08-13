@@ -23,7 +23,7 @@ impl Default for Configuration {
 }
 
 pub fn get_path() -> Result<PathBuf, &'static str> {
-    let name = "lights-controller";
+    let name = "lights";
     let project = ProjectDirs::from("rs", "", name)
         .ok_or_else(|| "Failed to find the configuration project directory.")?;
 

@@ -1,7 +1,7 @@
-// To control this program, use the `lights-controller` program:
+// To control this program, use the `lights` program:
 //
 // ```sh
-// $ lights-controller --address 192.168.1.42:23 --subject livingroom --action pulse
+// $ lights --address 192.168.1.42:23 --subject livingroom --action pulse
 // ```
 //
 // Or alternatively, the hardcore way with `printf` and `netcat`:

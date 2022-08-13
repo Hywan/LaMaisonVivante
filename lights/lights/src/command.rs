@@ -57,7 +57,7 @@ arg_enum! {
 }
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "lights-controller")]
+#[structopt(name = "lights")]
 pub struct Options {
     /// Address of the Controllino; see `lights.ino` to see the port;
     /// e.g. `192.168.1.42:23`. This option overwrites the value read

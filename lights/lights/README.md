@@ -13,18 +13,17 @@ clone the program, and run:
 $ cargo build --release
 ```
 
-The executable binary is located in
-`./target/release/lights-controller`.
+The executable binary is located in `./target/release/lights`.
 
 ## Usage
 
 Use `-h`/`--help` to get help:
 
 ```
-lights-controller 0.3.0
+lights 1.0.0
 
 USAGE:
-    lights-controller [FLAGS] [OPTIONS]
+    lights [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help                 Prints help information
@@ -61,7 +60,7 @@ file.
 To turn the group of lights in the living room (a set of 5 lights):
 
 ```sh
-$ /target/release/lights-controller -a 192.168.1.125:23 -s livingroom
+$ /target/release/lights -a 192.168.1.125:23 -s livingroom
 Sending a Pulse to LivingRoom…
 ```
 
@@ -76,6 +75,6 @@ Gateway](https://iot.mozilla.org/gateway/) to interact with the
 lights. Enjoy!
 
 ```sh
-$ ./target/release/lights-controller --address 192.168.1.125:23 --into-thing --thing-port 8081
+$ ./target/release/lights --address 192.168.1.125:23 --into-thing --thing-port 8081
 Starting the Things server (port 8081)…
 ```
