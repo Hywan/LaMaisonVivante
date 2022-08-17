@@ -6,6 +6,7 @@ members = [
     "electricity/victron-reader/",
     "hub/event-aggregator/",
     "hub/event-automator/",
+    "transport/kia/",
     "lights/lights/",
     "tanks/tanks-controller/",
     "weather/",
