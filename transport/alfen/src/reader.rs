@@ -1,6 +1,6 @@
 use crate::{modbus::*, state::*, unit::*};
 use chrono::offset::{FixedOffset, TimeZone};
-use std::{cmp, io::Result};
+use std::{cmp, io::Result, time::Duration};
 use tokio_modbus::prelude::*;
 
 trait RegistryReader {
@@ -97,12 +97,11 @@ impl<const N: usize> RegistryReader for FixedString<N> {
 
         let bytes = bytes
             .chunks_exact(2)
-            .map(|bytes| [bytes[1], bytes[0]])
-            .flatten()
+            .flat_map(|bytes| [bytes[1], bytes[0]])
             .collect::<Vec<u8>>();
 
         let max = bytes.len();
-        let last = bytes.iter().position(|x| *x == '\0' as u8).unwrap_or(max);
+        let last = bytes.iter().position(|x| *x == b'\0').unwrap_or(max);
 
         String::from_utf8_lossy(&bytes[..cmp::min(max, last)]).to_string()
     }
@@ -149,7 +148,7 @@ fn read_station_information(context: &mut sync::Context) -> Result<StationInform
                     .try_into()
                     .unwrap(),
             ),
-        uptime_ms: read_holding_register::<u64>(context, UPTIME)?,
+        uptime: Duration::from_millis(read_holding_register::<u64>(context, UPTIME)?),
     })
 }
 
@@ -174,42 +173,12 @@ fn read_socket(context: &mut sync::Context) -> Result<Socket> {
             _ => SocketAvailability::Unknown,
         },
         status: match read_holding_register::<FixedString<5>>(context, SOCKET_STATUS)?.as_str() {
-            "A" => SocketStatus {
-                pwm_signal: false,
-                connected: false,
-                charging: false,
-                is_error: false,
-            },
-            "B1" | "C1" | "D1" => SocketStatus {
-                pwm_signal: false,
-                connected: true,
-                charging: false,
-                is_error: false,
-            },
-            "B2" => SocketStatus {
-                pwm_signal: true,
-                connected: true,
-                charging: false,
-                is_error: false,
-            },
-            "C2" | "D2" => SocketStatus {
-                pwm_signal: true,
-                connected: true,
-                charging: true,
-                is_error: false,
-            },
-            "F" => SocketStatus {
-                pwm_signal: false,
-                connected: false,
-                charging: false,
-                is_error: true,
-            },
-            "E" | _ => SocketStatus {
-                pwm_signal: false,
-                connected: false,
-                charging: false,
-                is_error: false,
-            },
+            "B1" | "C1" | "D1" => SocketStatus::Connected { pwm_signal: false },
+            "B2" => SocketStatus::Connected { pwm_signal: true },
+            "C2" | "D2" => SocketStatus::Charging,
+            "A" | "E" => SocketStatus::Disconnected,
+            "F" => SocketStatus::Error,
+            _ => SocketStatus::Unknown,
         },
         number_of_phases: match read_holding_register::<u16>(context, SOCKET_NUMBER_OF_PHASES)? {
             1 => PhaseNumber::One,
@@ -230,11 +199,6 @@ fn read_socket(context: &mut sync::Context) -> Result<Socket> {
         },
         power: read_holding_register::<f32>(context, SOCKET_POWER_SUM)?.to_watt(),
         frequency: read_holding_register::<f32>(context, SOCKET_FREQUENCY)?.to_hertz(),
-        real_power_delivered: read_holding_register::<f32>(
-            context,
-            SOCKET_REAL_POWER_DELIVERED_SUM,
-        )?
-        .to_watt_hour(),
         session: SocketSession {
             max_current: read_holding_register::<f32>(context, SOCKET_MAX_CURRENT)?.to_amp(),
             actual_applied_max_current: read_holding_register::<f32>(

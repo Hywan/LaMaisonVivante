@@ -1,6 +1,7 @@
 use crate::unit::*;
 use chrono::prelude::*;
 use serde::Serialize;
+use std::time::Duration;
 
 #[derive(Debug, Serialize, Default)]
 pub struct StationInformation {
@@ -10,7 +11,7 @@ pub struct StationInformation {
     pub serial_number: String,
     pub firmware_version: String,
     pub date: DateTime<FixedOffset>,
-    pub uptime_ms: u64,
+    pub uptime: Duration,
 }
 
 #[derive(Debug, Serialize, Default)]
@@ -37,7 +38,6 @@ pub struct Socket {
     pub l3: SocketPhase,
     pub power: Watt,
     pub frequency: Hertz,
-    pub real_power_delivered: WattHour,
     pub session: SocketSession,
 }
 
@@ -58,11 +58,15 @@ pub enum SocketAvailability {
 }
 
 #[derive(Debug, Serialize, Default)]
-pub struct SocketStatus {
-    pub pwm_signal: bool,
-    pub connected: bool,
-    pub charging: bool,
-    pub is_error: bool,
+pub enum SocketStatus {
+    #[default]
+    Unknown,
+    Disconnected,
+    Connected {
+        pwm_signal: bool,
+    },
+    Charging,
+    Error,
 }
 
 #[derive(Debug, Serialize, Default)]
