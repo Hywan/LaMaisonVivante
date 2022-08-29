@@ -80,6 +80,20 @@ impl RegistryReader for f32 {
     }
 }
 
+impl RegistryReader for f64 {
+    type Target = f32;
+
+    fn number_of_registers() -> usize {
+        4
+    }
+
+    fn to_target(bytes: &[u16]) -> Self::Target {
+        f64::from_bits(unsafe {
+            std::mem::transmute::<_, u64>([bytes[2], bytes[3], bytes[1], bytes[0]])
+        }) as f32
+    }
+}
+
 struct FixedString<const N: usize>;
 
 impl<const N: usize> RegistryReader for FixedString<N> {
@@ -199,6 +213,11 @@ fn read_socket(context: &mut sync::Context) -> Result<Socket> {
         },
         power: read_holding_register::<f32>(context, SOCKET_POWER_SUM)?.to_watt(),
         frequency: read_holding_register::<f32>(context, SOCKET_FREQUENCY)?.to_hertz(),
+        total_delivered_energy: read_holding_register::<f64>(
+            context,
+            SOCKET_REAL_ENERGY_DELIVERED_SUM,
+        )?
+        .to_watt_hour(),
         session: SocketSession {
             max_current: read_holding_register::<f32>(context, SOCKET_MAX_CURRENT)?.to_amp(),
             actual_applied_max_current: read_holding_register::<f32>(

@@ -38,6 +38,7 @@ pub struct Socket {
     pub l3: SocketPhase,
     pub power: Watt,
     pub frequency: Hertz,
+    pub total_delivered_energy: WattHour,
     pub session: SocketSession,
 }
 
