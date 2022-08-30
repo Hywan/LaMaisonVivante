@@ -50,6 +50,16 @@ pub enum PhaseNumber {
     Three,
 }
 
+impl PhaseNumber {
+    pub fn as_u8(&self) -> u8 {
+        match self {
+            Self::Unknown => 0,
+            Self::One => 1,
+            Self::Three => 3,
+        }
+    }
+}
+
 #[derive(Debug, Serialize, Default)]
 pub enum SocketAvailability {
     #[default]

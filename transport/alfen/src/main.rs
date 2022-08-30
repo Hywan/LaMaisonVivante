@@ -1,6 +1,7 @@
 mod command;
 mod configuration;
 mod modbus;
+mod thing;
 mod reader;
 mod state;
 mod unit;
@@ -33,12 +34,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match command.kind {
         Some(CommandKind::Read(read_command)) => {
-            let mut context =
-                client::sync::tcp::connect(command.address.unwrap_or(configuration.address))?;
+            if read_command.into_thing {
+                thing::run(
+                    command.address.unwrap_or(configuration.address),
+                    read_command.thing_port.or(configuration.thing_port),
+                );
+            } else {
+                let mut context =
+                    client::sync::tcp::connect(command.address.unwrap_or(configuration.address))?;
 
-            match &read_command.format {
-                ReadFormat::Text => println!("{:#?}", reader::read(&mut context)?),
-                ReadFormat::Json => println!("{}", to_json(&reader::read(&mut context)?)?),
+                match &read_command.format {
+                    ReadFormat::Text => println!("{:#?}", reader::read(&mut context)?),
+                    ReadFormat::Json => println!("{}", to_json(&reader::read(&mut context)?)?),
+                }
             }
         }
 

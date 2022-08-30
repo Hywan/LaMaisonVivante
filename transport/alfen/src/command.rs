@@ -39,6 +39,17 @@ pub struct ReadCommand {
         default_value = "Text",
     )]
     pub format: ReadFormat,
+
+    /// Turns this program into a Thing, i.e. a new Web of Things
+    /// device.
+    #[structopt(short = "t", long)]
+    pub into_thing: bool,
+
+    /// Port of the Thing. Requires `--into-thing` to be
+    /// effective. This option overwrites the value read from the
+    /// configuration file.
+    #[structopt(short = "p", long)]
+    pub thing_port: Option<u16>,
 }
 
 arg_enum! {

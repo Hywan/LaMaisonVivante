@@ -13,3 +13,4 @@ human-panic = "1.0"
 confy = "0.4"
 directories-next = "2.0"
 chrono = { version = "0.4.22", default-features = false, features = ["std", "time", "serde", "iana-time-zone", "clock"] }
+webthing = "0.12"
