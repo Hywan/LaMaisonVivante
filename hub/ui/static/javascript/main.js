@@ -80,9 +80,35 @@ function fire(timeout, func, ...args) {
     func(next, ...args);
 }
 
+async function properties_of(element, property_name_of_base, ...attributes) {
+    const names = read_data_attributes(element, property_name_of_base, ...attributes);
+    const base = names[property_name_of_base];
+    delete names[property_name_of_base];
+
+    const fetched = await fetch_properties(base, ...Object.values(names));
+
+    return {
+        names,
+        fetch_values: async function() {
+            return await fetched.read();
+        }
+    };
+}
+
+function read_data_attributes(element, ...attributes) {
+    const out = {};
+
+    for (attribute of attributes) {
+        out[attribute.replace(/-/g, '_')] = element.getAttribute(`data-${attribute}`);
+    }
+
+    return out;
+}
+
 const SCHEMAS_CACHE = {};
 
 async function fetch_properties(base, ...property_names) {
+    base = base.replace(/\/+$/, '');
     const base_origin = new URL(base).origin;
 
     if (SCHEMAS_CACHE[base] == undefined) {
@@ -232,7 +258,7 @@ async function fetch_properties(base, ...property_names) {
                             case 'FR':
                                 day = 'vendredi';
                                 break;
-                                
+
                             case 'SA':
                                 day = 'samedi';
                                 break;
@@ -265,7 +291,7 @@ async function fetch_properties(base, ...property_names) {
     }
 
     return {
-        async read_properties() {
+        async read() {
             await refresh_properties_values();
 
             return properties;
@@ -398,7 +424,7 @@ window.customElements.define(
         connectedCallback() {
             const template = document.getElementById('template--expandable-thing');
             const template_content = template.content.cloneNode(true);
-            
+
             const thing = template_content.querySelector('.thing--expandable');
 
             const shadow_root = this.attachShadow({mode: 'open'})
@@ -444,30 +470,22 @@ window.customElements.define(
                   .appendChild(template_content);
 
             const circle_length = thing_meter_circle_element.getTotalLength();
-            const base = this.getAttribute('data-base').replace(/\/+$/, '');
 
-            const primary_property_name = this.getAttribute('data-property');
-            const secondary_property_name = this.getAttribute('data-secondary-property');
-
-            const fetched_properties = await fetch_properties(
-                base,
-                primary_property_name,
-                secondary_property_name,
-            );
+            const props = await properties_of(this, 'base', 'primary', 'secondary');
 
             async function update(next) {
                 // Read all fetched properties.
-                const properties = await fetched_properties.read_properties();
+                const values_of = await props.fetch_values();
 
                 async function subupdate(
                     property_name,
                     thing_value_element,
                     do_update_thing_meter_circle_element
                 ) {
-                    const property = properties[property_name];
-                    
-                    const max = property.max;
-                    const {value, formatted_value} = (property.value_reader)();
+                    const prop = values_of[property_name];
+
+                    const max = prop.max;
+                    const {value, formatted_value} = (prop.value_reader)();
                     thing_value_element.innerHTML = formatted_value;
 
                     if (do_update_thing_meter_circle_element) {
@@ -482,10 +500,10 @@ window.customElements.define(
 
                 // Update values.
 
-                subupdate(primary_property_name, thing_primary_value_element, true);
+                subupdate(props.names.primary, thing_primary_value_element, true);
 
-                if (undefined != secondary_property_name) {
-                    subupdate(secondary_property_name, thing_secondary_value_element, false);
+                if (undefined != props.names.secondary) {
+                    subupdate(props.names.secondary, thing_secondary_value_element, false);
                 }
 
                 next();
@@ -493,7 +511,7 @@ window.customElements.define(
 
             fire(REFRESH_RATE, update);
 
-            if (undefined == secondary_property_name) {
+            if (undefined == props.names.secondary) {
                 thing_primary_value_element.classList.add('thing--meter-primary-value-large');
             }
         }
@@ -522,10 +540,7 @@ window.customElements.define(
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
-            const base = this.getAttribute('data-base').replace(/\/+$/, '');
-
-            const primary_property_name = this.getAttribute('data-property');
-            const fetched_properties = await fetch_properties(base, primary_property_name);
+            const props = await properties_of(this, 'base', 'power');
 
             let previous_now = new Date(0);
             let sunrise = null;
@@ -533,8 +548,8 @@ window.customElements.define(
 
             async function update(next) {
                 // Read all fetched properties.
-                const properties = await fetched_properties.read_properties();
-                const property = properties[primary_property_name];
+                const values_of = await props.fetch_values();
+                const property = values_of[props.names.power];
 
                 // Update `thing_primary_value_element`.
                 const {formatted_value} = (property.value_reader)();
@@ -619,46 +634,39 @@ window.customElements.define(
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
-            const base = this.getAttribute('data-base').replace(/\/+$/, '');
-
-            const top_property_name = this.getAttribute('data-top-value');
-            const bottom_property_name = this.getAttribute('data-bottom-value');
-            const wanted_property_name = this.getAttribute('data-wanted-value');
-            const anti_legionella_started_manually_property_name = this.getAttribute('data-anti-legionella-started-manually-value');
-            const anti_legionella_schedule_property_name = this.getAttribute('data-anti-legionella-schedule-value');
-
-            const fetched_properties = await fetch_properties(
-                base,
-                top_property_name,
-                bottom_property_name,
-                wanted_property_name,
-                anti_legionella_started_manually_property_name,
-                anti_legionella_schedule_property_name
+            const props = await properties_of(
+                this,
+                'base',
+                'top',
+                'bottom',
+                'wanted',
+                'anti-legionella-started-manually',
+                'anti-legionella-schedule',
             );
 
             async function update(next) {
                 // Read all fetched properties.
-                const properties = await fetched_properties.read_properties();
+                const values_of = await props.fetch_values();
 
                 // Get formatted values.
-                const { formatted_value: top_formatted_value } = (properties[top_property_name].value_reader)();
-                const { formatted_value: bottom_formatted_value } = (properties[bottom_property_name].value_reader)();
-                const { formatted_value: wanted_formatted_value } = (properties[wanted_property_name].value_reader)();
-                const { value: anti_legionella_started_manually_value } = (properties[anti_legionella_started_manually_property_name].value_reader)();
-                const { formatted_value: anti_legionella_schedule_value } = (properties[anti_legionella_schedule_property_name].value_reader)();
+                const { formatted_value: top_formatted } = (values_of[props.names.top].value_reader)();
+                const { formatted_value: bottom_formatted } = (values_of[props.names.bottom].value_reader)();
+                const { formatted_value: wanted_formatted } = (values_of[props.names.wanted].value_reader)();
+                const { value: anti_legionella_started_manually } = (values_of[props.names.anti_legionella_started_manually].value_reader)();
+                const { formatted_value: anti_legionella_schedule } = (values_of[props.names.anti_legionella_schedule].value_reader)();
 
                 // Update values.
-                thing_top_value_element.innerHTML = top_formatted_value;
-                thing_bottom_value_element.innerHTML = bottom_formatted_value;
-                thing_wanted_value_element.innerHTML = wanted_formatted_value;
+                thing_top_value_element.innerHTML = top_formatted;
+                thing_bottom_value_element.innerHTML = bottom_formatted;
+                thing_wanted_value_element.innerHTML = wanted_formatted;
 
-                if (anti_legionella_started_manually_value) {
+                if (anti_legionella_started_manually) {
                     thing_anti_legionella_started_manually_value_element.innerHTML = 'oui';
                 } else {
                     thing_anti_legionella_started_manually_value_element.innerHTML = 'non';
                 }
 
-                thing_anti_legionella_schedule_value_element.innerHTML = anti_legionella_schedule_value;
+                thing_anti_legionella_schedule_value_element.innerHTML = anti_legionella_schedule;
 
                 next();
             }
@@ -692,30 +700,24 @@ window.customElements.define(
             const shadow_root = this.attachShadow({mode: 'open'})
                   .appendChild(template_content);
 
-            const base = this.getAttribute('data-base').replace(/\/+$/, '');
-
-            const state_property_name = this.getAttribute('data-state-property');
-            const after_ground_coupled_heat_exchanger_property_name = this.getAttribute('data-after-ground-coupled-heat-exchanger-value');
-            const after_heat_recovery_exchanger_property_name = this.getAttribute('data-after-heat-recovery-exchanger-value');
-            const extracted_property_name = this.getAttribute('data-extracted-value');
-
-            const fetched_properties = await fetch_properties(
-                base,
-                state_property_name,
-                after_ground_coupled_heat_exchanger_property_name,
-                after_heat_recovery_exchanger_property_name,
-                extracted_property_name,
+            const props = await properties_of(
+                this,
+                'base',
+                'state',
+                'after-ground-coupled-heat-exchanger',
+                'after-heat-recovery-exchanger',
+                'extracted',
             );
-            
+
             const MAX_TEMPERATURE = 25;
             const MARGIN = 0.75; // in percent
 
             async function update(next) {
                 // Read all properties.
-                const properties = await fetched_properties.read_properties();
+                const values_of = await props.fetch_values();
 
                 async function subupdate(property_name, element, meter_element) {
-                    let {value, formatted_value} = (properties[property_name].value_reader)();
+                    let {value, formatted_value} = (values_of[property_name].value_reader)();
                     element.innerHTML = formatted_value;
 
                     value = Math.min(value, MAX_TEMPERATURE);
@@ -727,26 +729,26 @@ window.customElements.define(
                 // Update values.
 
                 subupdate(
-                    after_ground_coupled_heat_exchanger_property_name,
+                    props.names.after_ground_coupled_heat_exchanger,
                     thing_after_ground_coupled_heat_exchanger_element,
                     thing_after_ground_coupled_heat_exchanger_meter_element,
                 );
 
                 subupdate(
-                    after_heat_recovery_exchanger_property_name,
+                    props.names.after_heat_recovery_exchanger,
                     thing_after_heat_recovery_exchanger_element,
                     thing_after_heat_recovery_exchanger_meter_element,
                 );
 
                 subupdate(
-                    extracted_property_name,
+                    props.names.extracted,
                     thing_extracted_element,
                     thing_extracted_meter_element,
                 );
 
-                let { value: state_value } = (properties[state_property_name].value_reader)();
+                let { value: state } = (values_of[props.names.state].value_reader)();
 
-                if ('paused' == state_value) {
+                if ('paused' == state) {
                     thing_frame.setAttribute('aria-disabled', true);
                 } else {
                     thing_frame.setAttribute('aria-disabled', false);
@@ -873,75 +875,58 @@ window.customElements.define(
                 this.attachShadow({mode: 'closed'})
                     .appendChild(template_content);
 
-                const base = this.getAttribute('data-base').replace(/\/+$/, '');
-                const forecast_base = this.getAttribute('data-forecast-base').replace(/\/+$/, '');
-
-                const temperature_property_name = this.getAttribute('data-temperature-value');
-                const apparent_temperature_property_name = this.getAttribute('data-apparent-temperature-value');
-                const condition_property_name = this.getAttribute('data-condition-value');
-                const wind_degree_property_name = this.getAttribute('data-wind-degree-value');
-                const wind_speed_property_name = this.getAttribute('data-wind-speed-value');
-                const wind_gust_property_name = this.getAttribute('data-wind-gust-value');
-                const rain_property_name = this.getAttribute('data-rain-value');
-                const snow_property_name = this.getAttribute('data-snow-value');
-                const uv_index_property_name = this.getAttribute('data-uv-index-value');
-                const humidity_property_name = this.getAttribute('data-humidity-value');
-                const dew_point_property_name = this.getAttribute('data-dew-point-value');
-                const forecast_property_name = this.getAttribute('data-forecast-value');
-
-                const fetched_properties = await fetch_properties(
-                    base,
-                    temperature_property_name,
-                    apparent_temperature_property_name,
-                    condition_property_name,
-                    wind_degree_property_name,
-                    wind_speed_property_name,
-                    wind_gust_property_name,
-                    rain_property_name,
-                    snow_property_name,
-                    uv_index_property_name,
-                    humidity_property_name,
-                    dew_point_property_name,
+                const props = await properties_of(
+                    this,
+                    'base',
+                    'temperature',
+                    'apparent-temperature',
+                    'condition',
+                    'wind-degree',
+                    'wind-speed',
+                    'wind-gust',
+                    'rain',
+                    'snow',
+                    'uv-index',
+                    'humidity',
+                    'dew-point',
                 );
-                const fetched_forecast_properties = await fetch_properties(
-                    forecast_base,
-                    forecast_property_name,
-                );
+
+                const forecast_props = await properties_of(this, 'forecast-base', 'forecast');
 
                 async function update(next) {
                     // Read all fetched properties.
-                    const properties = await fetched_properties.read_properties();
-                    const forecast_properties = await fetched_forecast_properties.read_properties();
+                    const values_of = await props.fetch_values();
+                    const forecast_values_of = await forecast_props.fetch_values();
 
                     // Get values.
-                    const { formatted_value: temperature_formatted_value } = (properties[temperature_property_name].value_reader)();
-                    const { formatted_value: apparent_temperature_formatted_value } = (properties[apparent_temperature_property_name].value_reader)();
-                    const { value: condition_value } = (properties[condition_property_name].value_reader)();
-                    const { value: wind_degree_value } = (properties[wind_degree_property_name].value_reader)();
-                    const { formatted_value: wind_speed_value } = (properties[wind_speed_property_name].value_reader)();
-                    const { formatted_value: wind_gust_value } = (properties[wind_gust_property_name].value_reader)();
-                    const { value: rain_value } = (properties[rain_property_name].value_reader)();
-                    const { value: snow_value } = (properties[snow_property_name].value_reader)();
-                    const { value: uv_index_value } = (properties[uv_index_property_name].value_reader)();
-                    const { value: humidity_value } = (properties[humidity_property_name].value_reader)();
-                    const { value: dew_point_value } = (properties[dew_point_property_name].value_reader)();
-                    const { value: forecast_value } = (forecast_properties[forecast_property_name].value_reader)();
+                    const { formatted: temperature } = (values_of[props.names.temperature].value_reader)();
+                    const { formatted: apparent_temperature } = (values_of[props.names.apparent_temperature].value_reader)();
+                    const { value: condition } = (values_of[props.names.condition].value_reader)();
+                    const { value: wind_degree } = (values_of[props.names.wind_degree].value_reader)();
+                    const { formatted: wind_speed } = (values_of[props.names.wind_speed].value_reader)();
+                    const { formatted: wind_gust } = (values_of[props.names.wind_gust].value_reader)();
+                    const { value: rain } = (values_of[props.names.rain].value_reader)();
+                    const { value: snow } = (values_of[props.names.snow].value_reader)();
+                    const { value: uv_index } = (values_of[props.names.uv_index].value_reader)();
+                    const { value: humidity } = (values_of[props.names.humidity].value_reader)();
+                    const { value: dew_point } = (values_of[props.names.dew_point].value_reader)();
+                    const { value: forecast } = (forecast_values_of[props.names.forecast].value_reader)();
 
-                    const weather_condition = WEATHER_CONDITIONS[condition_value] || WEATHER_CONDITIONS[0];
-                    thing_temperature_element.innerHTML = temperature_formatted_value;
-                    thing_apparent_temperature_element.innerHTML = apparent_temperature_formatted_value;
+                    const weather_condition = WEATHER_CONDITIONS[condition] || WEATHER_CONDITIONS[0];
+                    thing_temperature_element.innerHTML = temperature;
+                    thing_apparent_temperature_element.innerHTML = apparent_temperature;
                     thing_condition_element.innerHTML = weather_condition.text;
                     thing_condition_icon_element.setAttribute('src', `static/icons/weather/${weather_condition.icon}.svg`);
-                    thing_now_temperature_element.innerHTML = `Mesurée ${temperature_formatted_value}`;
-                    thing_now_apparent_temperature_element.innerHTML = `Ressentie ${apparent_temperature_formatted_value}`;
+                    thing_now_temperature_element.innerHTML = `Mesurée ${temperature}`;
+                    thing_now_apparent_temperature_element.innerHTML = `Ressentie ${apparent_temperature}`;
                     thing_now_condition_element.innerHTML = weather_condition.text;
                     thing_now_condition_icon_element.setAttribute('src', `static/icons/weather/${weather_condition.icon}.svg`);
-                    thing_now_precipitation_element.innerHTML = `${(rain_value + snow_value).round(2)}mm`;
-                    thing_now_uv_index_element.innerHTML = uv_index_value.round(1);
-                    thing_now_humidity_element.innerHTML = `${humidity_value.round(0)}%`;
-                    thing_now_dew_point_element.innerHTML = `${dew_point_value.round(1)}°C`;
-                    thing_wind_degree_element.style.transform = `rotate(${wind_degree_value + 180}deg)`;
-                    thing_wind_text_element.innerHTML = `${wind_speed_value.round(1)}m/s<br /><abbr title="rafales">raf.</abbr> ${wind_gust_value.round(0)}m/s`;
+                    thing_now_precipitation_element.innerHTML = `${(rain + snow).round(2)}mm`;
+                    thing_now_uv_index_element.innerHTML = uv_index.round(1);
+                    thing_now_humidity_element.innerHTML = `${humidity.round(0)}%`;
+                    thing_now_dew_point_element.innerHTML = `${dew_point.round(1)}°C`;
+                    thing_wind_degree_element.style.transform = `rotate(${wind_degree + 180}deg)`;
+                    thing_wind_text_element.innerHTML = `${wind_speed.round(1)}m/s<br /><abbr title="rafales">raf.</abbr> ${wind_gust.round(0)}m/s`;
 
                     let formatted_forecast = '';
 
@@ -951,7 +936,7 @@ window.customElements.define(
                     today.setSeconds(0);
                     today.setMilliseconds(0);
 
-                    for (const f of forecast_value) {
+                    for (const f of forecast) {
                         const date = adjust_time_to_local(f.datetime * 1000);
                         const conditions = WEATHER_CONDITIONS[f.conditions[0].id] || WEATHER_CONDITIONS[0];
 
@@ -992,7 +977,7 @@ window.customElements.define(
   <div class="thing--weather-one-forecast--wind-degree"><svg class="icon" style="transform: rotate(${f.wind_degree + 180}deg)"><use href="#icon-compass" /></div>
 </div>`;
                     }
-                    
+
                     thing_forecast_element.innerHTML = formatted_forecast;
 
                     next();

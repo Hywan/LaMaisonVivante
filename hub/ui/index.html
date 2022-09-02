@@ -499,39 +499,37 @@
     <section id="things-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-of-things-panel" aria-hidden="false">
       <my-unlocated-things>
         <my-thing>
+            <!--data-base="http://192.168.1.128:8092/0"-->
           <my-meter-thing
             slot="thing"
-            data-base="http://192.168.1.128:8092/0"
-            data-property="state_of_charge"
-            data-secondary-property="ongoing_power">
+            data-base="http://127.0.0.1:8891/0"
+            data-primary="state_of_charge"
+            data-secondary="ongoing_power">
             <span slot="name">Batteries</span>
             <div slot="meter-gradient" class="gradient gradient--conic__yellow_to_green"></div>
           </my-meter-thing>
         </my-thing>
 
         <my-thing>
+            <!--data-base="http://192.168.1.128:8092/4"-->
           <my-solar-pv-thing
             slot="thing"
-            data-base="http://192.168.1.128:8092/4"
-            data-property="power"
-            data-secondary-property="current">
+            data-base="http://127.0.0.1:8891/4"
+            data-power="power">
             <span slot="name">Solaire PV</span>
           </my-solar-pv-thing>
         </my-thing>
 
         <!--
-        data-base="http://192.168.1.128:8093/0"
-            data-base="http://127.0.0.1:8093/0"
-        -->
         <my-thing>
           <my-dhw-thing
             slot="thing"
             data-base="http://192.168.1.128:8093/0"
-            data-top-value="top_of_the_tank"
-            data-bottom-value="bottom_of_the_tank"
-            data-wanted-value="wanted"
-            data-anti-legionella-started-manually-value="anti_legionella_started_manually"
-            data-anti-legionella-schedule-value="anti_legionella_schedule">
+            data-top="top_of_the_tank"
+            data-bottom="bottom_of_the_tank"
+            data-wanted="wanted"
+            data-anti-legionella-started-manually="anti_legionella_started_manually"
+            data-anti-legionella-schedule="anti_legionella_schedule">
             <span slot="name">Boiler</span>
           </my-dhw-thing>
         </my-thing>
@@ -540,10 +538,10 @@
           <my-ventilation-thing
             slot="thing"
             data-base="http://192.168.1.128:8093/1"
-            data-state-property="state"
-            data-after-ground-coupled-heat-exchanger-value="supplied_air_after_ground_coupled_heat_exchanger"
-            data-after-heat-recovery-exchanger-value="supplied_air_after_heat_recovery_exchanger"
-            data-extracted-value="extracted_air">
+            data-state="state"
+            data-after-ground-coupled-heat-exchanger="supplied_air_after_ground_coupled_heat_exchanger"
+            data-after-heat-recovery-exchanger="supplied_air_after_heat_recovery_exchanger"
+            data-extracted="extracted_air">
             <span slot="name">Ventilation</span>
           </my-ventilation-thing>
         </my-thing>
@@ -552,7 +550,7 @@
           <my-meter-thing
             slot="thing"
             data-base="http://192.168.1.128:8093/1"
-            data-property="inside_air_humidity">
+            data-primary="inside_air_humidity">
             <span slot="name">Humidité</span>
             <div slot="meter-gradient" class="gradient gradient--conic__yellow_to_pink"></div>
           </my-meter-thing>
@@ -562,22 +560,23 @@
           <my-weather-thing
             slot="thing"
             data-base="http://192.168.1.128:8096/0"
-            data-temperature-value="temperature"
-            data-apparent-temperature-value="apparent_temperature"
-            data-condition-value="condition"
-            data-wind-degree-value="wind_degree"
-            data-wind-speed-value="wind_speed"
-            data-wind-gust-value="wind_gust"
-            data-rain-value="rain"
-            data-snow-value="snow"
-            data-uv-index-value="uv_index"
-            data-humidity-value="humidity"
-            data-dew-point-value="dew_point"
+            data-temperature="temperature"
+            data-apparent-temperature="apparent_temperature"
+            data-condition="condition"
+            data-wind-degree="wind_degree"
+            data-wind-speed="wind_speed"
+            data-wind-gust="wind_gust"
+            data-rain="rain"
+            data-snow="snow"
+            data-uv-index="uv_index"
+            data-humidity="humidity"
+            data-dew-point="dew_point"
             data-forecast-base="http://192.168.1.128:8096/1"
-            data-forecast-value="hourly">
+            data-forecast="hourly">
             <span slot="name">Météo</span>
           </my-weather-thing>
         </my-thing>
+        -->
       </my-unlocated-things>
 
       <my-things>
