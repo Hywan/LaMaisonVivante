@@ -290,6 +290,14 @@ async function fetch_properties(base, ...property_names) {
         };
     }
 
+    // Helper to replace:
+    //     (properties[property_name].value_reader)()
+    // by
+    //     properties.$get(property_name)
+    properties.$get = function (property_name) {
+        return (properties[property_name].value_reader)();
+    };
+
     return {
         async read() {
             await refresh_properties_values();
@@ -475,14 +483,14 @@ window.customElements.define(
 
             async function update(next) {
                 // Read all fetched properties.
-                const values_of = await props.fetch_values();
+                const values = await props.fetch_values();
 
                 async function subupdate(
                     property_name,
                     thing_value_element,
                     do_update_thing_meter_circle_element
                 ) {
-                    const prop = values_of[property_name];
+                    const prop = values[property_name];
 
                     const max = prop.max;
                     const {value, formatted_value} = (prop.value_reader)();
@@ -548,12 +556,11 @@ window.customElements.define(
 
             async function update(next) {
                 // Read all fetched properties.
-                const values_of = await props.fetch_values();
-                const property = values_of[props.names.power];
+                const values = await props.fetch_values();
 
                 // Update `thing_primary_value_element`.
-                const {formatted_value} = (property.value_reader)();
-                thing_primary_value_element.innerHTML = formatted_value;
+                const { formatted_value: power } = values.$get(props.names.power);
+                thing_primary_value_element.innerHTML = power;
 
                 // Update `thing_sunrise_element` + `thing_sunset_element`.
                 let now = new Date();
@@ -646,14 +653,14 @@ window.customElements.define(
 
             async function update(next) {
                 // Read all fetched properties.
-                const values_of = await props.fetch_values();
+                const values = await props.fetch_values();
 
                 // Get formatted values.
-                const { formatted_value: top_formatted } = (values_of[props.names.top].value_reader)();
-                const { formatted_value: bottom_formatted } = (values_of[props.names.bottom].value_reader)();
-                const { formatted_value: wanted_formatted } = (values_of[props.names.wanted].value_reader)();
-                const { value: anti_legionella_started_manually } = (values_of[props.names.anti_legionella_started_manually].value_reader)();
-                const { formatted_value: anti_legionella_schedule } = (values_of[props.names.anti_legionella_schedule].value_reader)();
+                const { formatted_value: top_formatted } = values.$get(props.names.top);
+                const { formatted_value: bottom_formatted } = values.$get(props.names.bottom);
+                const { formatted_value: wanted_formatted } = values.$get(props.names.wanted);
+                const { value: anti_legionella_started_manually } = values.$get(props.names.anti_legionella_started_manually);
+                const { formatted_value: anti_legionella_schedule } = values.$get(props.names.anti_legionella_schedule);
 
                 // Update values.
                 thing_top_value_element.innerHTML = top_formatted;
@@ -714,10 +721,10 @@ window.customElements.define(
 
             async function update(next) {
                 // Read all properties.
-                const values_of = await props.fetch_values();
+                const values = await props.fetch_values();
 
                 async function subupdate(property_name, element, meter_element) {
-                    let {value, formatted_value} = (values_of[property_name].value_reader)();
+                    let {value, formatted_value} = values.$get(property_name);
                     element.innerHTML = formatted_value;
 
                     value = Math.min(value, MAX_TEMPERATURE);
@@ -746,7 +753,7 @@ window.customElements.define(
                     thing_extracted_meter_element,
                 );
 
-                let { value: state } = (values_of[props.names.state].value_reader)();
+                let { value: state } = values.$get(props.names.state);
 
                 if ('paused' == state) {
                     thing_frame.setAttribute('aria-disabled', true);
@@ -895,22 +902,22 @@ window.customElements.define(
 
                 async function update(next) {
                     // Read all fetched properties.
-                    const values_of = await props.fetch_values();
-                    const forecast_values_of = await forecast_props.fetch_values();
+                    const values = await props.fetch_values();
+                    const forecast_values = await forecast_props.fetch_values();
 
                     // Get values.
-                    const { formatted: temperature } = (values_of[props.names.temperature].value_reader)();
-                    const { formatted: apparent_temperature } = (values_of[props.names.apparent_temperature].value_reader)();
-                    const { value: condition } = (values_of[props.names.condition].value_reader)();
-                    const { value: wind_degree } = (values_of[props.names.wind_degree].value_reader)();
-                    const { formatted: wind_speed } = (values_of[props.names.wind_speed].value_reader)();
-                    const { formatted: wind_gust } = (values_of[props.names.wind_gust].value_reader)();
-                    const { value: rain } = (values_of[props.names.rain].value_reader)();
-                    const { value: snow } = (values_of[props.names.snow].value_reader)();
-                    const { value: uv_index } = (values_of[props.names.uv_index].value_reader)();
-                    const { value: humidity } = (values_of[props.names.humidity].value_reader)();
-                    const { value: dew_point } = (values_of[props.names.dew_point].value_reader)();
-                    const { value: forecast } = (forecast_values_of[props.names.forecast].value_reader)();
+                    const { formatted: temperature } = values.$get(props.names.temperature);
+                    const { formatted: apparent_temperature } = values.$get(props.names.apparent_temperature);
+                    const { value: condition } = values.$get(props.names.condition);
+                    const { value: wind_degree } = values.$get(props.names.wind_degree);
+                    const { formatted: wind_speed } = values.$get(props.names.wind_speed);
+                    const { formatted: wind_gust } = values.$get(props.names.wind_gust);
+                    const { value: rain } = values.$get(props.names.rain);
+                    const { value: snow } = values.$get(props.names.snow);
+                    const { value: uv_index } = values.$get(props.names.uv_index);
+                    const { value: humidity } = values.$get(props.names.humidity);
+                    const { value: dew_point } = values.$get(props.names.dew_point);
+                    const { value: forecast } = forecast_values.$get(props.names.forecast);
 
                     const weather_condition = WEATHER_CONDITIONS[condition] || WEATHER_CONDITIONS[0];
                     thing_temperature_element.innerHTML = temperature;
