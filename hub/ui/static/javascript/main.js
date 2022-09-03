@@ -81,11 +81,11 @@ function fire(timeout, func, ...args) {
 }
 
 async function properties_of(element, property_name_of_base, ...attributes) {
-    const names = read_data_attributes(element, property_name_of_base, ...attributes);
-    const base = names[property_name_of_base];
-    delete names[property_name_of_base];
-
-    const fetched = await fetch_properties(base, ...Object.values(names));
+    const names = read_data_attributes(element, ...attributes);
+    const fetched = await fetch_properties(
+        element.getAttribute(`data-${property_name_of_base}`),
+        ...Object.values(names)
+    );
 
     return {
         names,
@@ -906,18 +906,18 @@ window.customElements.define(
                     const forecast_values = await forecast_props.fetch_values();
 
                     // Get values.
-                    const { formatted: temperature } = values.$get(props.names.temperature);
-                    const { formatted: apparent_temperature } = values.$get(props.names.apparent_temperature);
+                    const { formatted_value: temperature } = values.$get(props.names.temperature);
+                    const { formatted_value: apparent_temperature } = values.$get(props.names.apparent_temperature);
                     const { value: condition } = values.$get(props.names.condition);
                     const { value: wind_degree } = values.$get(props.names.wind_degree);
-                    const { formatted: wind_speed } = values.$get(props.names.wind_speed);
-                    const { formatted: wind_gust } = values.$get(props.names.wind_gust);
+                    const { formatted_value: wind_speed } = values.$get(props.names.wind_speed);
+                    const { formatted_value: wind_gust } = values.$get(props.names.wind_gust);
                     const { value: rain } = values.$get(props.names.rain);
                     const { value: snow } = values.$get(props.names.snow);
                     const { value: uv_index } = values.$get(props.names.uv_index);
                     const { value: humidity } = values.$get(props.names.humidity);
                     const { value: dew_point } = values.$get(props.names.dew_point);
-                    const { value: forecast } = forecast_values.$get(props.names.forecast);
+                    const { value: forecast } = forecast_values.$get(forecast_props.names.forecast);
 
                     const weather_condition = WEATHER_CONDITIONS[condition] || WEATHER_CONDITIONS[0];
                     thing_temperature_element.innerHTML = temperature;
