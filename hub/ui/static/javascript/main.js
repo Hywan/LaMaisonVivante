@@ -307,6 +307,78 @@ async function fetch_properties(base, ...property_names) {
     };
 }
 
+const render = new function() {
+    const loopRegex = /(?<item>[a-zA-Z\_]+) in (?<set>[a-zA-Z\_]+(\.[a-zA-Z\_]+)?)/;
+    const removePrefix = function (prefix, value) {
+        if ('' === prefix) {
+            return value;
+        }
+
+        return value.replace(new RegExp(`^${prefix}`), '');
+    };
+
+    return function(data, root, keyPrefix) {
+        keyPrefix = keyPrefix || '';
+
+        let element;
+
+        // Handle one loop at a time to allow proper embedded loops
+        // computation.
+        while (element = root.querySelector('[data-bind-loop]')) {
+            let key = removePrefix(keyPrefix, element.dataset.bindLoop);
+            delete element.dataset.bindLoop;
+
+            let match = key.match(loopRegex);
+
+            if (null === match) {
+                console.error(`Loop format is invalid: \`${key}\``);
+
+                return;
+            }
+
+            let { item: itemKey, set: setKey } = match.groups;
+            setKey = removePrefix(keyPrefix, setKey);
+
+            if (!(setKey in data)) {
+                console.error(`Set key \`${setKey}\` is absent from the data`, data, element);
+
+                return;
+            }
+
+            if (!(Symbol.iterator in data[setKey])) {
+                console.error(`Set \`${setKey}\` is not an iterable object`, data, element);
+
+                return;
+            }
+
+            const children = [];
+
+            for (const datum of data[setKey]) {
+                const newRoot = element.cloneNode(true);
+                delete newRoot.dataset.bindLoop;
+
+                render(datum, newRoot, `${itemKey}.`);
+                children.push(newRoot);
+            }
+
+            element.replaceChildren(...children);
+        }
+
+        for (const element of root.querySelectorAll('[data-bind]')) {
+            let key = removePrefix(keyPrefix, element.dataset.bind);
+            delete element.dataset.bind;
+
+            if (!(key in data)) {
+                console.error(`Key \`${key}\` is absent from the data`, data, element);
+
+                return;
+            }
+
+            element.innerHTML = data[key].toString();
+        }
+    };
+};
+
 function value_into_range(value, from_range_min, from_range_max, to_range_min, to_range_max) {
     let new_value = Math.min(Math.max(value, from_range_min), from_range_max);
 
