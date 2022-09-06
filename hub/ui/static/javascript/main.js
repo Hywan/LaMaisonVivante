@@ -308,16 +308,34 @@ async function fetch_properties(base, ...property_names) {
 }
 
 const render = new function() {
-    const loopRegex = /(?<item>[a-zA-Z\_]+) in (?<set>[a-zA-Z\_]+(\.[a-zA-Z\_]+)?)/;
-    const removePrefix = function (prefix, value) {
+    const loop_regex = /(?<item_name>[a-zA-Z\_]+) in (?<set_name>[a-zA-Z\_]+(\.[a-zA-Z\_]+)?)/;
+    const restore_data_bindings = new function () {
+        const deferred = [];
+
+        return {
+            defer: function (element, binding_value, func) {
+                deferred.push({element, binding_value, func});
+            },
+
+            now: function () {
+                for (const {element, binding_value, func} of deferred) {
+                    (func)(element, binding_value);
+                }
+
+                deferred.length = 0;
+            },
+        };
+    };
+
+    function remove_prefix(prefix, value) {
         if ('' === prefix) {
             return value;
         }
 
         return value.replace(new RegExp(`^${prefix}`), '');
-    };
+    }
 
-    return function(data, root, keyPrefix) {
+    function inner(data, root, keyPrefix) {
         keyPrefix = keyPrefix || '';
 
         let element;
@@ -325,57 +343,73 @@ const render = new function() {
         // Handle one loop at a time to allow proper embedded loops
         // computation.
         while (element = root.querySelector('[data-bind-loop]')) {
-            let key = removePrefix(keyPrefix, element.dataset.bindLoop);
+            let key = element.dataset.bindLoop;
             delete element.dataset.bindLoop;
 
-            let match = key.match(loopRegex);
+            restore_data_bindings.defer(element, key, (element, key) => element.dataset.bindLoop = key);
+
+            key = remove_prefix(keyPrefix, key);
+
+            let match = key.match(loop_regex);
 
             if (null === match) {
                 console.error(`Loop format is invalid: \`${key}\``);
+                restore_data_bindings.now();
 
                 return;
             }
 
-            let { item: itemKey, set: setKey } = match.groups;
-            setKey = removePrefix(keyPrefix, setKey);
+            let { item_name, set_name } = match.groups;
+            set_name = remove_prefix(keyPrefix, set_name);
 
-            if (!(setKey in data)) {
-                console.error(`Set key \`${setKey}\` is absent from the data`, data, element);
+            if (!(set_name in data)) {
+                console.error(`Set key \`${set_name}\` is absent from the data`, data, element);
+                restore_data_bindings.now();
 
                 return;
             }
 
-            if (!(Symbol.iterator in data[setKey])) {
-                console.error(`Set \`${setKey}\` is not an iterable object`, data, element);
+            if (!(Symbol.iterator in data[set_name])) {
+                console.error(`Set \`${set_name}\` is not an iterable object`, data, element);
+                restore_data_bindings.now();
 
                 return;
             }
 
             const children = [];
 
-            for (const datum of data[setKey]) {
-                const newRoot = element.cloneNode(true);
-                delete newRoot.dataset.bindLoop;
+            for (const datum of data[set_name]) {
+                const new_root = element.cloneNode(true);
 
-                render(datum, newRoot, `${itemKey}.`);
-                children.push(newRoot);
+                inner(datum, new_root, `${item_name}.`);
+                children.push(new_root);
             }
 
             element.replaceChildren(...children);
         }
 
         for (const element of root.querySelectorAll('[data-bind]')) {
-            let key = removePrefix(keyPrefix, element.dataset.bind);
+            let key = element.dataset.bind;
             delete element.dataset.bind;
+
+            restore_data_bindings.defer(element, key, (element, key) => element.dataset.bind = key);
+
+            key = remove_prefix(keyPrefix, key);
 
             if (!(key in data)) {
                 console.error(`Key \`${key}\` is absent from the data`, data, element);
+                restore_data_bindings.now();
 
                 return;
             }
 
             element.innerHTML = data[key].toString();
         }
+    };
+
+    return function(data, root) {
+        inner(data, root);
+        restore_data_bindings.now();
     };
 };
 
