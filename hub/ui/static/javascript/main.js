@@ -308,7 +308,8 @@ async function fetch_properties(base, ...property_names) {
 }
 
 const render = new function() {
-    const loop_regex = /(?<item_name>[a-zA-Z\_]+) in (?<set_name>[a-zA-Z\_]+(\.[a-zA-Z\_]+)?)/;
+    const loop_regex = /^(?<item_name>[a-zA-Z_]+) in (?<set_name>[a-zA-Z_]+(\.[a-zA-Z_]+)?)$/;
+    const attribute_regex = /^(?<attribute_name>[a-zA-Z_\-]+):\s*(?<key_name>[a-zA-Z_\-]+(\.[a-zA-Z_\-]+)?)$/;
     const restore_data_bindings = new function () {
         const deferred = [];
 
@@ -335,9 +336,7 @@ const render = new function() {
         return value.replace(new RegExp(`^${prefix}`), '');
     }
 
-    function inner(data, root, keyPrefix) {
-        keyPrefix = keyPrefix || '';
-
+    function render_bind_loop(data, root, key_prefix) {
         let element;
 
         // Handle one loop at a time to allow proper embedded loops
@@ -348,7 +347,7 @@ const render = new function() {
 
             restore_data_bindings.defer(element, key, (element, key) => element.dataset.bindLoop = key);
 
-            key = remove_prefix(keyPrefix, key);
+            key = remove_prefix(key_prefix, key);
 
             let match = key.match(loop_regex);
 
@@ -360,7 +359,7 @@ const render = new function() {
             }
 
             let { item_name, set_name } = match.groups;
-            set_name = remove_prefix(keyPrefix, set_name);
+            set_name = remove_prefix(key_prefix, set_name);
 
             if (!(set_name in data)) {
                 console.error(`Set key \`${set_name}\` is absent from the data`, data, element);
@@ -379,22 +378,32 @@ const render = new function() {
             const children = [];
 
             for (const datum of data[set_name]) {
-                const new_root = element.cloneNode(true);
+                const next_root = element.cloneNode(true);
+                const next_key_prefix = `${item_name}.`;
 
-                inner(datum, new_root, `${item_name}.`);
-                children.push(new_root);
+                render_all(datum, next_root, next_key_prefix);
+
+                children.push(next_root);
             }
 
-            element.replaceChildren(...children);
+            element.replaceWith(...children);
+        }
+    }
+
+    function render_bind(data, root, key_prefix) {
+        const elements = [...root.querySelectorAll('[data-bind]')];
+
+        if (root.dataset && root.dataset.bind) {
+            elements.push(root);
         }
 
-        for (const element of root.querySelectorAll('[data-bind]')) {
+        for (const element of elements) {
             let key = element.dataset.bind;
             delete element.dataset.bind;
 
             restore_data_bindings.defer(element, key, (element, key) => element.dataset.bind = key);
 
-            key = remove_prefix(keyPrefix, key);
+            key = remove_prefix(key_prefix, key);
 
             if (!(key in data)) {
                 console.error(`Key \`${key}\` is absent from the data`, data, element);
@@ -405,10 +414,56 @@ const render = new function() {
 
             element.innerHTML = data[key].toString();
         }
+    }
+
+    function render_bind_attribute(data, root, key_prefix) {
+        const elements = [...root.querySelectorAll('[data-bind-attribute]')];
+
+        if (root.dataset && root.dataset.bindAttribute) {
+            elements.push(root);
+        }
+
+        for (const element of elements) {
+            let key = element.dataset.bindAttribute;
+            delete element.dataset.bindAttribute;
+
+            restore_data_bindings.defer(element, key, (element, key) => element.dataset.bindAttribute = key);
+
+            key = remove_prefix(key_prefix, key);
+
+            let match = key.match(attribute_regex);
+
+            if (null === match) {
+                console.error(`Attribute format is invalid: \`${key}\``);
+                restore_data_bindings.now();
+
+                return;
+            }
+
+            let { attribute_name, key_name } = match.groups;
+            key_name = remove_prefix(key_prefix, key_name);
+
+            if (!(key_name in data)) {
+                console.error(`Key \`${key_name}\` is absent from the data`, data, element);
+                restore_data_bindings.now();
+
+                return;
+            }
+
+            element.setAttribute(attribute_name, data[key_name].toString());
+        }
+    }
+
+    function render_all(data, root, key_prefix) {
+        key_prefix = key_prefix || '';
+
+        render_bind_loop(data, root, key_prefix);
+        render_bind(data, root, key_prefix);
+        render_bind_attribute(data, root, key_prefix);
     };
 
     return function(data, root) {
-        inner(data, root);
+        render_all(data, root);
         restore_data_bindings.now();
     };
 };
@@ -969,24 +1024,8 @@ window.customElements.define(
 
                 const thing_frame = template_content.querySelector('.thing--frame');
 
-                const thing_temperature_element = template_content.querySelector('.thing--weather-temperature');
-                const thing_apparent_temperature_element = template_content.querySelector('.thing--weather-apparent-temperature > span');
-                const thing_condition_element = template_content.querySelector('.thing--weather-condition');
-                const thing_condition_icon_element = template_content.querySelector('.thing--weather-condition-icon > img');
-                const thing_now_temperature_element = template_content.querySelector('.thing--weather-now-temperature');
-                const thing_now_apparent_temperature_element = template_content.querySelector('.thing--weather-now-apparent-temperature');
-                const thing_now_condition_element = template_content.querySelector('.thing--weather-now-condition');
-                const thing_now_condition_icon_element = template_content.querySelector('.thing--weather-now-condition-icon');
-                const thing_now_precipitation_element = template_content.querySelector('.thing--weather-now-precipitation');
-                const thing_now_uv_index_element = template_content.querySelector('.thing--weather-now-uv-index');
-                const thing_now_humidity_element = template_content.querySelector('.thing--weather-now-humidity');
-                const thing_now_dew_point_element = template_content.querySelector('.thing--weather-now-dew-point');
-                const thing_wind_degree_element = template_content.querySelector('.thing--weather-wind-degree');
-                const thing_wind_text_element = template_content.querySelector('.thing--weather-wind-text');
-                const thing_forecast_element = template_content.querySelector('.thing--weather-forecast');
-
-                this.attachShadow({mode: 'closed'})
-                    .appendChild(template_content);
+                this.attachShadow({mode: 'open'}).appendChild(template_content);
+                const root = this.shadowRoot;
 
                 const props = await properties_of(
                     this,
@@ -1026,28 +1065,14 @@ window.customElements.define(
                     const { value: forecast } = forecast_values.$get(forecast_props.names.forecast);
 
                     const weather_condition = WEATHER_CONDITIONS[condition] || WEATHER_CONDITIONS[0];
-                    thing_temperature_element.innerHTML = temperature;
-                    thing_apparent_temperature_element.innerHTML = apparent_temperature;
-                    thing_condition_element.innerHTML = weather_condition.text;
-                    thing_condition_icon_element.setAttribute('src', `static/icons/weather/${weather_condition.icon}.svg`);
-                    thing_now_temperature_element.innerHTML = `Mesurée ${temperature}`;
-                    thing_now_apparent_temperature_element.innerHTML = `Ressentie ${apparent_temperature}`;
-                    thing_now_condition_element.innerHTML = weather_condition.text;
-                    thing_now_condition_icon_element.setAttribute('src', `static/icons/weather/${weather_condition.icon}.svg`);
-                    thing_now_precipitation_element.innerHTML = `${(rain + snow).round(2)}mm`;
-                    thing_now_uv_index_element.innerHTML = uv_index.round(1);
-                    thing_now_humidity_element.innerHTML = `${humidity.round(0)}%`;
-                    thing_now_dew_point_element.innerHTML = `${dew_point.round(1)}°C`;
-                    thing_wind_degree_element.style.transform = `rotate(${wind_degree + 180}deg)`;
-                    thing_wind_text_element.innerHTML = `${wind_speed.round(1)}m/s<br /><abbr title="rafales">raf.</abbr> ${wind_gust.round(0)}m/s`;
-
-                    let formatted_forecast = '';
 
                     const today = new Date();
                     today.setHours(0);
                     today.setMinutes(0);
                     today.setSeconds(0);
                     today.setMilliseconds(0);
+
+                    const forecast_view_data = [];
 
                     for (const f of forecast) {
                         const date = adjust_time_to_local(f.datetime * 1000);
@@ -1068,30 +1093,43 @@ window.customElements.define(
 
                         const precipitations = (f.rain || f.snow || {one_hour: 0}).one_hour;
 
-                        formatted_forecast += `<div class="thing--weather-one-forecast" data-temperature-category="${Math.round(value_into_range(f.temperature, 0, 30, 0, 5))}">
-  <h5 class="thing--weather-one-forecast--datetime">${date.getHours()}h${date_extra}</h5>
-  <h6 class="thing--weather-one-forecast--title"><span>Ciel</span></h6>
-  <div class="thing--weather-one-forecast--condition-icon"><img src="static/icons/weather/${conditions.icon}.svg" alt="condition icon" /></div>
-  <div class="thing--weather-one-forecast--condition">${conditions.text}</div>
-  <div class="thing--weather-one-forecast--cloudiness">${formatted_octas}</div>
-  <div class="thing--weather-one-forecast--precipitations">${precipitations.round(2)}mm</div>
-
-  <div class="thing--weather-one-forecast--uv-index">${f.uv_index.round(1)}UV<sub>ix</sub></div>
-  <h6 class="thing--weather-one-forecast--title"><span>Températures</span></h6>
-  <div class="thing--weather-one-forecast--temperature">${f.temperature.round(1)}°C</div>
-  <div class="thing--weather-one-forecast--apparent-temperature">(${f.apparent_temperature.round(1)}°C)</div>
-  <h6 class="thing--weather-one-forecast--title"><span>Air</span></h6>
-  <div class="thing--weather-one-forecast--humidity">${f.humidity}%H</div>
-  <div class="thing--weather-one-forecast--pressure">${f.pressure}hPa</div>
-  <div class="thing--weather-one-forecast--dew-point">${f.dew_point.round(1)}°C</div>
-  <h6 class="thing--weather-one-forecast--title"><span>Vent</span></h6>
-  <div class="thing--weather-one-forecast--wind-speed">${f.wind_speed.round(1)}m/s</div>
-  <div class="thing--weather-one-forecast--wind-gust">(${f.wind_gust.round(1)}m/s)</div>
-  <div class="thing--weather-one-forecast--wind-degree"><svg class="icon" style="transform: rotate(${f.wind_degree + 180}deg)"><use href="#icon-compass" /></div>
-</div>`;
+                        forecast_view_data.push({
+                            temperature_category: Math.round(value_into_range(f.temperature, 0, 30, 0, 5)),
+                            date_hour: date.getHours(),
+                            date_extra,
+                            condition_icon: `static/icons/weather/${conditions.icon}.svg`,
+                            condition: conditions.text,
+                            octas: formatted_octas,
+                            precipitations: precipitations.round(2),
+                            uv_index: f.uv_index.round(1),
+                            temperature: f.temperature.round(1),
+                            apparent_temperature: f.apparent_temperature.round(1),
+                            humidity: f.humidity,
+                            pressure: f.pressure,
+                            dew_point: f.dew_point.round(1),
+                            wind: f.wind_speed.round(1),
+                            wind_gust: f.wind_gust.round(1),
+                            wind_degree: `transform: rotate(${f.wind_degree}deg)`,
+                        });
                     }
 
-                    thing_forecast_element.innerHTML = formatted_forecast;
+                    render(
+                        {
+                            temperature,
+                            apparent_temperature,
+                            condition: weather_condition.text,
+                            condition_icon: `static/icons/weather/${weather_condition.icon}.svg`,
+                            precipitation: (rain + snow).round(2),
+                            uv_index: uv_index.round(1),
+                            wind: wind_speed.round(1),
+                            wind_gust: wind_gust.round(0),
+                            wind_degree: `transform: rotate(${wind_degree + 180}deg) transform-origin: 50% 50%`,
+                            humidity: humidity.round(0),
+                            dew_point: dew_point.round(1),
+                            forecasts: forecast_view_data,
+                        },
+                        root
+                    );
 
                     next();
                 }
