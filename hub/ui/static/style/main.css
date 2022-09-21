@@ -456,6 +456,12 @@ main {
         stroke-dasharray: 50 100;
     }
 
+    .thing--solar-pv > .thing--frame-content > .thing--solar-pv-meter .thing--solar-pv-sun {
+        transition:
+            cx var(--transition-duration) ease-in-out,
+            cy var(--transition-duration) ease-in-out;
+    }
+
 .thing--dhw {}
 
     .thing--dhw > .thing--frame-content {

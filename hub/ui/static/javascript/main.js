@@ -308,8 +308,8 @@ async function fetch_properties(base, ...property_names) {
 }
 
 const render = new function() {
-    const loop_regex = /^(?<item_name>[a-zA-Z_]+) in (?<set_name>[a-zA-Z_]+(\.[a-zA-Z_]+)?)$/;
-    const attribute_regex = /^(?<attribute_name>[a-zA-Z_\-]+):\s*(?<key_name>[a-zA-Z_\-]+(\.[a-zA-Z_\-]+)?)$/;
+    const LOOP_REGEX = /^(?<item_name>[a-zA-Z_]+) in (?<set_name>[a-zA-Z_]+(\.[a-zA-Z_]+)?)$/;
+    const ATTRIBUTE_PREFIX = 'data-bind:';
     const restore_data_bindings = new function () {
         const deferred = [];
 
@@ -349,7 +349,7 @@ const render = new function() {
 
             key = remove_prefix(key_prefix, key);
 
-            let match = key.match(loop_regex);
+            let match = key.match(LOOP_REGEX);
 
             if (null === match) {
                 console.error(`Loop format is invalid: \`${key}\``);
@@ -417,40 +417,39 @@ const render = new function() {
     }
 
     function render_bind_attribute(data, root, key_prefix) {
-        const elements = [...root.querySelectorAll('[data-bind-attribute]')];
+        const elements = [...root.querySelectorAll('[data-bind-attributes]')];
 
-        if (root.dataset && root.dataset.bindAttribute) {
+        if (root.dataset && undefined !== root.dataset.bindAttributes) {
             elements.push(root);
         }
 
         for (const element of elements) {
-            let key = element.dataset.bindAttribute;
-            delete element.dataset.bindAttribute;
+            delete element.dataset.bindAttributes;
 
-            restore_data_bindings.defer(element, key, (element, key) => element.dataset.bindAttribute = key);
+            restore_data_bindings.defer(element, '', (element, key) => element.dataset.bindAttributes = key);
 
-            key = remove_prefix(key_prefix, key);
+            const attributes = Array.from(element.attributes)
+                  .filter(node => node.nodeName.startsWith(ATTRIBUTE_PREFIX))
+                  .reduce(
+                      (object, node) => ({
+                          ...object,
+                          [node.nodeName.slice(ATTRIBUTE_PREFIX.length)]: node.nodeValue
+                      }),
+                      {}
+                  );
 
-            let match = key.match(attribute_regex);
+            for (let [attribute_name, key] of Object.entries(attributes)) {
+                key = remove_prefix(key_prefix, key);
 
-            if (null === match) {
-                console.error(`Attribute format is invalid: \`${key}\``);
-                restore_data_bindings.now();
+                if (!(key in data)) {
+                    console.error(`Key \`${key}\` is absent from the data`, data, element);
+                    restore_data_bindings.now();
 
-                return;
+                    return;
+                }
+
+                element.setAttribute(attribute_name, data[key].toString());
             }
-
-            let { attribute_name, key_name } = match.groups;
-            key_name = remove_prefix(key_prefix, key_name);
-
-            if (!(key_name in data)) {
-                console.error(`Key \`${key_name}\` is absent from the data`, data, element);
-                restore_data_bindings.now();
-
-                return;
-            }
-
-            element.setAttribute(attribute_name, data[key_name].toString());
         }
     }
 
@@ -463,8 +462,8 @@ const render = new function() {
     };
 
     return function(data, root) {
-        render_all(data, root);
         restore_data_bindings.now();
+        render_all(data, root);
     };
 };
 
@@ -699,15 +698,10 @@ window.customElements.define(
             const template_content = template.content.cloneNode(true);
 
             const thing_frame = template_content.querySelector('.thing--frame');
-
-            const thing_primary_value_element = template_content.querySelector('.thing--solar-pv-primary-value');
             const thing_meter_circle_element = template_content.querySelector('.thing--solar-pv-meter .meter');
-            const thing_sunrise_element = template_content.querySelector('.thing--solar-pv-sunrise');
-            const thing_sunset_element = template_content.querySelector('.thing--solar-pv-sunset');
-            const thing_sun_element = template_content.querySelector('.thing--solar-pv-sun');
 
-            const shadow_root = this.attachShadow({mode: 'open'})
-                  .appendChild(template_content);
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
+            const root = this.shadowRoot;
 
             const props = await properties_of(this, 'base', 'power');
 
@@ -718,12 +712,8 @@ window.customElements.define(
             async function update(next) {
                 // Read all fetched properties.
                 const values = await props.fetch_values();
-
-                // Update `thing_primary_value_element`.
                 const { formatted_value: power } = values.$get(props.names.power);
-                thing_primary_value_element.innerHTML = power;
 
-                // Update `thing_sunrise_element` + `thing_sunset_element`.
                 let now = new Date();
 
                 /// The day has changed.
@@ -745,19 +735,21 @@ window.customElements.define(
                     sunset = next_sunset;
                 }
 
-                thing_sunrise_element.innerHTML = sunrise.getHours() + ":" + number_to_2_chars(sunrise.getMinutes());
-                thing_sunset_element.innerHTML = sunset.getHours() + ":" + number_to_2_chars(sunset.getMinutes());
-
-                // Update `thing_sun_element`.
+                const data = {
+                    power,
+                    sunrise: sunrise.getHours() + ":" + number_to_2_chars(sunrise.getMinutes()),
+                    sunset: sunset.getHours() + ":" + number_to_2_chars(sunset.getMinutes()),
+                    sun_cx: 0,
+                    sun_cy: 0,
+                    sun_hidden: true,
+                };
 
                 /// No sun!
                 if (now < sunrise || now > sunset) {
-                    thing_sun_element.setAttribute('aria-hidden', true);
                     thing_frame.setAttribute('aria-disabled', true);
                 }
                 /// Position the sun.
                 else {
-                    thing_sun_element.setAttribute('aria-hidden', false);
                     thing_frame.setAttribute('aria-disabled', false);
 
                     let now_in_minutes = now.getHours() * 60 + now.getMinutes();
@@ -770,9 +762,12 @@ window.customElements.define(
                     const pos = value_into_range(now_in_minutes, min_sun, max_sun, min_circle, max_circle);
 
                     const pos_point = thing_meter_circle_element.getPointAtLength(pos);
-                    thing_sun_element.setAttributeNS(null, "cx", pos_point.x);
-                    thing_sun_element.setAttributeNS(null, "cy", pos_point.y);
+                    data.sun_hidden = false;
+                    data.sun_cx = pos_point.x;
+                    data.sun_cy = pos_point.y;
                 }
+
+                render(data, root);
 
                 next();
             }

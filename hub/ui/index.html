@@ -113,9 +113,9 @@
       <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
       <div class="thing--frame-content">
-        <div class="thing--solar-pv-primary-value">?</div>
-        <div class="thing--solar-pv-sunrise">?</div>
-        <div class="thing--solar-pv-sunset">?</div>
+        <div class="thing--solar-pv-primary-value" data-bind="power">?</div>
+        <div class="thing--solar-pv-sunrise" data-bind="sunrise">?</div>
+        <div class="thing--solar-pv-sunset" data-bind="sunset">?</div>
 
         <svg class="thing--solar-pv-meter" viewBox="0 0 38 38">
           <g class="blender">
@@ -127,7 +127,15 @@
               <rect x="0" y="0" width="38" height="38" fill="#fff" />
               <circle class="meter stroked" r="16" cx="19" cy="19" />
               <circle class="stroked" r="16" cx="19" cy="19" stroke-dasharray="30 100" stroke-dashoffset="-10"  />
-              <circle class="thing--solar-pv-sun" r="3" cx="3" cy="19" aria-hidden="true" />
+              <circle
+                class="thing--solar-pv-sun"
+                r="3"
+                cx="3"
+                cy="19"
+                data-bind-attributes
+                data-bind:cx="sun_cx"
+                data-bind:cy="sun_cy"
+                data-bind:aria-hidden="sun_hidden" />
             </g>
           </g>
         </svg>
@@ -238,10 +246,10 @@
         <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
         <div class="thing--frame-content">
-          <div class="thing--weather-temperature">?</div>
-          <div class="thing--weather-apparent-temperature">ressentie <span>?</span></div>
-          <div class="thing--weather-condition">?</div>
-          <div class="thing--weather-condition-icon"><img src="" alt="icon" /></div>
+          <div class="thing--weather-temperature" data-bind="temperature">?</div>
+          <div class="thing--weather-apparent-temperature">ressentie <span data-bind="apparent_temperature">?</span></div>
+          <div class="thing--weather-condition" data-bind="condition">?</div>
+          <div class="thing--weather-condition-icon"><img data-bind-attributes data-bind:src="condition_icon" alt="icon" /></div>
         </div>
       </div>
       <div slot="long-thing">
@@ -269,8 +277,8 @@
                 </svg>
 
                 <ul>
-                  <li><strong class="thing--weather-now-temperature">Mesurée (?)</strong></li>
-                  <li class="thing--weather-now-apparent-temperature">Ressentie (?)</li>
+                  <li><strong class="thing--weather-now-temperature">Mesurée <span data-bind="temperature">(?)</span></strong></li>
+                  <li class="thing--weather-now-apparent-temperature">Ressentie <span data-bind="apparent_temperature">(?)</span></li>
                 </ul>
               </div>
             </div>
@@ -279,12 +287,12 @@
               <h3 class="thing--frame-name">Ciel</h3>
 
               <div class="thing--frame-content">
-                <img src="" class="thing--weather-now-condition-icon" style="width: 2rem" alt="icon" />
+                <img data-bind-attributes data-bind:src="condition_icon" class="thing--weather-now-condition-icon" style="width: 2rem" alt="icon" />
 
                 <ul>
-                  <li><strong class="thing--weather-now-condition">(?)</strong></li>
-                  <li class="thing--weather-now-precipitation">(?)</li>
-                  <li>Indice UV <span class="thing--weather-now-uv-index">(?)</span></li>
+                  <li><strong class="thing--weather-now-condition" data-bind="condition">(?)</strong></li>
+                  <li class="thing--weather-now-precipitation"><span data-bind="precipitation">(?)</span>mm</li>
+                  <li>Indice UV <span class="thing--weather-now-uv-index" data-bind="uv_index">(?)</span></li>
                 </ul>
               </div>
             </div>
@@ -298,8 +306,8 @@
                     <rect x="0" y="0" width="511" height="511" fill="#fff" />
                     <circle cx="255.5" cy="255.5" r="140" fill="#000" />
                   </mask>
-                  <path stroke="var(--color-light-300)" stroke-linecap="round" stroke-width="4" d="M499 255.5h-26.6m26.3 10.7-26.4-1.3m25.5 11.9-26.2-2.6m24.9 13-26-3.8m24.2 14.3-25.8-5.1m23.5 15.4-25.5-6.3m22.7 16.4-25.2-7.4m22 17.4-24.8-8.5m21.2 18.4-24.5-9.7m20.4 19.4-24-10.7m19.5 20.2-23.5-11.8m18.6 21.1-23-12.7m17.8 21.8-22.6-13.7m17 22.6-22-14.6m16 23.2L431 377.6m15 24-20.8-16.4m14.2 24.5-20.2-17.2m13.2 25L413 399.7m12.2 25.6-18.8-18.8m11.2 26-18-19.4m10.1 26.5-17.2-20.2m9 26.8-16.3-20.8m8 27.2L377.5 431m6.9 27.4-14.6-22m5.7 27.6-13.7-22.6m4.6 27.8-12.7-23m3.4 28-11.8-23.6m2.3 28-10.7-24m1 28-9.7-24.4m-.2 28.1-8.5-24.8m-1.5 28-7.4-25.2m-2.7 28-6.3-25.5m-4 27.8-5.1-25.8m-5.3 27.6-3.9-26m-6.6 27.3-2.6-26.2m-8 27-1.3-26.3m-9.4 26.7v-26.6m-10.7 26.3 1.3-26.4m-11.9 25.5 2.6-26.2m-13 24.9 3.8-26m-14.3 24.2 5.1-25.8M203 492.4l6.3-25.5M193 489.6l7.4-25.2m-17.4 22 8.5-24.8M173 482.8l9.7-24.5m-19.4 20.4 10.7-24m-20.2 19.5 11.8-23.5m-21.1 18.6 12.7-23M135.4 464l13.7-22.6m-22.6 17 14.6-22m-23.2 16 15.5-21.4m-24 15 16.4-20.8m-24.5 14.2 17.2-20.2m-25 13.2 17.9-19.5m-25.6 12.2 18.8-18.8m-26 11.2 19.4-18m-26.5 10.1 20.2-17.2m-26.8 9 20.8-16.3m-27.2 8L80 377.5m-27.4 6.9 22-14.6M47 375.6l22.6-13.7m-27.8 4.6 23-12.7m-28 3.4 23.6-11.8m-28 2.3 24-10.7m-28 1 24.4-9.7m-28.1-.2 24.8-8.5m-28-1.5 25.2-7.4m-28-2.7 25.5-6.3m-27.8-4 25.8-5.1m-27.6-5.3 26-3.9m-27.3-6.6 26.2-2.6m-27-8 26.3-1.3M12 255.5h26.6m-26.3-10.7 26.4 1.3m-25.5-11.9 26.2 2.6m-24.9-13 26 3.8m-24.2-14.3 25.8 5.1M18.6 203l25.5 6.3M21.4 193l25.2 7.4m-22-17.4 24.8 8.5M28.2 173l24.5 9.7m-20.4-19.4 24 10.7m-19.5-20.2 23.5 11.8m-18.6-21.1 23 12.7M47 135.4l22.6 13.7m-17-22.6 22 14.6m-16-23.2L80 133.4m-15-24 20.8 16.4m-14.2-24.5 20.2 17.2m-13.2-25L98 111.3M85.8 85.8l18.8 18.8m-11.2-26 18 19.4m-10-26.5 17 20.2m-9-26.8 16.4 20.8m-8-27.2L133.5 80m-6.9-27.4 14.6 22M135.4 47l13.7 22.6m-4.6-27.8 12.7 23m-3.4-28 11.8 23.6m-2.3-28 10.7 24m-1-28 9.7 24.4m.2-28.1 8.5 24.8m1.5-28 7.4 25.2m2.7-28 6.3 25.5m4-27.8 5.1 25.8m5.3-27.6 3.9 26m6.6-27.3 2.6 26.2m8-27 1.3 26.3m9.4-26.7v26.6m10.7-26.3-1.3 26.4m11.9-25.5-2.6 26.2m13-24.9-3.8 26m14.3-24.2-5.1 25.8M308 18.6l-6.3 25.5M318 21.4l-7.4 25.2m17.4-22-8.5 24.8M338 28.2l-9.7 24.5m19.4-20.4-10.7 24m20.2-19.5-11.8 23.5m21.1-18.6-12.7 23M375.6 47l-13.7 22.6m22.6-17-14.6 22m23.2-16L377.6 80m24-15-16.4 20.8m24.5-14.2-17.2 20.2m25-13.2L399.7 98m25.6-12.2-18.8 18.8m26-11.2-19.4 18m26.5-10-20.2 17m26.8-9-20.8 16.4m27.2-8L431 133.5m27.4-6.9-22 14.6m27.6-5.7-22.6 13.7m27.8-4.6-23 12.7m28-3.4-23.6 11.8m28-2.3-24 10.7m28-1-24.4 9.7m28.1.2-24.8 8.5m28 1.5-25.2 7.4m28 2.7-25.5 6.3m27.8 4-25.8 5.1m27.6 5.3-26 3.9m27.3 6.6-26.2 2.6m27 8-26.3 1.3"/>
-                  <g class="thing--weather-wind-degree" mask="url(#free_center)" fill="var(--color-blue-800)" stroke="var(--color-blue-800)" style="transform: rotate(90deg); transform-origin: 50% 50%">
+                  <path stroke="var(--color-light-300)" stroke-linecap="round" stroke-width="4" d="M499 255.5h-26.6m26.3 10.7-26.4-1.3m25.5 11.9-26.2-2.6m24.9 13-26-3.8m24.2 14.3-25.8-5.1m23.5 15.4-25.5-6.3m22.7 16.4-25.2-7.4m22 17.4-24.8-8.5m21.2 18.4-24.5-9.7m20.4 19.4-24-10.7m19.5 20.2-23.5-11.8m18.6 21.1-23-12.7m17.8 21.8-22.6-13.7m17 22.6-22-14.6m16 23.2L431 377.6m15 24-20.8-16.4m14.2 24.5-20.2-17.2m13.2 25L413 399.7m12.2 25.6-18.8-18.8m11.2 26-18-19.4m10.1 26.5-17.2-20.2m9 26.8-16.3-20.8m8 27.2L377.5 431m6.9 27.4-14.6-22m5.7 27.6-13.7-22.6m4.6 27.8-12.7-23m3.4 28-11.8-23.6m2.3 28-10.7-24m1 28-9.7-24.4m-.2 28.1-8.5-24.8m-1.5 28-7.4-25.2m-2.7 28-6.3-25.5m-4 27.8-5.1-25.8m-5.3 27.6-3.9-26m-6.6 27.3-2.6-26.2m-8 27-1.3-26.3m-9.4 26.7v-26.6m-10.7 26.3 1.3-26.4m-11.9 25.5 2.6-26.2m-13 24.9 3.8-26m-14.3 24.2 5.1-25.8M203 492.4l6.3-25.5M193 489.6l7.4-25.2m-17.4 22 8.5-24.8M173 482.8l9.7-24.5m-19.4 20.4 10.7-24m-20.2 19.5 11.8-23.5m-21.1 18.6 12.7-23M135.4 464l13.7-22.6m-22.6 17 14.6-22m-23.2 16 15.5-21.4m-24 15 16.4-20.8m-24.5 14.2 17.2-20.2m-25 13.2 17.9-19.5m-25.6 12.2 18.8-18.8m-26 11.2 19.4-18m-26.5 10.1 20.2-17.2m-26.8 9 20.8-16.3m-27.2 8L80 377.5m-27.4 6.9 22-14.6M47 375.6l22.6-13.7m-27.8 4.6 23-12.7m-28 3.4 23.6-11.8m-28 2.3 24-10.7m-28 1 24.4-9.7m-28.1-.2 24.8-8.5m-28-1.5 25.2-7.4m-28-2.7 25.5-6.3m-27.8-4 25.8-5.1m-27.6-5.3 26-3.9m-27.3-6.6 26.2-2.6m-27-8 26.3-1.3M12 255.5h26.6m-26.3-10.7 26.4 1.3m-25.5-11.9 26.2 2.6m-24.9-13 26 3.8m-24.2-14.3 25.8 5.1M18.6 203l25.5 6.3M21.4 193l25.2 7.4m-22-17.4 24.8 8.5M28.2 173l24.5 9.7m-20.4-19.4 24 10.7m-19.5-20.2 23.5 11.8m-18.6-21.1 23 12.7M47 135.4l22.6 13.7m-17-22.6 22 14.6m-16-23.2L80 133.4m-15-24 20.8 16.4m-14.2-24.5 20.2 17.2m-13.2-25L98 111.3M85.8 85.8l18.8 18.8m-11.2-26 18 19.4m-10-26.5 17 20.2m-9-26.8 16.4 20.8m-8-27.2L133.5 80m-6.9-27.4 14.6 22M135.4 47l13.7 22.6m-4.6-27.8 12.7 23m-3.4-28 11.8 23.6m-2.3-28 10.7 24m-1-28 9.7 24.4m.2-28.1 8.5 24.8m1.5-28 7.4 25.2m2.7-28 6.3 25.5m4-27.8 5.1 25.8m5.3-27.6 3.9 26m6.6-27.3 2.6 26.2m8-27 1.3 26.3m9.4-26.7v26.6m10.7-26.3-1.3 26.4m11.9-25.5-2.6 26.2m13-24.9-3.8 26m14.3-24.2-5.1 25.8M308 18.6l-6.3 25.5M318 21.4l-7.4 25.2m17.4-22-8.5 24.8M338 28.2l-9.7 24.5m19.4-20.4-10.7 24m20.2-19.5-11.8 23.5m21.1-18.6-12.7 23M375.6 47l-13.7 22.6m22.6-17-14.6 22m23.2-16L377.6 80m24-15-16.4 20.8m24.5-14.2-17.2 20.2m25-13.2L399.7 98m25.6-12.2-18.8 18.8m26-11.2-19.4 18m26.5-10-20.2 17m26.8-9-20.8 16.4m27.2-8L431 133.5m27.4-6.9-22 14.6m27.6-5.7-22.6 13.7m27.8-4.6-23 12.7m28-3.4-23.6 11.8m28-2.3-24 10.7m28-1-24.4 9.7m28.1.2-24.8 8.5m28 1.5-25.2 7.4m28 2.7-25.5 6.3m27.8 4-25.8 5.1m27.6 5.3-26 3.9m27.3 6.6-26.2 2.6m27 8-26.3 1.3" />
+                  <g class="thing--weather-wind-degree" mask="url(#free_center)" fill="var(--color-blue-800)" stroke="var(--color-blue-800)" data-bind-attributes data-bind:style="wind_degree">
                     <g transform="translate(5.5 1.3)">
                       <circle cx="250" cy="479.7" r="29.2" />
                       <path stroke-width="10.4" d="M249.8 5.3v491.5"/>
@@ -307,7 +315,7 @@
                     </g>
                   </g>
                 </svg>
-                <p class="thing--weather-wind-text">(undefined)</p>
+                <p class="thing--weather-wind-text"><span data-bind="wind">(?)</span>m/s<br /><abbr title="rafales">raf.</abbr> <span data-bind="wind_gust">(?)</span>m/s</p>
               </div>
             </div>
 
@@ -330,8 +338,8 @@
                 </svg>
 
                 <ul>
-                  <li><strong class="thing--weather-now-humidity">(?)</strong></li>
-                  <li>Point de rosée <span class="thing--weather-now-dew-point">(?)</span></li>
+                  <li><strong class="thing--weather-now-humidity"><span data-bind="humidity">(?)</span>H%</strong></li>
+                  <li>Point de rosée <span class="thing--weather-now-dew-point" data-bind="dew_point">(?)</span>°C</li>
                 </ul>
               </div>
             </div>
@@ -362,25 +370,25 @@
                 <div class="thing--slider-content">
                   <div style="background-image: url('https://tile.openstreetmap.org/9/265/180.png')">
                     <figure>
-                      <img src="https://tile.openweathermap.org/map/clouds_new/9/265/180.png?appid={openweathermap_api_key}" />
+                      <img src="https://tile.openweathermap.org/map/clouds_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
                       <figcaption>Nuages</figcaption>
                     </figure>
                   </div>
                   <div style="background-image: url('https://tile.openstreetmap.org/9/265/180.png')">
                     <figure>
-                      <img src="https://tile.openweathermap.org/map/precipitation_new/9/265/180.png?appid={openweathermap_api_key}" />
+                      <img src="https://tile.openweathermap.org/map/precipitation_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
                       <figcaption>Précipitations</figcaption>
                     </figure>
                   </div>
                   <div style="background-image: url('https://tile.openstreetmap.org/9/265/180.png')">
                     <figure>
-                      <img src="https://tile.openweathermap.org/map/temp_new/9/265/180.png?appid={openweathermap_api_key}" />
+                      <img src="https://tile.openweathermap.org/map/temp_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
                       <figcaption>Températures</figcaption>
                     </figure>
                   </div>
                   <div style="background-image: url('https://tile.openstreetmap.org/9/265/180.png')">
                     <figure>
-                      <img src="https://tile.openweathermap.org/map/wind_new/9/265/180.png?appid={openweathermap_api_key}" />
+                      <img src="https://tile.openweathermap.org/map/wind_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
                       <figcaption>Vents</figcaption>
                     </figure>
                   </div>
@@ -400,7 +408,31 @@
 
         <h4>Prévisions météorologiques</h4>
 
-        <div class="thing--weather-forecast"></div>
+        <div class="thing--weather-forecast">
+          <div class="thing--weather-one-forecast" data-bind-loop="forecast in forecasts" data-bind-attributes data-bind:data-temperature-category="forecast.temperature_category">
+            <h5 class="thing--weather-one-forecast--datetime"><span data-bind="forecast.date_hour">(?)</span>h<span data-bind="forecast.date_extra">(?)</span></h5>
+            <h6 class="thing--weather-one-forecast--title"><span>Ciel</span></h6>
+            <div class="thing--weather-one-forecast--condition-icon"><img data-bind-attributes data-bind:src="forecast.condition_icon" alt="condition icon" /></div>
+            <div class="thing--weather-one-forecast--condition" data-bind="forecast.condition">(?)</div>
+            <div class="thing--weather-one-forecast--cloudiness" data-bind="forecast.octas">(?)</div>
+            <div class="thing--weather-one-forecast--precipitations"><span data-bind="forecast.precipitations">(?)</span>mm</div>
+            <div class="thing--weather-one-forecast--uv-index"><span data-bind="forecast.uv_index">(?)</span>UV<sub>ix</sub></div>
+
+            <h6 class="thing--weather-one-forecast--title"><span>Températures</span></h6>
+            <div class="thing--weather-one-forecast--temperature"><span data-bind="forecast.temperature">(?)</span>°C</div>
+            <div class="thing--weather-one-forecast--apparent-temperature">(<span data-bind="forecast.apparent_temperature">(?)</span>°C)</div>
+
+            <h6 class="thing--weather-one-forecast--title"><span>Air</span></h6>
+            <div class="thing--weather-one-forecast--humidity"><span data-bind="forecast.humidity">(?)</span>%H</div>
+            <div class="thing--weather-one-forecast--pressure"><span data-bind="forecast.pressure">(?)</span>hPa</div>
+            <div class="thing--weather-one-forecast--dew-point"><span data-bind="forecast.dew_point">(?)></span>°C</div>
+
+            <h6 class="thing--weather-one-forecast--title"><span>Vent</span></h6>
+            <div class="thing--weather-one-forecast--wind-speed"><span data-bind="forecast.wind">(?)</span>m/s</div>
+            <div class="thing--weather-one-forecast--wind-gust">(<span data-bind="forecast.wind_gust">(?)</span>m/s)</div>
+            <div class="thing--weather-one-forecast--wind-degree"><svg class="icon" data-bind-attributes data-bind:style="forecast.wind_degree"><use href="#icon-compass" /></div>
+          </div>
+        </div>
       </div>
     </my-expandable-thing>
 
@@ -499,10 +531,9 @@
     <section id="things-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-of-things-panel" aria-hidden="false">
       <my-unlocated-things>
         <my-thing>
-            <!--data-base="http://192.168.1.128:8092/0"-->
           <my-meter-thing
             slot="thing"
-            data-base="http://127.0.0.1:8891/0"
+            data-base="http://192.168.1.128:8092/0"
             data-primary="state_of_charge"
             data-secondary="ongoing_power">
             <span slot="name">Batteries</span>
@@ -511,16 +542,14 @@
         </my-thing>
 
         <my-thing>
-            <!--data-base="http://192.168.1.128:8092/4"-->
           <my-solar-pv-thing
             slot="thing"
-            data-base="http://127.0.0.1:8891/4"
+            data-base="http://192.168.1.128:8092/4"
             data-power="power">
             <span slot="name">Solaire PV</span>
           </my-solar-pv-thing>
         </my-thing>
 
-        <!--
         <my-thing>
           <my-dhw-thing
             slot="thing"
@@ -576,7 +605,6 @@
             <span slot="name">Météo</span>
           </my-weather-thing>
         </my-thing>
-        -->
       </my-unlocated-things>
 
       <my-things>
