@@ -6,18 +6,17 @@ use tokio_modbus::prelude::*;
 trait RegistryReader {
     type Target;
 
-    fn number_of_registers() -> usize;
-    fn to_target(bytes: &[u16]) -> Self::Target;
+    const NUMBER_OF_REGISTERS: usize;
+
+    fn read(bytes: &[u16]) -> Self::Target;
 }
 
 impl RegistryReader for u16 {
     type Target = Self;
 
-    fn number_of_registers() -> usize {
-        1
-    }
+    const NUMBER_OF_REGISTERS: usize = 1;
 
-    fn to_target(bytes: &[u16]) -> Self::Target {
+    fn read(bytes: &[u16]) -> Self::Target {
         bytes[0]
     }
 }
@@ -25,11 +24,9 @@ impl RegistryReader for u16 {
 impl RegistryReader for i16 {
     type Target = Self;
 
-    fn number_of_registers() -> usize {
-        1
-    }
+    const NUMBER_OF_REGISTERS: usize = 1;
 
-    fn to_target(bytes: &[u16]) -> Self::Target {
+    fn read(bytes: &[u16]) -> Self::Target {
         bytes[0] as _
     }
 }
@@ -37,45 +34,41 @@ impl RegistryReader for i16 {
 impl RegistryReader for u32 {
     type Target = Self;
 
-    fn number_of_registers() -> usize {
-        2
-    }
+    const NUMBER_OF_REGISTERS: usize = 2;
 
-    fn to_target(bytes: &[u16]) -> Self::Target {
+    fn read(bytes: &[u16]) -> Self::Target {
         let (prefix, bytes, suffix) = unsafe { bytes.align_to::<u8>() };
 
         assert!(prefix.is_empty());
         assert!(suffix.is_empty());
 
-        Self::from_be_bytes(bytes[..Self::number_of_registers() * 2].try_into().unwrap())
+        Self::from_be_bytes(bytes[..Self::NUMBER_OF_REGISTERS * 2].try_into().unwrap())
     }
 }
 
 impl RegistryReader for u64 {
     type Target = Self;
 
-    fn number_of_registers() -> usize {
-        4
-    }
+    const NUMBER_OF_REGISTERS: usize = 4;
 
-    fn to_target(bytes: &[u16]) -> Self::Target {
+    fn read(bytes: &[u16]) -> Self::Target {
         let (prefix, bytes, suffix) = unsafe { bytes.align_to::<u8>() };
 
         assert!(prefix.is_empty());
         assert!(suffix.is_empty());
 
-        Self::from_be_bytes(bytes[..Self::number_of_registers() * 2].try_into().unwrap())
+        Self::from_be_bytes(bytes[..Self::NUMBER_OF_REGISTERS * 2].try_into().unwrap())
     }
 }
 
 impl RegistryReader for f32 {
     type Target = Self;
 
-    fn number_of_registers() -> usize {
-        2
-    }
+    const NUMBER_OF_REGISTERS: usize = 2;
 
-    fn to_target(bytes: &[u16]) -> Self::Target {
+    fn read(bytes: &[u16]) -> Self::Target {
+        assert!(bytes.len() >= Self::NUMBER_OF_REGISTERS);
+
         f32::from_bits(unsafe { std::mem::transmute::<_, u32>([bytes[1], bytes[0]]) })
     }
 }
@@ -83,11 +76,11 @@ impl RegistryReader for f32 {
 impl RegistryReader for f64 {
     type Target = f32;
 
-    fn number_of_registers() -> usize {
-        4
-    }
+    const NUMBER_OF_REGISTERS: usize = 4;
 
-    fn to_target(bytes: &[u16]) -> Self::Target {
+    fn read(bytes: &[u16]) -> Self::Target {
+        assert!(bytes.len() >= Self::NUMBER_OF_REGISTERS);
+
         f64::from_bits(unsafe {
             std::mem::transmute::<_, u64>([bytes[2], bytes[3], bytes[1], bytes[0]])
         }) as f32
@@ -99,11 +92,11 @@ struct FixedString<const N: usize>;
 impl<const N: usize> RegistryReader for FixedString<N> {
     type Target = String;
 
-    fn number_of_registers() -> usize {
-        N
-    }
+    const NUMBER_OF_REGISTERS: usize = N;
 
-    fn to_target(bytes: &[u16]) -> Self::Target {
+    fn read(bytes: &[u16]) -> Self::Target {
+        assert!(bytes.len() <= Self::NUMBER_OF_REGISTERS);
+
         let (prefix, bytes, suffix) = unsafe { bytes.align_to::<u8>() };
 
         assert!(prefix.is_empty());
@@ -125,9 +118,9 @@ fn read_holding_register<R>(context: &mut sync::Context, address: u16) -> Result
 where
     R: RegistryReader,
 {
-    let registers = context.read_holding_registers(address, R::number_of_registers() as _)?;
+    let registers = context.read_holding_registers(address, R::NUMBER_OF_REGISTERS as _)?;
 
-    Ok(R::to_target(&registers))
+    Ok(R::read(&registers))
 }
 
 fn read_station_information(context: &mut sync::Context) -> Result<StationInformation> {
