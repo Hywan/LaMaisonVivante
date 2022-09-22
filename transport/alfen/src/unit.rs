@@ -43,7 +43,7 @@ impl Unit for f32 {
 
 macro_rules! unit {
     ($name:ident, $display:expr) => {
-        #[derive(Copy, Clone, Serialize)]
+        #[derive(Copy, Clone, PartialEq, PartialOrd, Serialize)]
         pub struct $name(pub f32);
 
         impl fmt::Display for $name {

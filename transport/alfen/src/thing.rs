@@ -126,8 +126,9 @@ fn make_charging_station() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
             json!({
                 "@type": "InstantaneousPowerProperty",
                 "title": "Socket total power",
-                "type": "watt",
+                "type": "integer",
                 "description": "Total power given by the socket",
+                "unit": "watt",
                 "readOnly": true,
             })
             .as_object()
@@ -162,8 +163,9 @@ fn make_charging_station() -> Arc<RwLock<Box<dyn Thing + 'static>>> {
             json!({
                 "@type": "CurrentProperty",
                 "title": "Socket current",
-                "type": "ampere",
+                "type": "integer",
                 "description": "Actual applied max current of the socket",
+                "unit": "ampere",
                 "readOnly": true,
             })
             .as_object()
@@ -245,7 +247,11 @@ pub fn run(address: SocketAddr, port: Option<u16>) {
                 "socket_number_of_phases",
                 socket_state.number_of_phases.as_u8(),
             );
-            update_property!(charging_station, "socket_power", socket_state.power);
+            update_property!(
+                charging_station,
+                "socket_power",
+                socket_state.power.0.round()
+            );
             update_property!(charging_station, "socket_frequency", socket_state.frequency);
             update_property!(
                 charging_station,

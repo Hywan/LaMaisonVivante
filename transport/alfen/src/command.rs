@@ -25,6 +25,9 @@ pub struct Command {
 pub enum CommandKind {
     /// Read values from the Alfen.
     Read(ReadCommand),
+
+    /// Write values to the Alfen.
+    Write(WriteCommand),
 }
 
 #[derive(StructOpt, Debug)]
@@ -58,4 +61,12 @@ arg_enum! {
         Text,
         Json,
     }
+}
+
+#[derive(StructOpt, Debug)]
+#[structopt(name = "write")]
+pub struct WriteCommand {
+    /// Update the applied current of the socket.
+    #[structopt(short = "c", long = "socket-current")]
+    pub socket_current: Option<u16>,
 }

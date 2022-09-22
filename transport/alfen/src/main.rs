@@ -1,10 +1,11 @@
 mod command;
 mod configuration;
 mod modbus;
-mod thing;
 mod reader;
 mod state;
+mod thing;
 mod unit;
+mod writer;
 
 use crate::command::*;
 use human_panic::setup_panic;
@@ -47,6 +48,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     ReadFormat::Text => println!("{:#?}", reader::read(&mut context)?),
                     ReadFormat::Json => println!("{}", to_json(&reader::read(&mut context)?)?),
                 }
+            }
+        }
+
+        Some(CommandKind::Write(write_command)) => {
+            let mut context =
+                client::sync::tcp::connect(command.address.unwrap_or(configuration.address))?;
+
+            let state = reader::read(&mut context)?;
+
+            if let Some(current) = write_command.socket_current {
+                writer::set_socket_current(&mut context, &state, current)?;
             }
         }
 
