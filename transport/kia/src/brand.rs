@@ -36,6 +36,7 @@ pub struct BrandConfiguration {
     pub basic_token: String,
     pub auth_client_id: String,
     pub auth_url_format: String,
+    pub basic_authorization_password: String,
 }
 
 impl BrandConfiguration {
@@ -45,8 +46,9 @@ impl BrandConfiguration {
                 Self {
                     uri: "https://prd.eu-ccapi.kia.com:8080".to_string(),
                     basic_token: "ZmRjODVjMDAtMGEyZi00YzY0LWJjYjQtMmNmYjE1MDA3MzBhOnNlY3JldA==".to_string(),
-                    auth_client_id: "572e0304-5f8d-4b4c-9dd5-41aa84eed160".to_string(),
-                    auth_url_format: "https://eu-account.kia.com/auth/realms/eukiaidm/protocol/openid-connect/auth?client_id={client_id}&scope=openid%%20profile%%20email%%20phone&response_type=code&hkid_session_reset=true&redirect_uri={redirect_uri}/api/v1/user/integration/redirect/login&ui_locales={}&state={}:{}".to_string(),
+                    auth_client_id: "f4d531c7-1043-444d-b09a-ad24bd913dd4".to_string(),
+                    auth_url_format: "https://eu-account.kia.com/auth/realms/eukiaidm/protocol/openid-connect/auth?client_id={client_id}&scope=openid%20profile%20email%20phone&response_type=code&hkid_session_reset=true&redirect_uri={uri}/api/v1/user/integration/redirect/login&ui_locales=en&state={service_id}:{user_id}".to_string(),
+                    basic_authorization_password: "secret".to_string(),
                 }
         }
     }

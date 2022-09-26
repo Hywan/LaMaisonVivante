@@ -9,9 +9,21 @@ impl Client {
     pub fn new() -> Self {
         Self {
             inner: reqwest::Client::builder()
-                .user_agent("lmv/1.0.0")
+                //.user_agent("lmv/1.0.0")
                 .danger_accept_invalid_certs(true),
         }
+    }
+
+    pub fn redirect(mut self, enable: bool) -> Self {
+        use reqwest::redirect::Policy;
+
+        self.inner = self.inner.redirect(if enable {
+            Policy::limited(10)
+        } else {
+            Policy::none()
+        });
+
+        self
     }
 
     pub fn cookie_store(mut self, enable: bool) -> Self {
