@@ -9,7 +9,7 @@ impl Client {
     pub fn new() -> Self {
         Self {
             inner: reqwest::Client::builder()
-                //.user_agent("lmv/1.0.0")
+                .user_agent("lmv/1.0.0")
                 .danger_accept_invalid_certs(true),
         }
     }

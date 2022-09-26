@@ -370,18 +370,14 @@ impl<'a> AuthorizedClient<'a> {
                 })?
         };
 
-        dbg!(&code);
-
         // Step 6, get the access token!
-        {
-            let mut http_request_headers = reqwest::header::HeaderMap::with_capacity(2);
-            http_request_headers.insert(
-                "Authorization",
-                "Basic ZmRjODVjMDAtMGEyZi00YzY0LWJjYjQtMmNmYjE1MDA3MzBhOnNlY3JldA=="
-                    .parse()
-                    .unwrap(),
-            );
+        #[derive(Debug, Deserialize)]
+        struct Tokens {
+            access_token: String,
+            refresh_token: String,
+        }
 
+        let tokens = {
             let http_form_data: [(&str, &str); 3] = [
                 ("grant_type", "authorization_code"),
                 (
@@ -395,28 +391,25 @@ impl<'a> AuthorizedClient<'a> {
                 ("code", &code),
             ];
 
-            let a = Client::post(format!(
+            Client::post(format!(
                 "{url}{path}",
                 url = self.brand_configuration.uri,
                 path = USER_TOKEN_URL
             ))?
-            /*
             .basic_auth(
                 self.brand.client_id(),
                 Some(&self.brand_configuration.basic_authorization_password),
             )
-                */
-            .headers(http_request_headers)
             .form(&http_form_data)
             .send()
             .await
             .map_err(Error::Http)?
-            .text()
+            .json::<Tokens>()
             .await
-            .unwrap();
+            .map_err(Error::Http)?
+        };
 
-            dbg!(&a);
-        }
+        dbg!(&tokens);
 
         // Step 7, get device ID.
         let device_id = DeviceId::new(self.brand, &self.brand_configuration).await?;
