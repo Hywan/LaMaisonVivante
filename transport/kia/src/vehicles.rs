@@ -5,6 +5,7 @@ use crate::{
     identity::Tokens,
 };
 use serde::{de, Deserialize, Deserializer};
+use serde_json::Value;
 use std::fmt;
 
 const VEHICLES_URL: &'static str = "/api/v1/spa/vehicles";
@@ -177,6 +178,9 @@ pub struct State {
 
     #[serde(rename = "vehicleLocation")]
     pub location: Location,
+
+    #[serde(rename = "odometer", deserialize_with = "deserialize_odometer")]
+    pub odometer: f32,
 }
 
 #[derive(Debug, Deserialize)]
@@ -193,11 +197,23 @@ pub struct Status {
     #[serde(rename = "doorOpen")]
     pub doors: Doors,
 
+    #[serde(rename = "windowOpen")]
+    pub windows: Windows,
+
     #[serde(rename = "trunkOpen")]
     pub trunk_opened: bool,
 
     #[serde(rename = "hoodOpen")]
     pub frunk_opened: bool,
+
+    #[serde(rename = "defrost")]
+    pub defrost_enabled: bool,
+
+    #[serde(rename = "steerWheelHeat", deserialize_with = "int_to_bool")]
+    pub steer_wheel_heat_enabled: bool,
+
+    #[serde(rename = "sideBackWindowHeat", deserialize_with = "int_to_bool")]
+    pub side_back_window_heat_enabled: bool,
 
     #[serde(rename = "evStatus")]
     pub battery: Battery,
@@ -218,13 +234,19 @@ pub struct Doors {
     pub back_right_opened: bool,
 }
 
-fn int_to_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let value: i32 = de::Deserialize::deserialize(deserializer)?;
+#[derive(Debug, Deserialize)]
+pub struct Windows {
+    #[serde(rename = "frontLeft", deserialize_with = "int_to_bool")]
+    pub front_left_opened: bool,
 
-    Ok(value != 0)
+    #[serde(rename = "frontRight", deserialize_with = "int_to_bool")]
+    pub front_right_opened: bool,
+
+    #[serde(rename = "backLeft", deserialize_with = "int_to_bool")]
+    pub back_left_opened: bool,
+
+    #[serde(rename = "backRight", deserialize_with = "int_to_bool")]
+    pub back_right_opened: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -234,6 +256,9 @@ pub struct Battery {
 
     #[serde(rename = "batteryStatus")]
     pub state_of_charge: u32,
+
+    #[serde(rename = "drvDistance", deserialize_with = "deserialize_range")]
+    pub remaining_range: u32,
 }
 
 #[derive(Debug, Deserialize)]
@@ -257,6 +282,57 @@ pub struct Coordinates {
     pub altitude: f32,
 }
 
+fn int_to_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value: i32 = de::Deserialize::deserialize(deserializer)?;
+
+    Ok(value != 0)
+}
+
+fn deserialize_range<'de, D>(deserializer: D) -> Result<u32, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value: Value = de::Deserialize::deserialize(deserializer)?;
+    let path: &'static str = "/0/rangeByFuel/totalAvailableRange/value";
+
+    Ok(match value.pointer(path) {
+        Some(Value::Number(number)) if number.is_u64() => number.as_u64().unwrap() as u32,
+
+        Some(_) => {
+            return Err(de::Error::invalid_value(
+                de::Unexpected::Other("a number that is not a `u64`"),
+                &"a `u64`",
+            ))
+        }
+
+        None => return Err(de::Error::missing_field(path))?,
+    })
+}
+
+fn deserialize_odometer<'de, D>(deserializer: D) -> Result<f32, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value: Value = de::Deserialize::deserialize(deserializer)?;
+    let path: &'static str = "/value";
+
+    Ok(match value.pointer(path) {
+        Some(Value::Number(number)) if number.is_f64() => number.as_f64().unwrap() as f32,
+
+        Some(_) => {
+            return Err(de::Error::invalid_value(
+                de::Unexpected::Other("a number that is not a `f64`"),
+                &"a `f64`",
+            ))
+        }
+
+        None => return Err(de::Error::missing_field(path))?,
+    })
+}
+
 /// [DOP] (Dilution of precision).
 ///
 /// [DOP]: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation)
@@ -267,4 +343,29 @@ pub struct PrecisionDilution {
 
     #[serde(rename = "pdop")]
     pub position: u32,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test() {
+        #[derive(Debug, Deserialize)]
+        struct Response {
+            #[serde(rename = "resMsg")]
+            result_message: ResponseVehicleState,
+        }
+
+        #[derive(Debug, Deserialize)]
+        struct ResponseVehicleState {
+            #[serde(rename = "vehicleStatusInfo")]
+            vehicle_state: State,
+        }
+
+        let text = include_str!("test.json");
+
+        let j: Response = serde_json::from_str(text).unwrap();
+        dbg!(j.result_message.vehicle_state);
+    }
 }
