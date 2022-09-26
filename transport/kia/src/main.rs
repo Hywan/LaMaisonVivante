@@ -1,78 +1,17 @@
-use async_trait::async_trait;
-use std::fmt;
-
 mod auth;
 mod brand;
 mod errors;
+mod garage;
 mod http;
 mod identity;
+mod vehicles;
 
-use auth::Authentification;
-use brand::{Brand, BrandConfiguration, Region};
-use errors::Error;
-use identity::AuthorizedClient;
-
-#[async_trait]
-trait Backend {
-    async fn login(&self, auth: &Authentification) -> Result<(), Error>;
-}
-
-#[derive(Debug)]
-pub struct KiaEurope;
-
-#[async_trait]
-impl Backend for KiaEurope {
-    async fn login(&self, auth: &Authentification) -> Result<(), Error> {
-        let brand_configuration = BrandConfiguration::new(Brand::Kia);
-
-        let authorized_client = AuthorizedClient::new(Brand::Kia, &brand_configuration).await?;
-        authorized_client.login(auth).await?;
-
-        unimplemented!()
-    }
-}
-
-pub struct Garage<'a> {
-    region: Region,
-    brand: Brand,
-    authentification: &'a Authentification,
-    backend: Box<dyn Backend>,
-}
-
-impl<'a> fmt::Debug for Garage<'a> {
-    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        formatter
-            .debug_struct("Garage")
-            .field("region", &self.region)
-            .field("brand", &self.brand)
-            .field("authentification", self.authentification)
-            .finish_non_exhaustive()
-    }
-}
-
-impl<'a> Garage<'a> {
-    async fn new(
-        region: Region,
-        brand: Brand,
-        authentification: &'a Authentification,
-    ) -> Result<Garage<'a>, Error> {
-        let backend = match (region, brand) {
-            (Region::Europe, Brand::Kia) => KiaEurope,
-            _ => unimplemented!("region and brand not supported"),
-        };
-
-        let this = Self {
-            region,
-            brand,
-            authentification,
-            backend: Box::new(backend),
-        };
-
-        this.backend.login(&this.authentification).await?;
-
-        Ok(this)
-    }
-}
+use crate::{
+    auth::Authentification,
+    brand::{Brand, Region},
+    errors::Error,
+    garage::Garage,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -83,6 +22,9 @@ async fn main() -> Result<(), Error> {
 
     let brand = Brand::Kia;
     let garage = Garage::new(Region::Europe, brand, &auth).await?;
+    let vehicles = garage.vehicles().await?;
+
+    dbg!(vehicles.get(0).unwrap().state().await?);
 
     Ok(())
 }

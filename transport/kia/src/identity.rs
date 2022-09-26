@@ -107,17 +107,25 @@ impl DeviceId {
 }
 
 #[derive(Debug)]
-pub struct AuthorizedClient<'a> {
+pub struct Tokens {
+    pub access_token: String,
+    pub refresh_token: String,
+    pub device_id: String,
+    pub stamp: String,
+}
+
+#[derive(Debug)]
+pub struct LoginClient<'a> {
     client: reqwest::Client,
     brand: Brand,
     brand_configuration: &'a BrandConfiguration,
 }
 
-impl<'a> AuthorizedClient<'a> {
+impl<'a> LoginClient<'a> {
     pub async fn new(
         brand: Brand,
         brand_configuration: &'a BrandConfiguration,
-    ) -> Result<AuthorizedClient<'a>, Error> {
+    ) -> Result<LoginClient<'a>, Error> {
         let client = Client::new().cookie_store(true).redirect(false).build()?;
 
         // Authorization.
@@ -159,7 +167,7 @@ impl<'a> AuthorizedClient<'a> {
         })
     }
 
-    pub async fn login(&self, auth: &Authentification) -> Result<String, Error> {
+    pub async fn login(&mut self, auth: &Authentification) -> Result<Tokens, Error> {
         #[derive(Debug, Deserialize)]
         struct IntegrationInfo {
             #[serde(rename = "userId")]
@@ -371,13 +379,7 @@ impl<'a> AuthorizedClient<'a> {
         };
 
         // Step 6, get the access token!
-        #[derive(Debug, Deserialize)]
-        struct Tokens {
-            access_token: String,
-            refresh_token: String,
-        }
-
-        let tokens = {
+        let (access_token, refresh_code) = {
             let http_form_data: [(&str, &str); 3] = [
                 ("grant_type", "authorization_code"),
                 (
@@ -391,7 +393,14 @@ impl<'a> AuthorizedClient<'a> {
                 ("code", &code),
             ];
 
-            Client::post(format!(
+            #[derive(Debug, Deserialize)]
+            struct Response {
+                token_type: String,
+                access_token: String,
+                refresh_token: String,
+            }
+
+            let response = Client::post(format!(
                 "{url}{path}",
                 url = self.brand_configuration.uri,
                 path = USER_TOKEN_URL
@@ -404,21 +413,75 @@ impl<'a> AuthorizedClient<'a> {
             .send()
             .await
             .map_err(Error::Http)?
-            .json::<Tokens>()
+            .json::<Response>()
             .await
-            .map_err(Error::Http)?
+            .map_err(Error::Http)?;
+
+            (
+                format!(
+                    "{token_type} {access_token}",
+                    token_type = response.token_type,
+                    access_token = response.access_token
+                ),
+                response.refresh_token,
+            )
         };
 
-        dbg!(&tokens);
-
         // Step 7, get device ID.
-        let device_id = DeviceId::new(self.brand, &self.brand_configuration).await?;
+        let device_id = DeviceId::new(self.brand, self.brand_configuration).await?;
 
-        unimplemented!()
+        // Step 8, get the refresh token!
+        let refresh_token = {
+            let mut http_request_headers = reqwest::header::HeaderMap::with_capacity(1);
+            http_request_headers.insert("Stamp", device_id.stamp.parse().unwrap());
+
+            let http_form_data: [(&str, &str); 3] = [
+                ("grant_type", "refresh_token"),
+                ("redirect_uri", "https://www.getpostman.com/oauth2/callback"),
+                ("refresh_token", &refresh_code),
+            ];
+
+            #[derive(Debug, Deserialize)]
+            struct Response {
+                token_type: String,
+                access_token: String,
+            }
+
+            let response = Client::post(format!(
+                "{url}{path}",
+                url = self.brand_configuration.uri,
+                path = USER_TOKEN_URL
+            ))?
+            .basic_auth(
+                self.brand.client_id(),
+                Some(&self.brand_configuration.basic_authorization_password),
+            )
+            .headers(http_request_headers)
+            .form(&http_form_data)
+            .send()
+            .await
+            .map_err(Error::Http)?
+            .json::<Response>()
+            .await
+            .map_err(Error::Http)?;
+
+            format!(
+                "{token_type} {access_token}",
+                token_type = response.token_type,
+                access_token = response.access_token
+            )
+        };
+
+        Ok(Tokens {
+            access_token,
+            refresh_token,
+            device_id: device_id.id,
+            stamp: device_id.stamp,
+        })
     }
 }
 
-impl<'a> Deref for AuthorizedClient<'a> {
+impl<'a> Deref for LoginClient<'a> {
     type Target = reqwest::Client;
 
     fn deref(&self) -> &Self::Target {

@@ -7,4 +7,7 @@ pub enum Error {
 
     #[error("failed to log in: {0}")]
     Login(String),
+
+    #[error("must be logged")]
+    MustBeLogged,
 }
