@@ -1,4 +1,3 @@
-use std::time::Duration;
 use crate::{
     brand::{Brand, BrandConfiguration},
     errors::Error,
@@ -9,10 +8,11 @@ use crate::{
 use serde::{de, Deserialize, Deserializer};
 use serde_json::Value;
 use std::fmt;
+use std::time::Duration;
 
 const VEHICLES_URL: &'static str = "/api/v1/spa/vehicles";
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Vehicles<'a> {
     vehicles: Vec<Vehicle<'a>>,
 }
@@ -113,6 +113,7 @@ impl<'a> Vehicles<'a> {
     }
 }
 
+#[derive(Clone)]
 pub struct Vehicle<'a> {
     tokens: &'a Tokens,
     brand: Brand,
@@ -289,7 +290,10 @@ pub struct Battery {
     #[serde(rename = "drvDistance", deserialize_with = "deserialize_range")]
     pub remaining_range: u32,
 
-    #[serde(rename = "remainTime2", deserialize_with = "deserialize_estimated_charging_duration")]
+    #[serde(
+        rename = "remainTime2",
+        deserialize_with = "deserialize_estimated_charging_duration"
+    )]
     pub estimated_charging_duration: Duration,
 }
 
@@ -361,7 +365,9 @@ where
 
     let remaining_time: RemainingTime = de::Deserialize::deserialize(deserializer)?;
 
-    Ok(Duration::from_secs(remaining_time.estimated_current_charging_duration.value * 60))
+    Ok(Duration::from_secs(
+        remaining_time.estimated_current_charging_duration.value * 60,
+    ))
 }
 
 /// [DOP] (Dilution of precision).

@@ -9,14 +9,16 @@ use std::{
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Configuration {
     pub username: String,
-    pub password: String,
+    pub password: Option<String>,
+    pub server_port: Option<u16>,
 }
 
 impl Default for Configuration {
     fn default() -> Self {
         Self {
             username: "".to_string(),
-            password: "".to_string(),
+            password: None,
+            server_port: None,
         }
     }
 }

@@ -1,13 +1,15 @@
-use crate::auth::Authentification;
-use crate::brand::{Brand, BrandConfiguration, Region};
-use crate::errors::Error;
-use crate::identity::{LoginClient, Tokens};
-use crate::vehicles::Vehicles;
+use crate::{
+    auth::Authentification,
+    brand::{Brand, BrandConfiguration, Region},
+    errors::Error,
+    identity::{LoginClient, Tokens},
+    vehicles::Vehicles,
+};
 use async_trait::async_trait;
 use std::fmt;
 
 pub struct Garage {
-    backend: Box<dyn Backend>,
+    backend: Box<dyn Backend + Send + Sync>,
 }
 
 impl fmt::Debug for Garage {

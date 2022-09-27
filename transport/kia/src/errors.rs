@@ -7,7 +7,7 @@ pub enum Error {
 
     #[error("failed to load the configuration")]
     LoadConfiguration(#[from] confy::ConfyError),
-    
+
     #[error("failed to send or fetch an HTTP request or response")]
     Http(#[from] reqwest::Error),
 

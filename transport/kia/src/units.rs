@@ -90,16 +90,20 @@ where
         unit: TemperatureUnit,
     }
 
-    let Pair { value: temperature_index, unit } = Deserialize::deserialize(deserializer)?;
+    let Pair {
+        value: temperature_index,
+        unit,
+    } = Deserialize::deserialize(deserializer)?;
 
-    let mut temperature_index = usize::from_str_radix(temperature_index.trim_end_matches('H'), 16).unwrap();
+    let mut temperature_index =
+        usize::from_str_radix(temperature_index.trim_end_matches('H'), 16).unwrap();
     let (start, end, step) = (14f32, 30f32, 0.5f32);
     let mut temperature = start;
 
     while temperature_index > 0 && temperature <= end {
         temperature += step;
         temperature_index -= 1;
-    };
+    }
 
     Ok(match unit {
         TemperatureUnit::Celcius => Celcius(temperature),
