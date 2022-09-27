@@ -1,8 +1,10 @@
+use std::time::Duration;
 use crate::{
     brand::{Brand, BrandConfiguration},
     errors::Error,
     http::Client,
     identity::Tokens,
+    units::*,
 };
 use serde::{de, Deserialize, Deserializer};
 use serde_json::Value;
@@ -179,20 +181,14 @@ pub struct State {
     #[serde(rename = "vehicleLocation")]
     pub location: Location,
 
-    #[serde(rename = "odometer", deserialize_with = "deserialize_odometer")]
-    pub odometer: f32,
+    #[serde(rename = "odometer", deserialize_with = "distance_to_km")]
+    pub odometer: Kilometer,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Status {
-    #[serde(rename = "airCtrlOn")]
-    pub air_climate_enabled: bool,
-
-    #[serde(rename = "engine")]
-    pub engine_enabled: bool,
-
-    #[serde(rename = "doorLock")]
-    pub doors_locked: bool,
+    #[serde(rename = "evStatus")]
+    pub battery: Battery,
 
     #[serde(rename = "doorOpen")]
     pub doors: Doors,
@@ -200,53 +196,77 @@ pub struct Status {
     #[serde(rename = "windowOpen")]
     pub windows: Windows,
 
+    #[serde(rename = "airTemp", deserialize_with = "temperature_to_celcius")]
+    pub targeted_temperature: Celcius,
+
+    #[serde(rename = "airCtrlOn")]
+    pub is_air_climate_enabled: bool,
+
+    #[serde(rename = "engine")]
+    pub is_engine_running: bool,
+
+    #[serde(rename = "doorLock")]
+    pub is_locked: bool,
+
     #[serde(rename = "trunkOpen")]
-    pub trunk_opened: bool,
+    pub is_trunk_opened: bool,
 
     #[serde(rename = "hoodOpen")]
-    pub frunk_opened: bool,
+    pub is_frunk_opened: bool,
 
     #[serde(rename = "defrost")]
-    pub defrost_enabled: bool,
+    pub is_defrost_enabled: bool,
 
     #[serde(rename = "steerWheelHeat", deserialize_with = "int_to_bool")]
-    pub steer_wheel_heat_enabled: bool,
+    pub is_steer_wheel_heat_enabled: bool,
 
     #[serde(rename = "sideBackWindowHeat", deserialize_with = "int_to_bool")]
-    pub side_back_window_heat_enabled: bool,
+    pub is_side_back_window_heat_enabled: bool,
 
-    #[serde(rename = "evStatus")]
-    pub battery: Battery,
+    #[serde(rename = "hazardStatus", deserialize_with = "int_to_bool")]
+    pub is_hazard_detected: bool,
+
+    #[serde(rename = "smartKeyBatteryWarning")]
+    pub has_smart_key_battery_issue: bool,
+
+    #[serde(rename = "washerFluidStatus")]
+    pub has_washer_fluid_issue: bool,
+
+    #[serde(rename = "breakOilStatus")]
+    pub has_break_oil_issue: bool,
+
+    #[serde(rename = "tailLampStatus", deserialize_with = "int_to_bool")]
+    pub has_tail_lamp_issue: bool,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Doors {
     #[serde(rename = "frontLeft", deserialize_with = "int_to_bool")]
-    pub front_left_opened: bool,
+    pub is_front_left_opened: bool,
 
     #[serde(rename = "frontRight", deserialize_with = "int_to_bool")]
-    pub front_right_opened: bool,
+    pub is_front_right_opened: bool,
 
     #[serde(rename = "backLeft", deserialize_with = "int_to_bool")]
-    pub back_left_opened: bool,
+    pub is_back_left_opened: bool,
 
     #[serde(rename = "backRight", deserialize_with = "int_to_bool")]
-    pub back_right_opened: bool,
+    pub is_back_right_opened: bool,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Windows {
     #[serde(rename = "frontLeft", deserialize_with = "int_to_bool")]
-    pub front_left_opened: bool,
+    pub is_front_left_opened: bool,
 
     #[serde(rename = "frontRight", deserialize_with = "int_to_bool")]
-    pub front_right_opened: bool,
+    pub is_front_right_opened: bool,
 
     #[serde(rename = "backLeft", deserialize_with = "int_to_bool")]
-    pub back_left_opened: bool,
+    pub is_back_left_opened: bool,
 
     #[serde(rename = "backRight", deserialize_with = "int_to_bool")]
-    pub back_right_opened: bool,
+    pub is_back_right_opened: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -255,10 +275,13 @@ pub struct Battery {
     pub is_charging: bool,
 
     #[serde(rename = "batteryStatus")]
-    pub state_of_charge: u32,
+    pub state_of_charge: Percent,
 
     #[serde(rename = "drvDistance", deserialize_with = "deserialize_range")]
     pub remaining_range: u32,
+
+    #[serde(rename = "remainTime2", deserialize_with = "deserialize_estimated_charging_duration")]
+    pub estimated_charging_duration: Duration,
 }
 
 #[derive(Debug, Deserialize)]
@@ -273,13 +296,13 @@ pub struct Location {
 #[derive(Debug, Deserialize)]
 pub struct Coordinates {
     #[serde(rename = "lat")]
-    pub latitude: f32,
+    pub latitude: Coordinate,
 
     #[serde(rename = "lon")]
-    pub longitude: f32,
+    pub longitude: Coordinate,
 
     #[serde(rename = "alt")]
-    pub altitude: f32,
+    pub altitude: Meter,
 }
 
 fn int_to_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
@@ -312,25 +335,24 @@ where
     })
 }
 
-fn deserialize_odometer<'de, D>(deserializer: D) -> Result<f32, D::Error>
+fn deserialize_estimated_charging_duration<'de, D>(deserializer: D) -> Result<Duration, D::Error>
 where
     D: Deserializer<'de>,
 {
-    let value: Value = de::Deserialize::deserialize(deserializer)?;
-    let path: &'static str = "/value";
+    #[derive(Deserialize)]
+    struct PairValue {
+        value: u64,
+    }
 
-    Ok(match value.pointer(path) {
-        Some(Value::Number(number)) if number.is_f64() => number.as_f64().unwrap() as f32,
+    #[derive(Deserialize)]
+    struct RemainingTime {
+        #[serde(rename = "atc")]
+        estimated_current_charging_duration: PairValue,
+    }
 
-        Some(_) => {
-            return Err(de::Error::invalid_value(
-                de::Unexpected::Other("a number that is not a `f64`"),
-                &"a `f64`",
-            ))
-        }
+    let remaining_time: RemainingTime = de::Deserialize::deserialize(deserializer)?;
 
-        None => return Err(de::Error::missing_field(path))?,
-    })
+    Ok(Duration::from_secs(remaining_time.estimated_current_charging_duration.value * 60))
 }
 
 /// [DOP] (Dilution of precision).

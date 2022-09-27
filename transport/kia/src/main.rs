@@ -4,6 +4,7 @@ mod errors;
 mod garage;
 mod http;
 mod identity;
+mod units;
 mod vehicles;
 
 use crate::{
