@@ -1,8 +1,8 @@
 #[derive(Debug, Copy, Clone)]
 pub enum Region {
     Europe,
-    Canada,
-    USA,
+    //Canada,
+    //USA,
 }
 
 #[derive(Debug, Copy, Clone)]

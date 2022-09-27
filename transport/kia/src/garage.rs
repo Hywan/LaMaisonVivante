@@ -24,7 +24,6 @@ impl Garage {
     ) -> Result<Garage, Error> {
         let backend = match (region, brand) {
             (Region::Europe, Brand::Kia) => KiaEurope::new(),
-            _ => unimplemented!("region and brand not supported"),
         };
 
         let mut this = Self {

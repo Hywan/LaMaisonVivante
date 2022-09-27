@@ -99,8 +99,17 @@ impl<'a> Vehicles<'a> {
         })
     }
 
+    #[allow(unused)]
     pub fn get(&self, index: usize) -> Option<&Vehicle> {
         self.vehicles.get(index)
+    }
+
+    pub fn len(&self) -> usize {
+        self.vehicles.len()
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = &Vehicle> {
+        self.vehicles.iter()
     }
 }
 
@@ -290,7 +299,7 @@ pub struct Location {
     pub coordinates: Coordinates,
 
     #[serde(rename = "accuracy")]
-    pub precision_dilution: PrecisionDilution,
+    pub precision_dilution: Option<PrecisionDilution>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -302,7 +311,7 @@ pub struct Coordinates {
     pub longitude: Coordinate,
 
     #[serde(rename = "alt")]
-    pub altitude: Meter,
+    pub altitude: Option<Meter>,
 }
 
 fn int_to_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
