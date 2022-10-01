@@ -40,6 +40,28 @@ function number_to_2_chars(number) {
     return number;
 }
 
+function seconds_to_duration(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    console.log(hours);
+    seconds = seconds % 3600;
+    const minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+
+    let output = '';
+
+    if (hours > 0) {
+        output = `${hours}h`;
+    }
+
+    output = `${minutes}m`;
+
+    if (seconds > 0) {
+        let output = `${seconds}s`;
+    }
+
+    return output;
+}
+
 // Fire a function:
 // * immediately,
 // * every `timeout`,
@@ -620,6 +642,22 @@ window.customElements.define(
 );
 
 window.customElements.define(
+    'my-text-thing',
+    class extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        async connectedCallback() {
+            const template = document.getElementById('template--text-thing');
+            const template_content = template.content.cloneNode(true);
+
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
+        }
+    }
+);
+
+window.customElements.define(
     'my-meter-thing',
     class extends HTMLElement {
         constructor() {
@@ -1037,7 +1075,6 @@ window.customElements.define(
                     'humidity',
                     'dew-point',
                 );
-
                 const forecast_props = await properties_of(this, 'forecast-base', 'forecast');
 
                 async function update(next) {
@@ -1131,6 +1168,59 @@ window.customElements.define(
 
                 fire(VERY_LONG_REFRESH_RATE, update);
             }
+        }
+    }
+);
+
+window.customElements.define(
+    'my-car-thing',
+    class extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        async connectedCallback() {
+            console.log('CAR THING');
+            const template = document.getElementById('template--car-thing');
+            const template_content = template.content.cloneNode(true);
+
+            const short_thing = template_content.querySelector('[slot="short-thing"]');
+            const long_thing = template_content.querySelector('[slot="long-thing"]');
+
+            // Set properties of `my-meter-thing` before it's attached to the DOM.
+            const data_properties = read_data_attributes(this, 'battery-base', 'battery-primary');
+            render({...data_properties}, short_thing);
+
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
+            const root = this.shadowRoot;
+
+            const { json: json_url } = read_data_attributes(this, 'json');
+            console.log(json_url);
+            const raw_json = await http_get(json_url);
+            const json = await raw_json.json();
+            console.log(json);
+
+            console.log('long thing', long_thing);
+
+            const { description, state } = json;
+            const { status, odometer, location } = state;
+            const { longitude, latitude } = location.coordinates;
+
+            render(
+                {
+                    vehicle_nickname: description.nickname,
+                    vehicle_vin: description.vin,
+                    battery: status.battery.state_of_charge,
+                    range: status.battery.remaining_range,
+                    is_charging: status.battery.is_charging ? 'en charge' : 'débranché',
+                    estimated_charging_duration: seconds_to_duration(state.status.battery.estimated_charging_duration.secs),
+                    odometer: odometer.round(0),
+                    location_static_map: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l+a12b20(${longitude},${latitude})/${longitude},${latitude},16,0/300x300@2x?access_token=pk.eyJ1IjoiaHl3YW4iLCJhIjoiY2w4cG9sNDcwMTJ0cjNvbzVrYXMyd2VibCJ9.d2BSDWYAxe3w0-w7-tzBZQ`,
+                    location_map: `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=14/${latitude}/${longitude}`,
+                    defrost: state.is_defrost_enabled ? 'activé' : 'désactivé',
+                },
+                long_thing,
+            );
         }
     }
 );

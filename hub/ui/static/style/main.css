@@ -577,7 +577,7 @@ main {
         width: 2.6rem;
         margin-right: var(--space-small);
         filter: invert(50%) sepia(100%) saturate(200%) hue-rotate(218deg) drop-shadow(0 0 1px var(--color-light-300));
-    } 
+    }
 
 .thing--weather-wind {}
 
@@ -737,11 +737,13 @@ main {
         gap: var(--space-small);
     }
 
-    .thing--text > .thing--frame-content svg {
+    .thing--text > .thing--frame-content svg,
+    .thing--text-icon {
         width: 2rem;
     }
 
-    .thing--text > .thing--frame-content ul {
+    .thing--text > .thing--frame-content ul,
+    .thing--text-list {
         list-style: none;
         margin: 0;
         padding: 0;
@@ -787,7 +789,7 @@ main {
         transform: translateX(-50%);
 
         color: var(--color-light-000);
-        filter: drop-shadow(0 0 10px #000);
+        filter: drop-shadow(0 0 10px var(--color-dark-500));
         font-size: var(--font-size-primary);
         font-weight: bold;
     }
@@ -813,6 +815,14 @@ main {
     .thing--blind .icon {
         height: calc(var(--thing--action-size) - 1.4rem);
     }
+
+.label {
+    color: var(--color-light-000);
+    font-size: .7em;
+    padding: .15em .8em;
+    border-radius: .7em;
+    background: var(--color-blue-500);
+}
 
 iframe {
     width: 100%;
@@ -1022,6 +1032,14 @@ button {
             var(--color-blue-800) 55%,
             var(--color-blue-800) 95%,
             var(--color-blue-500) 100%
+        );
+    }
+
+    .gradient--linear__green {
+        background: linear-gradient(
+            var(--light-direction),
+            var(--color-green-300) 40%,
+            var(--color-green-600) 100%
         );
     }
 
