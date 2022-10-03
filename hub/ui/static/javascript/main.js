@@ -1293,6 +1293,28 @@ window.customElements.define(
 );
 
 window.customElements.define(
+    'my-fancy-icon',
+    class extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            const template = document.getElementById('template--fancy-icon');
+            const template_content = template.content.cloneNode(true);
+
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
+            const root = this.shadowRoot;
+
+            const href = this.getAttribute('href');
+            const filler_class = this.getAttribute('filler-class') || 'gradient gradient--linear__default';
+
+            render({href, filler_class}, root);
+        }
+    }
+);
+
+window.customElements.define(
     'my-thing--blind',
     class extends HTMLElement {
         constructor() {

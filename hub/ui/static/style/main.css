@@ -749,12 +749,12 @@ main {
     }
 
     .thing--text > .thing--frame-content svg,
-    .thing--text-icon {
+    .thing--text .thing--text-icon {
         width: 2rem;
     }
 
     .thing--text > .thing--frame-content ul,
-    .thing--text-list {
+    .thing--text .thing--text-content {
         list-style: none;
         margin: 0;
         padding: 0;
@@ -1046,6 +1046,14 @@ button {
         );
     }
 
+    .gradient--linear__default {
+        background: linear-gradient(
+            var(--light-direction),
+            var(--color-pink-600) 40%,
+            var(--color-blue-800) 100%
+        );
+    }
+
     .gradient--linear__green {
         background: linear-gradient(
             var(--light-direction),
@@ -1057,6 +1065,11 @@ button {
 .svg--symbols {
     height: 0;
     width: 0;
+}
+
+svg {
+    height: 100%;
+    width: 100%;
 }
 
 abbr {
