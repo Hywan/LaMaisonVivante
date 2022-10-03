@@ -269,185 +269,170 @@
           <div class="thing--weather-temperature" data-bind="temperature">?</div>
           <div class="thing--weather-apparent-temperature">ressentie <span data-bind="apparent_temperature">?</span></div>
           <div class="thing--weather-condition" data-bind="condition">?</div>
-          <div class="thing--weather-condition-icon"><img data-bind-attributes data-bind:src="condition_icon" alt="icon" /></div>
+          <div class="thing--weather-condition-icon">
+            <svg>
+              <use
+                data-bind-attributes
+                data-bind:href="condition_icon"></use>
+            </svg>
+          </div>
         </div>
       </div>
       <div slot="long-thing">
         <h4>Données actuelles</h4>
 
-        <div class="things">
-          <div class="things--list">
-            <div class="thing--frame thing--text">
-              <h3 class="thing--frame-name">Température</h3>
+        <my-unlocated-things>
+          <my-thing>
+            <my-text-thing slot="thing">
+              <span slot="name">Température</span>
 
-              <div class="thing--frame-content">
-                <svg viewBox="0 0 62.9 128.7">
-                  <g class="blender">
-                    <foreignObject x="0" y="0" width="62.9" height="128.7">
-                      <div class="gradient gradient--conic__blue_to_red"></div>
-                    </foreignObject>
+              <my-fancy-icon
+                slot="icon"
+                href="static/icons/symbols.svg#thermometer"></my-fancy-icon>
 
-                    <g class="blender--subject">
-                      <rect x="0" y="0" width="62.9" height="128.7" fill="#fff" />
-                      <path d="m31.5 128.7-3.7-.2A31.7 31.7 0 0 1 .4 102.2a31.6 31.6 0 0 1 16-32.6V15a15 15 0 0 1 30.1 0v54.5a31.4 31.4 0 0 1 6 51 31 31 0 0 1-21 8zm0-126c-6.8 0-12.3 5.6-12.3 12.4v56.1l-.8.4a28.8 28.8 0 0 0-15.3 30.2 29 29 0 0 0 25 24 28.8 28.8 0 0 0 16.4-54.1l-.7-.5V15.1c0-6.8-5.5-12.4-12.3-12.4z" />
-                      <path d="M31.5 109.5a12.3 12.3 0 1 1 0-24.7 12.3 12.3 0 0 1 0 24.7zm0-22a9.6 9.6 0 1 0 0 19.3 9.6 9.6 0 0 0 0-19.2z" />
-                      <path d="M30.1 17.8h2.7v68.4h-2.7z" />
-                    </g>
+              <div slot="content">
+                <li><strong>Mesurée <span data-bind="temperature">?</span></strong></li>
+                <li>Ressentie <span data-bind="apparent_temperature">?</span></li>
+              </div>
+            </my-text-thing>
+          </my-thing>
+
+          <my-thing>
+            <my-text-thing slot="thing">
+              <span slot="name">Ciel</span>
+
+              <svg slot="icon" style="max-height: 3.4rem">
+                <use
+                  data-bind-attributes
+                  data-bind:href="condition_icon"></use>
+              </svg>
+
+              <div slot="content">
+                <li><strong data-bind="condition">?</strong></li>
+                <li><span data-bind="precipitation">?</span>mm</li>
+                <li>Indice UV <span data-bind="uv_index">?</span></li>
+              </div>
+            </my-text-thing>
+          </my-thing>
+
+          <div class="thing--frame thing--weather-wind">
+            <h3 class="thing--frame-name">Vent</h3>
+
+            <div class="thing--frame-content">
+              <svg viewBox="0 0 511 511" class="thing--weather-wind-compass">
+                <mask id="free_center">
+                  <rect x="0" y="0" width="511" height="511" fill="#fff" />
+                  <circle cx="255.5" cy="255.5" r="140" fill="#000" />
+                </mask>
+                <path stroke="var(--color-light-300)" stroke-linecap="round" stroke-width="4" d="M499 255.5h-26.6m26.3 10.7-26.4-1.3m25.5 11.9-26.2-2.6m24.9 13-26-3.8m24.2 14.3-25.8-5.1m23.5 15.4-25.5-6.3m22.7 16.4-25.2-7.4m22 17.4-24.8-8.5m21.2 18.4-24.5-9.7m20.4 19.4-24-10.7m19.5 20.2-23.5-11.8m18.6 21.1-23-12.7m17.8 21.8-22.6-13.7m17 22.6-22-14.6m16 23.2L431 377.6m15 24-20.8-16.4m14.2 24.5-20.2-17.2m13.2 25L413 399.7m12.2 25.6-18.8-18.8m11.2 26-18-19.4m10.1 26.5-17.2-20.2m9 26.8-16.3-20.8m8 27.2L377.5 431m6.9 27.4-14.6-22m5.7 27.6-13.7-22.6m4.6 27.8-12.7-23m3.4 28-11.8-23.6m2.3 28-10.7-24m1 28-9.7-24.4m-.2 28.1-8.5-24.8m-1.5 28-7.4-25.2m-2.7 28-6.3-25.5m-4 27.8-5.1-25.8m-5.3 27.6-3.9-26m-6.6 27.3-2.6-26.2m-8 27-1.3-26.3m-9.4 26.7v-26.6m-10.7 26.3 1.3-26.4m-11.9 25.5 2.6-26.2m-13 24.9 3.8-26m-14.3 24.2 5.1-25.8M203 492.4l6.3-25.5M193 489.6l7.4-25.2m-17.4 22 8.5-24.8M173 482.8l9.7-24.5m-19.4 20.4 10.7-24m-20.2 19.5 11.8-23.5m-21.1 18.6 12.7-23M135.4 464l13.7-22.6m-22.6 17 14.6-22m-23.2 16 15.5-21.4m-24 15 16.4-20.8m-24.5 14.2 17.2-20.2m-25 13.2 17.9-19.5m-25.6 12.2 18.8-18.8m-26 11.2 19.4-18m-26.5 10.1 20.2-17.2m-26.8 9 20.8-16.3m-27.2 8L80 377.5m-27.4 6.9 22-14.6M47 375.6l22.6-13.7m-27.8 4.6 23-12.7m-28 3.4 23.6-11.8m-28 2.3 24-10.7m-28 1 24.4-9.7m-28.1-.2 24.8-8.5m-28-1.5 25.2-7.4m-28-2.7 25.5-6.3m-27.8-4 25.8-5.1m-27.6-5.3 26-3.9m-27.3-6.6 26.2-2.6m-27-8 26.3-1.3M12 255.5h26.6m-26.3-10.7 26.4 1.3m-25.5-11.9 26.2 2.6m-24.9-13 26 3.8m-24.2-14.3 25.8 5.1M18.6 203l25.5 6.3M21.4 193l25.2 7.4m-22-17.4 24.8 8.5M28.2 173l24.5 9.7m-20.4-19.4 24 10.7m-19.5-20.2 23.5 11.8m-18.6-21.1 23 12.7M47 135.4l22.6 13.7m-17-22.6 22 14.6m-16-23.2L80 133.4m-15-24 20.8 16.4m-14.2-24.5 20.2 17.2m-13.2-25L98 111.3M85.8 85.8l18.8 18.8m-11.2-26 18 19.4m-10-26.5 17 20.2m-9-26.8 16.4 20.8m-8-27.2L133.5 80m-6.9-27.4 14.6 22M135.4 47l13.7 22.6m-4.6-27.8 12.7 23m-3.4-28 11.8 23.6m-2.3-28 10.7 24m-1-28 9.7 24.4m.2-28.1 8.5 24.8m1.5-28 7.4 25.2m2.7-28 6.3 25.5m4-27.8 5.1 25.8m5.3-27.6 3.9 26m6.6-27.3 2.6 26.2m8-27 1.3 26.3m9.4-26.7v26.6m10.7-26.3-1.3 26.4m11.9-25.5-2.6 26.2m13-24.9-3.8 26m14.3-24.2-5.1 25.8M308 18.6l-6.3 25.5M318 21.4l-7.4 25.2m17.4-22-8.5 24.8M338 28.2l-9.7 24.5m19.4-20.4-10.7 24m20.2-19.5-11.8 23.5m21.1-18.6-12.7 23M375.6 47l-13.7 22.6m22.6-17-14.6 22m23.2-16L377.6 80m24-15-16.4 20.8m24.5-14.2-17.2 20.2m25-13.2L399.7 98m25.6-12.2-18.8 18.8m26-11.2-19.4 18m26.5-10-20.2 17m26.8-9-20.8 16.4m27.2-8L431 133.5m27.4-6.9-22 14.6m27.6-5.7-22.6 13.7m27.8-4.6-23 12.7m28-3.4-23.6 11.8m28-2.3-24 10.7m28-1-24.4 9.7m28.1.2-24.8 8.5m28 1.5-25.2 7.4m28 2.7-25.5 6.3m27.8 4-25.8 5.1m27.6 5.3-26 3.9m27.3 6.6-26.2 2.6m27 8-26.3 1.3" />
+                <g class="thing--weather-wind-degree" mask="url(#free_center)" fill="var(--color-blue-800)" stroke="var(--color-blue-800)" data-bind-attributes data-bind:style="wind_degree">
+                  <g transform="translate(5.5 1.3)">
+                    <circle cx="250" cy="479.7" r="29.2" />
+                    <path stroke-width="10.4" d="M249.8 5.3v491.5"/>
+                    <path stroke-linejoin="round" stroke-width="11.4" d="m206.7 87 42.9-20.6v-61Zm86.6-.3-42.9-20.5v-61Z"/>
                   </g>
-                </svg>
-
-                <ul>
-                  <li><strong class="thing--weather-now-temperature">Mesurée <span data-bind="temperature">(?)</span></strong></li>
-                  <li class="thing--weather-now-apparent-temperature">Ressentie <span data-bind="apparent_temperature">(?)</span></li>
-                </ul>
-              </div>
+                </g>
+              </svg>
+              <p class="thing--weather-wind-text"><span data-bind="wind">(?)</span>m/s<br /><abbr title="rafales">raf.</abbr> <span data-bind="wind_gust">(?)</span>m/s</p>
             </div>
+          </div>
 
-            <div class="thing--frame thing--text">
-              <h3 class="thing--frame-name">Ciel</h3>
+          <my-thing>
+            <my-text-thing slot="thing">
+              <span slot="name">Humidité</span>
 
-              <div class="thing--frame-content">
-                <img data-bind-attributes data-bind:src="condition_icon" class="thing--weather-now-condition-icon" style="width: 2rem" alt="icon" />
+              <my-fancy-icon
+                slot="icon"
+                href="static/icons/symbols.svg#drop"
+                filler-class="gradient gradient--conic__yellow_to_pink"></my-fancy-icon>
 
-                <ul>
-                  <li><strong class="thing--weather-now-condition" data-bind="condition">(?)</strong></li>
-                  <li class="thing--weather-now-precipitation"><span data-bind="precipitation">(?)</span>mm</li>
-                  <li>Indice UV <span class="thing--weather-now-uv-index" data-bind="uv_index">(?)</span></li>
-                </ul>
+              <div slot="content">
+                <li><strong><span data-bind="humidity">?</span>H%</strong></li>
+                <li>Point de rosée <span data-bind="dew_point">?</span>°C</li>
               </div>
+            </my-text-thing>
+          </my-thing>
+
+          <!--
+          <div class="thing--frame thing--text">
+            <h3 class="thing--frame-name">Pollution</h3>
+
+            <div class="thing--frame-content">
+              <ul>
+                <li>CO bien</li>
+                <li>NO bien</li>
+                <li>NO<sub>2</sub> bien</li>
+                <li>O<sub>3</sub> bien</li>
+                <li>SO<sub>2</sub> bien</li>
+                <li>NH<sub>3</sub> bien</li>
+                <li>PM<sub>10</sub> bien</li>
+                <li>PM<sub>25</sub> bien</li>
+              </ul>
             </div>
+          </div>
+          -->
 
-            <div class="thing--frame thing--weather-wind">
-              <h3 class="thing--frame-name">Vent</h3>
+          <div class="thing--frame thing--frame--fullframe thing--slider">
+            <h3 class="thing--frame-name">Cartes</h3>
 
-              <div class="thing--frame-content">
-                <svg viewBox="0 0 511 511" class="thing--weather-wind-compass">
-                  <mask id="free_center">
-                    <rect x="0" y="0" width="511" height="511" fill="#fff" />
-                    <circle cx="255.5" cy="255.5" r="140" fill="#000" />
-                  </mask>
-                  <path stroke="var(--color-light-300)" stroke-linecap="round" stroke-width="4" d="M499 255.5h-26.6m26.3 10.7-26.4-1.3m25.5 11.9-26.2-2.6m24.9 13-26-3.8m24.2 14.3-25.8-5.1m23.5 15.4-25.5-6.3m22.7 16.4-25.2-7.4m22 17.4-24.8-8.5m21.2 18.4-24.5-9.7m20.4 19.4-24-10.7m19.5 20.2-23.5-11.8m18.6 21.1-23-12.7m17.8 21.8-22.6-13.7m17 22.6-22-14.6m16 23.2L431 377.6m15 24-20.8-16.4m14.2 24.5-20.2-17.2m13.2 25L413 399.7m12.2 25.6-18.8-18.8m11.2 26-18-19.4m10.1 26.5-17.2-20.2m9 26.8-16.3-20.8m8 27.2L377.5 431m6.9 27.4-14.6-22m5.7 27.6-13.7-22.6m4.6 27.8-12.7-23m3.4 28-11.8-23.6m2.3 28-10.7-24m1 28-9.7-24.4m-.2 28.1-8.5-24.8m-1.5 28-7.4-25.2m-2.7 28-6.3-25.5m-4 27.8-5.1-25.8m-5.3 27.6-3.9-26m-6.6 27.3-2.6-26.2m-8 27-1.3-26.3m-9.4 26.7v-26.6m-10.7 26.3 1.3-26.4m-11.9 25.5 2.6-26.2m-13 24.9 3.8-26m-14.3 24.2 5.1-25.8M203 492.4l6.3-25.5M193 489.6l7.4-25.2m-17.4 22 8.5-24.8M173 482.8l9.7-24.5m-19.4 20.4 10.7-24m-20.2 19.5 11.8-23.5m-21.1 18.6 12.7-23M135.4 464l13.7-22.6m-22.6 17 14.6-22m-23.2 16 15.5-21.4m-24 15 16.4-20.8m-24.5 14.2 17.2-20.2m-25 13.2 17.9-19.5m-25.6 12.2 18.8-18.8m-26 11.2 19.4-18m-26.5 10.1 20.2-17.2m-26.8 9 20.8-16.3m-27.2 8L80 377.5m-27.4 6.9 22-14.6M47 375.6l22.6-13.7m-27.8 4.6 23-12.7m-28 3.4 23.6-11.8m-28 2.3 24-10.7m-28 1 24.4-9.7m-28.1-.2 24.8-8.5m-28-1.5 25.2-7.4m-28-2.7 25.5-6.3m-27.8-4 25.8-5.1m-27.6-5.3 26-3.9m-27.3-6.6 26.2-2.6m-27-8 26.3-1.3M12 255.5h26.6m-26.3-10.7 26.4 1.3m-25.5-11.9 26.2 2.6m-24.9-13 26 3.8m-24.2-14.3 25.8 5.1M18.6 203l25.5 6.3M21.4 193l25.2 7.4m-22-17.4 24.8 8.5M28.2 173l24.5 9.7m-20.4-19.4 24 10.7m-19.5-20.2 23.5 11.8m-18.6-21.1 23 12.7M47 135.4l22.6 13.7m-17-22.6 22 14.6m-16-23.2L80 133.4m-15-24 20.8 16.4m-14.2-24.5 20.2 17.2m-13.2-25L98 111.3M85.8 85.8l18.8 18.8m-11.2-26 18 19.4m-10-26.5 17 20.2m-9-26.8 16.4 20.8m-8-27.2L133.5 80m-6.9-27.4 14.6 22M135.4 47l13.7 22.6m-4.6-27.8 12.7 23m-3.4-28 11.8 23.6m-2.3-28 10.7 24m-1-28 9.7 24.4m.2-28.1 8.5 24.8m1.5-28 7.4 25.2m2.7-28 6.3 25.5m4-27.8 5.1 25.8m5.3-27.6 3.9 26m6.6-27.3 2.6 26.2m8-27 1.3 26.3m9.4-26.7v26.6m10.7-26.3-1.3 26.4m11.9-25.5-2.6 26.2m13-24.9-3.8 26m14.3-24.2-5.1 25.8M308 18.6l-6.3 25.5M318 21.4l-7.4 25.2m17.4-22-8.5 24.8M338 28.2l-9.7 24.5m19.4-20.4-10.7 24m20.2-19.5-11.8 23.5m21.1-18.6-12.7 23M375.6 47l-13.7 22.6m22.6-17-14.6 22m23.2-16L377.6 80m24-15-16.4 20.8m24.5-14.2-17.2 20.2m25-13.2L399.7 98m25.6-12.2-18.8 18.8m26-11.2-19.4 18m26.5-10-20.2 17m26.8-9-20.8 16.4m27.2-8L431 133.5m27.4-6.9-22 14.6m27.6-5.7-22.6 13.7m27.8-4.6-23 12.7m28-3.4-23.6 11.8m28-2.3-24 10.7m28-1-24.4 9.7m28.1.2-24.8 8.5m28 1.5-25.2 7.4m28 2.7-25.5 6.3m27.8 4-25.8 5.1m27.6 5.3-26 3.9m27.3 6.6-26.2 2.6m27 8-26.3 1.3" />
-                  <g class="thing--weather-wind-degree" mask="url(#free_center)" fill="var(--color-blue-800)" stroke="var(--color-blue-800)" data-bind-attributes data-bind:style="wind_degree">
-                    <g transform="translate(5.5 1.3)">
-                      <circle cx="250" cy="479.7" r="29.2" />
-                      <path stroke-width="10.4" d="M249.8 5.3v491.5"/>
-                      <path stroke-linejoin="round" stroke-width="11.4" d="m206.7 87 42.9-20.6v-61Zm86.6-.3-42.9-20.5v-61Z"/>
-                    </g>
-                  </g>
-                </svg>
-                <p class="thing--weather-wind-text"><span data-bind="wind">(?)</span>m/s<br /><abbr title="rafales">raf.</abbr> <span data-bind="wind_gust">(?)</span>m/s</p>
-              </div>
-            </div>
-
-            <div class="thing--frame thing--text">
-              <h3 class="thing--frame-name">Humidité</h3>
-
-              <div class="thing--frame-content">
-                <svg viewBox="0 0 303.34 466.67">
-                  <g class="blender">
-                    <foreignObject x="0" y="0" width="303.34" height="466.67">
-                      <div class="gradient gradient gradient--conic__yellow_to_pink"></div>
-                    </foreignObject>
-
-                    <g class="blender--subject">
-                      <rect x="0" y="0" width="303.34" height="466.67" fill="#fff" />
-                      <path d="M275.8 219c-.3-.78-.63-1.55-1-2.29-40.66-93.58-111-205.67-115.17-212.29a9.38 9.38 0 0 0-15.92 0c-3.22 5.1-46.21 73.65-84.32 147.78C28.01 213.11 0 277.76 0 314.22a151.7 151.7 0 0 0 151.67 152.45 151.67 151.67 0 0 0 151.67-152.45c0-23.1-11.28-57.56-27.54-95.23zM151.67 447.23a133 133 0 0 1-132.71-133c0-31.99 25.26-90.62 54.41-147.54a1438.1 1438.1 0 0 1 9.77-18.81c26.96-51 55.16-98.06 68.53-119.97 19.2 31.35 68.77 114.43 101.62 186.8 2.8 6.18 5.5 12.3 8 18.28 13.8 32.67 23.09 61.83 23.09 81.23a132.98 132.98 0 0 1-132.71 133z" />
-                      <path d="M261.29 233a126.17 126.17 0 0 1-116.26-34.66 106.17 106.17 0 0 0-71.66-31.65 1438.1 1438.1 0 0 1 9.76-18.81 124.41 124.41 0 0 1 75.17 36.6 107.35 107.35 0 0 0 94.98 30.24c2.8 6.17 5.5 12.3 8 18.28z" />
-                    </g>
-                  </g>
-                </svg>
-
-                <ul>
-                  <li><strong class="thing--weather-now-humidity"><span data-bind="humidity">(?)</span>H%</strong></li>
-                  <li>Point de rosée <span class="thing--weather-now-dew-point" data-bind="dew_point">(?)</span>°C</li>
-                </ul>
-              </div>
-            </div>
-
-            <!--
-            <div class="thing--frame thing--text">
-              <h3 class="thing--frame-name">Pollution</h3>
-
-              <div class="thing--frame-content">
-                <ul>
-                  <li>CO bien</li>
-                  <li>NO bien</li>
-                  <li>NO<sub>2</sub> bien</li>
-                  <li>O<sub>3</sub> bien</li>
-                  <li>SO<sub>2</sub> bien</li>
-                  <li>NH<sub>3</sub> bien</li>
-                  <li>PM<sub>10</sub> bien</li>
-                  <li>PM<sub>25</sub> bien</li>
-                </ul>
-              </div>
-            </div>
-            -->
-
-            <div class="thing--frame thing--frame--fullframe thing--slider">
-              <h3 class="thing--frame-name">Cartes</h3>
-
-              <div class="thing--frame-content">
-                <div class="thing--slider-content">
-                  <div>
-                    <figure>
-                      <img src="https://tile.openweathermap.org/map/clouds_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
-                      <figcaption>Nuages</figcaption>
-                    </figure>
-                  </div>
-                  <div>
-                    <figure>
-                      <img src="https://tile.openweathermap.org/map/precipitation_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
-                      <figcaption>Précipitations</figcaption>
-                    </figure>
-                  </div>
-                  <div>
-                    <figure>
-                      <img src="https://tile.openweathermap.org/map/temp_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
-                      <figcaption>Températures</figcaption>
-                    </figure>
-                  </div>
-                  <div>
-                    <figure>
-                      <img src="https://tile.openweathermap.org/map/wind_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
-                      <figcaption>Vents</figcaption>
-                    </figure>
-                  </div>
+            <div class="thing--frame-content">
+              <div class="thing--slider-content">
+                <div>
+                  <figure>
+                    <img src="https://tile.openweathermap.org/map/clouds_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
+                    <figcaption>Nuages</figcaption>
+                  </figure>
+                </div>
+                <div>
+                  <figure>
+                    <img src="https://tile.openweathermap.org/map/precipitation_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
+                    <figcaption>Précipitations</figcaption>
+                  </figure>
+                </div>
+                <div>
+                  <figure>
+                    <img src="https://tile.openweathermap.org/map/temp_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
+                    <figcaption>Températures</figcaption>
+                  </figure>
+                </div>
+                <div>
+                  <figure>
+                    <img src="https://tile.openweathermap.org/map/wind_new/9/265/180.png?appid={openweathermap_api_key}" decoding="async" fetchpriority="low" loading="lazy" />
+                    <figcaption>Vents</figcaption>
+                  </figure>
                 </div>
               </div>
             </div>
-
-            <div class="thing--frame thing--text">
-              <h3 class="thing--frame-name">Alertes</h3>
-
-              <div class="thing--frame-content">
-                <p>Aucune pour le moment.</p>
-              </div>
-            </div>
           </div>
-        </div>
+        </my-unlocated-things>
 
         <h4>Prévisions météorologiques</h4>
 
         <div class="thing--weather-forecast">
           <div class="thing--weather-one-forecast" data-bind-loop="forecast in forecasts" data-bind-attributes data-bind:data-temperature-category="forecast.temperature_category">
             <h5 class="thing--weather-one-forecast--datetime"><span data-bind="forecast.date_hour">(?)</span>h<span data-bind="forecast.date_extra">(?)</span></h5>
+
             <h6 class="thing--weather-one-forecast--title"><span>Ciel</span></h6>
-            <div class="thing--weather-one-forecast--condition-icon"><img data-bind-attributes data-bind:src="forecast.condition_icon" alt="condition icon" /></div>
+
+            <div class="thing--weather-one-forecast--condition-icon"><svg><use data-bind-attributes data-bind:href="forecast.condition_icon" /></svg></div>
             <div class="thing--weather-one-forecast--condition" data-bind="forecast.condition">(?)</div>
             <div class="thing--weather-one-forecast--cloudiness" data-bind="forecast.octas">(?)</div>
             <div class="thing--weather-one-forecast--precipitations"><span data-bind="forecast.precipitations">(?)</span>mm</div>
             <div class="thing--weather-one-forecast--uv-index"><span data-bind="forecast.uv_index">(?)</span>UV<sub>ix</sub></div>
 
             <h6 class="thing--weather-one-forecast--title"><span>Températures</span></h6>
+
             <div class="thing--weather-one-forecast--temperature"><span data-bind="forecast.temperature">(?)</span>°C</div>
             <div class="thing--weather-one-forecast--apparent-temperature">(<span data-bind="forecast.apparent_temperature">(?)</span>°C)</div>
 
             <h6 class="thing--weather-one-forecast--title"><span>Air</span></h6>
+
             <div class="thing--weather-one-forecast--humidity"><span data-bind="forecast.humidity">(?)</span>%H</div>
             <div class="thing--weather-one-forecast--pressure"><span data-bind="forecast.pressure">(?)</span>hPa</div>
             <div class="thing--weather-one-forecast--dew-point"><span data-bind="forecast.dew_point">(?)></span>°C</div>
 
             <h6 class="thing--weather-one-forecast--title"><span>Vent</span></h6>
+
             <div class="thing--weather-one-forecast--wind-speed"><span data-bind="forecast.wind">(?)</span>m/s</div>
             <div class="thing--weather-one-forecast--wind-gust">(<span data-bind="forecast.wind_gust">(?)</span>m/s)</div>
             <div class="thing--weather-one-forecast--wind-degree"><svg class="icon" data-bind-attributes data-bind:style="forecast.wind_degree"><use href="#icon-compass" /></div>
@@ -743,10 +728,10 @@
       </my-nav>
       <ul class="header--details" role="tablist" aria-label="View">
         <li id="tab-of-things-panel" role="tab" aria-selected="true" aria-controls="things-panel" tabindex="0" aria-label="Tous les objets">
-          <svg class="icon"><use href="#icon-home" /></svg>
+          <svg class="icon"><use href="static/icons/symbols.svg#home" /></svg>
         </li>
         <li id="tab-of-metrics-panel" role="tab" aria-selected="false" aria-controls="metrics-panel" tabindex="1" aria-label="Toutes les métriques">
-          <svg class="icon"><use href="#icon-graph" /></svg>
+          <svg class="icon"><use href="static/icons/symbols.svg#graph" /></svg>
         </li>
       </ul>
     </div>
@@ -810,11 +795,16 @@
             <div slot="meter-gradient" class="gradient gradient--conic__yellow_to_pink"></div>
           </my-meter-thing>
         </my-thing>
+        -->
 
+            <!--
+            data-base="http://192.168.1.128:8096/0"
+            data-forecast-base="http://192.168.1.128:8096/1"
+            -->
         <my-thing>
           <my-weather-thing
             slot="thing"
-            data-base="http://192.168.1.128:8096/0"
+            data-base="http://127.0.0.1:8096/0"
             data-temperature="temperature"
             data-apparent-temperature="apparent_temperature"
             data-condition="condition"
@@ -826,12 +816,11 @@
             data-uv-index="uv_index"
             data-humidity="humidity"
             data-dew-point="dew_point"
-            data-forecast-base="http://192.168.1.128:8096/1"
+            data-forecast-base="http://127.0.0.1:8096/1"
             data-forecast="hourly">
             <span slot="name">Météo</span>
           </my-weather-thing>
         </my-thing>
-        -->
 
         <my-thing>
           <my-car-thing
@@ -1048,16 +1037,5 @@
       -->
     </section>
   </main>
-
-  <svg class="svg--symbols">
-    <symbol id="icon-graph" viewBox="0 0 482 470">
-      <path fill="currentColor" d="M241 217a72 72 0 0 0-72 71v111a72 72 0 1 0 144 0V288a72 72 0 0 0-72-71zm38 182a38 38 0 1 1-77 0V288a38 38 0 0 1 77 0zM72 101a72 72 0 0 0-72 72v226a72 72 0 1 0 144 0V173a72 72 0 0 0-72-72Zm38 298a38 38 0 0 1-76 0V173a38 38 0 0 1 76 0zM410 0a72 72 0 0 0-72 72v327a72 72 0 1 0 144 0V72a72 72 0 0 0-72-72Zm38 399a38 38 0 1 1-77 0V72a38 38 0 0 1 77 0z" />
-    </symbol>
-    <symbol id="icon-home" viewBox="0 0 532 450">
-      <path d="M350 198c-9-7-23-5-30 5-7 9-5 23 5 30a97 97 0 0 1-58 174 96 96 0 0 1-58-174c9-7 11-21 4-30-7-10-21-12-30-5a140 140 0 1 0 167 0z" />
-      <path d="M288 324V189a22 22 0 0 0-44 0v135a22 22 0 0 0 44 0z" />
-      <path d="m523 191-74-57V39c0-7-6-13-14-13h-23c-7 0-14 6-14 13v56L281 5c-9-7-21-7-30 0L10 191c-6 4-9 10-10 17a25 25 0 0 0 40 23L267 57l226 174c11 8 27 6 35-5 9-11 6-27-4-35z" />
-    </symbol>
-  </svg>
 </body>
 </html>

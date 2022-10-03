@@ -570,10 +570,11 @@ main {
         align-self: center;
     }
 
-    .thing--weather > .thing--frame-content > .thing--weather-condition-icon > img {
+    .thing--weather > .thing--frame-content > .thing--weather-condition-icon > svg {
         display: grid;
         place-self: center;
         width: 2.6rem;
+        max-height: calc(var(--thing--frame--height) / 2);
         margin-right: var(--space-small);
         filter: invert(50%) sepia(100%) saturate(200%) hue-rotate(218deg) drop-shadow(0 0 1px var(--color-light-300));
     }
@@ -594,6 +595,7 @@ main {
     .thing--weather-wind > .thing--frame-content > .thing--weather-wind-compass {
         top: -.5rem;
         width: 100%;
+        height: 6.4rem;
     }
 
     .thing--weather-wind > .thing--frame-content > .thing--weather-wind-text {
@@ -715,7 +717,7 @@ main {
         place-items: center;
     }
 
-    .thing--weather-forecast .thing--weather-one-forecast--condition-icon > img {
+    .thing--weather-forecast .thing--weather-one-forecast--condition-icon > svg {
         max-height: 2.5rem;
         width: 3rem;
     }
@@ -754,14 +756,10 @@ main {
     }
 
     .thing--text > .thing--frame-content ul,
-    .thing--text .thing--text-content {
+    .thing--text > .thing--frame-content .thing--text-content {
         list-style: none;
         margin: 0;
         padding: 0;
-        display: grid;
-        grid-auto-flow: row;
-        place-content: center;
-        gap: var(--space-small);
     }
 
 .thing--slider {}
@@ -1062,15 +1060,15 @@ button {
         );
     }
 
-.svg--symbols {
-    height: 0;
-    width: 0;
-}
-
 svg {
     height: 100%;
     width: 100%;
 }
+
+    .svg--symbols {
+        height: 0;
+        width: 0;
+    }
 
 abbr {
     text-decoration: none;

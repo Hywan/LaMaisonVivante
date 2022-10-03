@@ -130,7 +130,6 @@ const SCHEMAS_CACHE = {};
 
 async function fetch_properties(base, ...property_names) {
     base = base.replace(/\/+$/, '');
-    const base_origin = new URL(base).origin;
 
     if (SCHEMAS_CACHE[base] == undefined) {
         const raw_schema = await http_get(base);
@@ -1128,7 +1127,7 @@ window.customElements.define(
                             temperature_category: Math.round(value_into_range(f.temperature, 0, 30, 0, 5)),
                             date_hour: date.getHours(),
                             date_extra,
-                            condition_icon: `static/icons/weather/${conditions.icon}.svg`,
+                            condition_icon: `static/icons/weather/symbols.svg#${conditions.icon}`,
                             condition: conditions.text,
                             octas: formatted_octas,
                             precipitations: precipitations.round(2),
@@ -1149,7 +1148,7 @@ window.customElements.define(
                             temperature,
                             apparent_temperature,
                             condition: weather_condition.text,
-                            condition_icon: `static/icons/weather/${weather_condition.icon}.svg`,
+                            condition_icon: `static/icons/weather/symbols.svg#${weather_condition.icon}`,
                             precipitation: (rain + snow).round(2),
                             uv_index: uv_index.round(1),
                             wind: wind_speed.round(1),
@@ -1195,7 +1194,6 @@ window.customElements.define(
             const { json: json_url } = read_data_attributes(this, 'json');
             const raw_json = await http_get(json_url);
             const json = await raw_json.json();
-            console.log(json);
 
             const { description, state } = json;
             const { status, odometer, location } = state;
