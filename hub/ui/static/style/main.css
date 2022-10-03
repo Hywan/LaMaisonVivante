@@ -323,8 +323,7 @@ main {
         flex: 1;
     }
 
-.thing--expandable {
-}
+.thing--expandable {}
 
     .thing--expandable > .thing--expandable-summary {
         cursor: pointer;
@@ -726,6 +725,18 @@ main {
         height: 1.2rem;
     }
 
+.thing--car {}
+
+    .thing--car--car {
+        display: block;
+        margin: var(--space-large) auto 0 auto;
+        max-width: 450px;
+    }
+
+    .thing--car--car [data-opened="false"] {
+        fill: none;
+    }
+
 .thing--text {}
 
     .thing--text > .thing--frame-content {
@@ -819,8 +830,8 @@ main {
 .label {
     color: var(--color-light-000);
     font-size: .7em;
-    padding: .15em .8em;
-    border-radius: .7em;
+    padding: .2em .8em;
+    border-radius: .3rem;
     background: var(--color-blue-500);
 }
 

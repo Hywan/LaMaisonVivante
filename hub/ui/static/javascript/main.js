@@ -42,7 +42,6 @@ function number_to_2_chars(number) {
 
 function seconds_to_duration(seconds) {
     const hours = Math.floor(seconds / 3600);
-    console.log(hours);
     seconds = seconds % 3600;
     const minutes = Math.floor(seconds / 60);
     seconds = seconds % 60;
@@ -50,13 +49,13 @@ function seconds_to_duration(seconds) {
     let output = '';
 
     if (hours > 0) {
-        output = `${hours}h`;
+        output = `${hours}h `;
     }
 
-    output = `${minutes}m`;
+    output = `${minutes}min`;
 
     if (seconds > 0) {
-        let output = `${seconds}s`;
+        let output = ` ${seconds}s`;
     }
 
     return output;
@@ -1180,7 +1179,6 @@ window.customElements.define(
         }
 
         async connectedCallback() {
-            console.log('CAR THING');
             const template = document.getElementById('template--car-thing');
             const template_content = template.content.cloneNode(true);
 
@@ -1195,12 +1193,9 @@ window.customElements.define(
             const root = this.shadowRoot;
 
             const { json: json_url } = read_data_attributes(this, 'json');
-            console.log(json_url);
             const raw_json = await http_get(json_url);
             const json = await raw_json.json();
             console.log(json);
-
-            console.log('long thing', long_thing);
 
             const { description, state } = json;
             const { status, odometer, location } = state;
@@ -1217,7 +1212,22 @@ window.customElements.define(
                     odometer: odometer.round(0),
                     location_static_map: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l+a12b20(${longitude},${latitude})/${longitude},${latitude},16,0/300x300@2x?access_token=pk.eyJ1IjoiaHl3YW4iLCJhIjoiY2w4cG9sNDcwMTJ0cjNvbzVrYXMyd2VibCJ9.d2BSDWYAxe3w0-w7-tzBZQ`,
                     location_map: `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=14/${latitude}/${longitude}`,
-                    defrost: state.is_defrost_enabled ? 'activé' : 'désactivé',
+                    targeted_temperature: `${status.targeted_temperature.round(1)}°C`,
+                    is_defrost_enabled: status.is_defrost_enabled ? 'activé' : 'désactivé',
+                    is_locked: status.is_locked ? 'fermée' : 'ouverte',
+                    is_front_left_door_opened: status.doors.is_front_left_opened,
+                    is_back_left_door_opened: status.doors.is_back_left_opened,
+                    is_front_right_door_opened: status.doors.is_front_right_opened,
+                    is_back_right_door_opened: status.doors.is_back_right_opened,
+                    is_front_left_window_opened: status.windows.is_front_left_opened,
+                    is_back_left_window_opened: status.windows.is_back_left_opened,
+                    is_front_right_window_opened: status.windows.is_front_right_opened,
+                    is_back_right_window_opened: status.windows.is_back_right_opened,
+                    is_trunk_opened: status.is_trunk_opened,
+                    is_frunk_opened: status.is_frunk_opened,
+                    is_steer_wheel_heat_enabled: status.is_steer_wheel_heat_enabled ? 'chauffant' : 'normal',
+                    is_air_climate_enabled: status.is_air_climate_enabled ? 'activée' : 'désactivée',
+                    is_side_back_window_heat_enabled: status.is_side_back_window_heat_enabled ? 'chauffants' : 'normaux',
                 },
                 long_thing,
             );
