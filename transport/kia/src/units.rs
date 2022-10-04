@@ -1,8 +1,8 @@
-use serde::{Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize};
 use serde_repr::Deserialize_repr;
 use std::fmt;
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Percent(u64);
 
@@ -12,7 +12,7 @@ impl fmt::Debug for Percent {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Coordinate(f32);
 
@@ -22,7 +22,7 @@ impl fmt::Debug for Coordinate {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Meter(f32);
 
@@ -32,13 +32,7 @@ impl fmt::Debug for Meter {
     }
 }
 
-#[derive(Debug, Deserialize_repr)]
-#[repr(u8)]
-pub enum DistanceUnit {
-    Kilometers = 1,
-    Miles = 3,
-}
-
+#[derive(Serialize)]
 pub struct Kilometer(f32);
 
 impl fmt::Debug for Kilometer {
@@ -51,27 +45,28 @@ pub fn distance_to_km<'de, D>(deserializer: D) -> Result<Kilometer, D::Error>
 where
     D: Deserializer<'de>,
 {
+    #[derive(Debug, Deserialize_repr)]
+    #[repr(u8)]
+    enum Unit {
+        Kilometers = 1,
+        Miles = 3,
+    }
+
     #[derive(Deserialize)]
     struct Pair {
         value: f32,
-        unit: DistanceUnit,
+        unit: Unit,
     }
 
     let Pair { value, unit } = Deserialize::deserialize(deserializer)?;
 
     Ok(match unit {
-        DistanceUnit::Kilometers => Kilometer(value),
-        DistanceUnit::Miles => Kilometer(value * 1.609344),
+        Unit::Kilometers => Kilometer(value),
+        Unit::Miles => Kilometer(value * 1.609344),
     })
 }
 
-#[derive(Debug, Deserialize_repr)]
-#[repr(u8)]
-pub enum TemperatureUnit {
-    Celcius = 0,
-    Farenheit = 1,
-}
-
+#[derive(Serialize)]
 pub struct Celcius(f32);
 
 impl fmt::Debug for Celcius {
@@ -84,10 +79,17 @@ pub fn temperature_to_celcius<'de, D>(deserializer: D) -> Result<Celcius, D::Err
 where
     D: Deserializer<'de>,
 {
+    #[derive(Debug, Deserialize_repr)]
+    #[repr(u8)]
+    enum Unit {
+        Celcius = 0,
+        Farenheit = 1,
+    }
+
     #[derive(Deserialize)]
     struct Pair {
         value: String,
-        unit: TemperatureUnit,
+        unit: Unit,
     }
 
     let Pair {
@@ -106,7 +108,7 @@ where
     }
 
     Ok(match unit {
-        TemperatureUnit::Celcius => Celcius(temperature),
-        TemperatureUnit::Farenheit => Celcius((temperature - 32.) / 1.8),
+        Unit::Celcius => Celcius(temperature),
+        Unit::Farenheit => Celcius((temperature - 32.) / 1.8),
     })
 }

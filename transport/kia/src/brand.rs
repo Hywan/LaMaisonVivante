@@ -30,7 +30,7 @@ impl Brand {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct BrandConfiguration {
     pub uri: String,
     pub basic_token: String,

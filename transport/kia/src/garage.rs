@@ -40,8 +40,6 @@ impl Garage {
     pub async fn vehicles(&self) -> Result<Vehicles, Error> {
         self.backend.vehicles().await
     }
-
-    //async fn open(
 }
 
 #[async_trait]

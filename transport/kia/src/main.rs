@@ -16,8 +16,9 @@ use crate::{
     errors::Error,
     garage::Garage,
 };
-use axum::{extract::path::Path, http::StatusCode, routing::get, Router};
+use axum::{extract::path::Path, http::StatusCode, response::Json, routing::get, Router};
 use human_panic::setup_panic;
+use serde_json::json;
 use std::net::SocketAddr;
 use structopt::StructOpt;
 
@@ -52,16 +53,16 @@ async fn main() -> Result<(), Error> {
             .expect("No password provided for the Kia Connect account"),
     );
 
+    println!("Opening the garage…");
+
+    let garage = Garage::new(Region::Europe, Brand::Kia, &auth).await?;
+
+    println!("Looking for vehicles…");
+
+    let vehicles = garage.vehicles().await?;
+
     match options.server_port {
         None => {
-            println!("Opening the garage…");
-
-            let brand = Brand::Kia;
-            let garage = Garage::new(Region::Europe, brand, &auth).await?;
-
-            println!("Looking for vehicles…");
-
-            let vehicles = garage.vehicles().await?;
             let number_of_vehicles = vehicles.len();
 
             println!("Found {} vehicle(s).", number_of_vehicles);
@@ -80,23 +81,22 @@ async fn main() -> Result<(), Error> {
         Some(server_port) => {
             let router = Router::new().route(
                 "/:vehicle",
-                get(|Path(vehicle_index): Path<usize>| async move {
-                    println!("Opening the garage…");
-
-                    let brand = Brand::Kia;
-                    let garage = Garage::new(Region::Europe, brand, &auth).await.unwrap();
-
-                    println!("Looking for vehicles…");
-
-                    let vehicles = garage.vehicles().await.unwrap();
-
-                    match vehicles.get(vehicle_index) {
-                        Some(vehicle) => {
-                            dbg!(&vehicle);
-
-                            (StatusCode::OK, "yes")
+                get(|Path(vehicle_vin): Path<String>| async move {
+                    match vehicles.iter().find_map(|vehicle| {
+                        if vehicle.vin == vehicle_vin {
+                            Some(vehicle)
+                        } else {
+                            None
                         }
-                        None => (StatusCode::NOT_FOUND, "Vehicle not found"),
+                    }) {
+                        Some(vehicle) => (
+                            StatusCode::OK,
+                            Json(Some(json!({
+                                "description": vehicle,
+                                "state": vehicle.state().await.unwrap(),
+                            }))),
+                        ),
+                        None => (StatusCode::NOT_FOUND, Json(None)),
                     }
                 }),
             );

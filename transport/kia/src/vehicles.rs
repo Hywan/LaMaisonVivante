@@ -5,7 +5,7 @@ use crate::{
     identity::Tokens,
     units::*,
 };
-use serde::{de, Deserialize, Deserializer};
+use serde::{de, Deserialize, Deserializer, Serialize};
 use serde_json::Value;
 use std::fmt;
 use std::time::Duration;
@@ -13,16 +13,16 @@ use std::time::Duration;
 const VEHICLES_URL: &'static str = "/api/v1/spa/vehicles";
 
 #[derive(Debug, Clone)]
-pub struct Vehicles<'a> {
-    vehicles: Vec<Vehicle<'a>>,
+pub struct Vehicles {
+    vehicles: Vec<Vehicle>,
 }
 
-impl<'a> Vehicles<'a> {
+impl Vehicles {
     pub async fn new(
         brand: Brand,
-        brand_configuration: &'a BrandConfiguration,
-        tokens: &'a Tokens,
-    ) -> Result<Vehicles<'a>, Error> {
+        brand_configuration: &BrandConfiguration,
+        tokens: &Tokens,
+    ) -> Result<Vehicles, Error> {
         let mut http_request_headers = reqwest::header::HeaderMap::with_capacity(3);
         http_request_headers.insert("Authorization", tokens.access_token.parse().unwrap());
         http_request_headers.insert("ccsp-service-id", brand.client_id().parse().unwrap());
@@ -35,7 +35,7 @@ impl<'a> Vehicles<'a> {
 
         #[derive(Debug, Deserialize)]
         struct Response {
-            #[serde(rename = "resMsg")]
+            #[serde(rename(deserialize = "resMsg"))]
             result_message: ResponseVehicles,
         }
 
@@ -47,13 +47,13 @@ impl<'a> Vehicles<'a> {
         #[derive(Debug, Deserialize)]
         struct ResponseVehicle {
             vin: String,
-            #[serde(rename = "vehicleId")]
+            #[serde(rename(deserialize = "vehicleId"))]
             vehicle_id: String,
-            #[serde(rename = "vehicleName")]
+            #[serde(rename(deserialize = "vehicleName"))]
             vehicle_name: String,
             nickname: String,
             master: bool,
-            #[serde(rename = "carShare")]
+            #[serde(rename(deserialize = "carShare"))]
             car_share: u32,
         }
 
@@ -84,8 +84,8 @@ impl<'a> Vehicles<'a> {
                  }| {
                     Vehicle {
                         brand,
-                        brand_configuration,
-                        tokens,
+                        brand_configuration: brand_configuration.clone(),
+                        tokens: tokens.clone(),
                         vin,
                         vehicle_id,
                         vehicle_name,
@@ -113,11 +113,16 @@ impl<'a> Vehicles<'a> {
     }
 }
 
-#[derive(Clone)]
-pub struct Vehicle<'a> {
-    tokens: &'a Tokens,
+#[derive(Clone, Serialize)]
+pub struct Vehicle {
+    #[serde(skip)]
+    tokens: Tokens,
+
+    #[serde(skip)]
     brand: Brand,
-    brand_configuration: &'a BrandConfiguration,
+
+    #[serde(skip)]
+    brand_configuration: BrandConfiguration,
 
     pub vin: String,
     pub vehicle_id: String,
@@ -127,7 +132,7 @@ pub struct Vehicle<'a> {
     pub car_share: u32,
 }
 
-impl<'a> fmt::Debug for Vehicle<'a> {
+impl fmt::Debug for Vehicle {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("Vehicle")
@@ -141,7 +146,7 @@ impl<'a> fmt::Debug for Vehicle<'a> {
     }
 }
 
-impl<'a> Vehicle<'a> {
+impl Vehicle {
     pub async fn state(&self) -> Result<State, Error> {
         let mut http_request_headers = reqwest::header::HeaderMap::with_capacity(3);
         http_request_headers.insert("Authorization", self.tokens.access_token.parse().unwrap());
@@ -155,13 +160,13 @@ impl<'a> Vehicle<'a> {
 
         #[derive(Debug, Deserialize)]
         struct Response {
-            #[serde(rename = "resMsg")]
+            #[serde(rename(deserialize = "resMsg"))]
             result_message: ResponseVehicleState,
         }
 
         #[derive(Debug, Deserialize)]
         struct ResponseVehicleState {
-            #[serde(rename = "vehicleStatusInfo")]
+            #[serde(rename(deserialize = "vehicleStatusInfo"))]
             vehicle_state: State,
         }
 
@@ -183,142 +188,196 @@ impl<'a> Vehicle<'a> {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct State {
-    #[serde(rename = "vehicleStatus")]
+    #[serde(rename(deserialize = "vehicleStatus"))]
     pub status: Status,
 
-    #[serde(rename = "vehicleLocation")]
+    #[serde(rename(deserialize = "vehicleLocation"))]
     pub location: Location,
 
-    #[serde(rename = "odometer", deserialize_with = "distance_to_km")]
+    #[serde(rename(deserialize = "odometer"), deserialize_with = "distance_to_km")]
     pub odometer: Kilometer,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Status {
-    #[serde(rename = "evStatus")]
+    #[serde(rename(deserialize = "evStatus"))]
     pub battery: Battery,
 
-    #[serde(rename = "doorOpen")]
+    #[serde(rename(deserialize = "doorOpen"))]
     pub doors: Doors,
 
-    #[serde(rename = "windowOpen")]
+    #[serde(rename(deserialize = "windowOpen"))]
     pub windows: Windows,
 
-    #[serde(rename = "airTemp", deserialize_with = "temperature_to_celcius")]
+    #[serde(
+        rename(deserialize = "airTemp"),
+        deserialize_with = "temperature_to_celcius"
+    )]
     pub targeted_temperature: Celcius,
 
-    #[serde(rename = "airCtrlOn")]
-    pub is_air_climate_enabled: bool,
+    #[serde(rename(deserialize = "airCtrlOn"))]
+    pub is_air_conditionning_enabled: bool,
 
-    #[serde(rename = "engine")]
+    #[serde(rename(deserialize = "engine"))]
     pub is_engine_running: bool,
 
-    #[serde(rename = "doorLock")]
+    #[serde(rename(deserialize = "doorLock"))]
     pub is_locked: bool,
 
-    #[serde(rename = "trunkOpen")]
+    #[serde(rename(deserialize = "trunkOpen"))]
     pub is_trunk_opened: bool,
 
-    #[serde(rename = "hoodOpen")]
+    #[serde(rename(deserialize = "hoodOpen"))]
     pub is_frunk_opened: bool,
 
-    #[serde(rename = "defrost")]
+    #[serde(rename(deserialize = "defrost"))]
     pub is_defrost_enabled: bool,
 
-    #[serde(rename = "steerWheelHeat", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "steerWheelHeat"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_steer_wheel_heat_enabled: bool,
 
-    #[serde(rename = "sideBackWindowHeat", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "sideBackWindowHeat"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_side_back_window_heat_enabled: bool,
 
-    #[serde(rename = "hazardStatus", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "hazardStatus"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_hazard_detected: bool,
 
-    #[serde(rename = "smartKeyBatteryWarning")]
+    #[serde(rename(deserialize = "smartKeyBatteryWarning"))]
     pub has_smart_key_battery_issue: bool,
 
-    #[serde(rename = "washerFluidStatus")]
+    #[serde(rename(deserialize = "washerFluidStatus"))]
     pub has_washer_fluid_issue: bool,
 
-    #[serde(rename = "breakOilStatus")]
+    #[serde(rename(deserialize = "breakOilStatus"))]
     pub has_break_oil_issue: bool,
 
-    #[serde(rename = "tailLampStatus", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "tailLampStatus"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub has_tail_lamp_issue: bool,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Doors {
-    #[serde(rename = "frontLeft", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "frontLeft"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_front_left_opened: bool,
 
-    #[serde(rename = "frontRight", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "frontRight"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_front_right_opened: bool,
 
-    #[serde(rename = "backLeft", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "backLeft"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_back_left_opened: bool,
 
-    #[serde(rename = "backRight", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "backRight"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_back_right_opened: bool,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Windows {
-    #[serde(rename = "frontLeft", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "frontLeft"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_front_left_opened: bool,
 
-    #[serde(rename = "frontRight", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "frontRight"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_front_right_opened: bool,
 
-    #[serde(rename = "backLeft", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "backLeft"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_back_left_opened: bool,
 
-    #[serde(rename = "backRight", deserialize_with = "int_to_bool")]
+    #[serde(
+        rename(deserialize = "backRight"),
+        deserialize_with = "deserialize_int_to_bool"
+    )]
     pub is_back_right_opened: bool,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Battery {
-    #[serde(rename = "batteryCharge")]
+    #[serde(rename(deserialize = "batteryCharge"))]
     pub is_charging: bool,
 
-    #[serde(rename = "batteryStatus")]
+    #[serde(rename(deserialize = "batteryStatus"))]
     pub state_of_charge: Percent,
 
-    #[serde(rename = "drvDistance", deserialize_with = "deserialize_range")]
+    #[serde(
+        rename(deserialize = "drvDistance"),
+        deserialize_with = "deserialize_range"
+    )]
     pub remaining_range: u32,
 
     #[serde(
-        rename = "remainTime2",
+        rename(deserialize = "remainTime2"),
         deserialize_with = "deserialize_estimated_charging_duration"
     )]
     pub estimated_charging_duration: Duration,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Location {
-    #[serde(rename = "coord")]
+    #[serde(rename(deserialize = "coord"))]
     pub coordinates: Coordinates,
 
-    #[serde(rename = "accuracy")]
+    #[serde(rename(deserialize = "accuracy"))]
     pub precision_dilution: Option<PrecisionDilution>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Coordinates {
-    #[serde(rename = "lat")]
+    #[serde(rename(deserialize = "lat"))]
     pub latitude: Coordinate,
 
-    #[serde(rename = "lon")]
+    #[serde(rename(deserialize = "lon"))]
     pub longitude: Coordinate,
 
-    #[serde(rename = "alt")]
+    #[serde(rename(deserialize = "alt"))]
     pub altitude: Option<Meter>,
 }
 
-fn int_to_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
+/// [DOP] (Dilution of precision).
+///
+/// [DOP]: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation)
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PrecisionDilution {
+    #[serde(rename(deserialize = "hdop"))]
+    pub horizontal: u32,
+
+    #[serde(rename(deserialize = "pdop"))]
+    pub position: u32,
+}
+
+fn deserialize_int_to_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -359,7 +418,7 @@ where
 
     #[derive(Deserialize)]
     struct RemainingTime {
-        #[serde(rename = "atc")]
+        #[serde(rename(deserialize = "atc"))]
         estimated_current_charging_duration: PairValue,
     }
 
@@ -370,18 +429,6 @@ where
     ))
 }
 
-/// [DOP] (Dilution of precision).
-///
-/// [DOP]: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation)
-#[derive(Debug, Deserialize)]
-pub struct PrecisionDilution {
-    #[serde(rename = "hdop")]
-    pub horizontal: u32,
-
-    #[serde(rename = "pdop")]
-    pub position: u32,
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -390,13 +437,13 @@ mod tests {
     fn test() {
         #[derive(Debug, Deserialize)]
         struct Response {
-            #[serde(rename = "resMsg")]
+            #[serde(rename(deserialize = "resMsg"))]
             result_message: ResponseVehicleState,
         }
 
         #[derive(Debug, Deserialize)]
         struct ResponseVehicleState {
-            #[serde(rename = "vehicleStatusInfo")]
+            #[serde(rename(deserialize = "vehicleStatusInfo"))]
             vehicle_state: State,
         }
 
