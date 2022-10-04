@@ -832,6 +832,7 @@ main {
     color: var(--color-light-000);
     font-size: .7em;
     padding: .2em .8em;
+    vertical-align: bottom;
     border-radius: .3rem;
     background: var(--color-blue-500);
 }
@@ -970,18 +971,19 @@ button {
         mix-blend-mode: lighten;
     }
 
+    .stroked {
+        fill: none;
+        filter: drop-shadow(0 0 2px var(--color-light-200));
+        stroke: #000;
+        stroke-width: 2;
+        stroke-linecap: round;
+    }
+
 .meter {
     stroke-dasharray: 10 100; /* for 10% */
     transition: stroke-dasharray var(--transition-duration) ease-in-out;
 }
 
-.stroked {
-    fill: none;
-    filter: drop-shadow(0 0 2px var(--color-light-200));
-    stroke: #000;
-    stroke-width: 2;
-    stroke-linecap: round;
-}
 
 .gradient {
     width: 100%;
@@ -1060,6 +1062,22 @@ button {
             var(--light-direction),
             var(--color-green-300) 40%,
             var(--color-green-600) 100%
+        );
+    }
+
+    .gradient--linear__yellow_to_red {
+        background: linear-gradient(
+            var(--light-direction),
+            var(--color-yellow-600) 40%,
+            var(--color-red-300) 100%
+        );
+    }
+
+    .gradient--linear__blue_to_red {
+        background: linear-gradient(
+            var(--light-direction),
+            var(--color-blue-500) 40%,
+            var(--color-red-600) 100%
         );
     }
 
