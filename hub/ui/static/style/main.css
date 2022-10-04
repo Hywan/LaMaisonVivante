@@ -750,16 +750,19 @@ main {
         gap: var(--space-small);
     }
 
-    .thing--text > .thing--frame-content svg,
-    .thing--text .thing--text-icon {
+    .thing--text-icon {
         width: 2rem;
     }
 
-    .thing--text > .thing--frame-content ul,
-    .thing--text > .thing--frame-content .thing--text-content {
+    .thing--text-list {
         list-style: none;
         margin: 0;
         padding: 0;
+        display: grid;
+        grid-auto-flow: row;
+        place-content: center;
+        height: 100%;
+        gap: var(--space-small);
     }
 
 .thing--slider {}

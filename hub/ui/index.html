@@ -89,9 +89,9 @@
           <slot name="icon"><svg></svg></slot>
         </div>
 
-        <ul class="thing--text-content">
+        <div class="thing--text-content">
           <slot name="content">?</slot>
-        </ul>
+        </div>
       </div>
     </div>
   </template>
@@ -290,10 +290,10 @@
                 slot="icon"
                 href="static/icons/symbols.svg#thermometer"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li><strong>Mesurée <span data-bind="temperature">?</span></strong></li>
                 <li>Ressentie <span data-bind="apparent_temperature">?</span></li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -307,11 +307,11 @@
                   data-bind:href="condition_icon"></use>
               </svg>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li><strong data-bind="condition">?</strong></li>
                 <li><span data-bind="precipitation">?</span>mm</li>
                 <li>Indice UV <span data-bind="uv_index">?</span></li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -346,10 +346,10 @@
                 href="static/icons/symbols.svg#drop"
                 filler-class="gradient gradient--conic__yellow_to_pink"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li><strong><span data-bind="humidity">?</span>H%</strong></li>
                 <li>Point de rosée <span data-bind="dew_point">?</span>°C</li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -495,10 +495,10 @@
                 href="static/icons/symbols.svg#battery"
                 filler-class="gradient gradient--linear__green"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li><strong><span data-bind="battery">?</span>%</strong></li>
                 <li><span data-bind="range">?</span> km</li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -510,10 +510,10 @@
                 slot="icon"
                 href="static/icons/symbols.svg#charging_station"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li data-bind="is_charging">?</li>
                 <li data-bind="estimated_charging_duration">?</li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -525,9 +525,9 @@
                 slot="icon"
                 href="static/icons/symbols.svg#odometer"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li><span data-bind="odometer">?</span> km</li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -554,9 +554,9 @@
                 slot="icon"
                 href="static/icons/symbols.svg#thermometer"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li data-bind="targeted_temperature">?</li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -568,9 +568,9 @@
                 slot="icon"
                 href="static/icons/symbols.svg#lock"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li data-bind="is_locked">?</li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -582,9 +582,9 @@
                 slot="icon"
                 href="static/icons/symbols.svg#defrost"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li data-bind="is_defrost_enabled">?</li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -596,9 +596,9 @@
                 slot="icon"
                 href="static/icons/symbols.svg#defrost"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li data-bind="is_steer_wheel_heat_enabled">?</li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -610,9 +610,9 @@
                 slot="icon"
                 href="static/icons/symbols.svg#defrost"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li data-bind="is_air_climate_enabled">?</li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
 
@@ -624,9 +624,9 @@
                 slot="icon"
                 href="static/icons/symbols.svg#defrost"></my-fancy-icon>
 
-              <div slot="content">
+              <ul slot="content" class="thing--text-list">
                 <li data-bind="is_side_back_window_heat_enabled">?</li>
-              </div>
+              </ul>
             </my-text-thing>
           </my-thing>
         </my-unlocated-things>
