@@ -1224,8 +1224,8 @@ window.customElements.define(
                     is_trunk_opened: status.is_trunk_opened,
                     is_frunk_opened: status.is_frunk_opened,
                     is_steer_wheel_heat_enabled: status.is_steer_wheel_heat_enabled ? 'chauffant' : 'normal',
-                    is_air_climate_enabled: status.is_air_climate_enabled ? 'activée' : 'désactivée',
-                    is_side_back_window_heat_enabled: status.is_side_back_window_heat_enabled ? 'chauffants' : 'normaux',
+                    is_air_conditionning_enabled: status.is_air_conditionning_enabled ? 'activée' : 'désactivée',
+                    is_rearview_mirror_heat_enabled: status.is_side_back_window_heat_enabled ? 'chauffants' : 'normaux',
                 },
                 long_thing,
             );
