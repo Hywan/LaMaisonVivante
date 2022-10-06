@@ -330,17 +330,17 @@ async function fetch_properties(base, ...property_names) {
 const render = new function () {
     const LOOP_REGEX = /^(?<item_name>[a-zA-Z_]+) in (?<set_name>[a-zA-Z_]+(\.[a-zA-Z_]+)?)$/;
     const ATTRIBUTE_PREFIX = 'data-bind:';
-    const restore_data_bindings = new function () {
+    const reset = new function () {
         const deferred = [];
 
         return {
-            defer: function (element, binding_value, func) {
-                deferred.push({element, binding_value, func});
+            defer: function (element, data, func) {
+                deferred.push({element, data, func});
             },
 
             now: function () {
-                for (const {element, binding_value, func} of deferred) {
-                    (func)(element, binding_value);
+                for (const {element, data, func} of deferred) {
+                    (func)(element, data);
                 }
 
                 deferred.length = 0;
@@ -362,18 +362,13 @@ const render = new function () {
         // Handle one loop at a time to allow proper embedded loops
         // computation.
         while (element = root.querySelector('[data-bind-loop]')) {
-            let key = element.dataset.bindLoop;
-            delete element.dataset.bindLoop;
-
-            restore_data_bindings.defer(element, key, (element, key) => element.dataset.bindLoop = key);
-
-            key = remove_prefix(key_prefix, key);
+            let original_key = element.dataset.bindLoop;
+            const key = remove_prefix(key_prefix, original_key);
 
             let match = key.match(LOOP_REGEX);
 
             if (null === match) {
                 console.error(`Loop format is invalid: \`${key}\``);
-                restore_data_bindings.now();
 
                 return;
             }
@@ -386,28 +381,48 @@ const render = new function () {
                     console.warn(`Set key \`${set_name}\` is absent from the data`, data, element);
                 }
 
+                delete element.dataset.bindLoop;
+                reset.defer(element, key, (element, key) => element.dataset.bindLoop = key);
+
                 continue;
             }
 
             if (!(Symbol.iterator in data[set_name])) {
                 console.error(`Set \`${set_name}\` is not an iterable object`, data, element);
-                restore_data_bindings.now();
 
                 return;
             }
 
-            const children = [];
+            delete element.dataset.bindLoop;
+
+            const collected_elements = [];
 
             for (const datum of data[set_name]) {
-                const next_root = element.cloneNode(true);
+                const element_clone = element.cloneNode(true);
                 const next_key_prefix = `${item_name}.`;
 
-                render_all(datum, next_root, partial, next_key_prefix);
-
-                children.push(next_root);
+                reset.defer(element_clone, null, (element, _) => element.remove());
+                render_all(datum, element_clone, partial, next_key_prefix);
+                collected_elements.push(element_clone);
             }
 
-            element.replaceWith(...children);
+            const element_index = Array.prototype.indexOf.call(element.parentNode.children, element);
+            reset.defer(
+                element.cloneNode(true),
+                {
+                    parent: element.parentNode,
+                    element_index,
+                    key: original_key,
+                },
+                (element, { parent, element_index, key }) => {
+                    parent.insertBefore(
+                        element,
+                        parent.children[element_index] || null,
+                    );
+                    element.dataset.bindLoop = key;
+                }
+            );
+            element.replaceWith(...collected_elements);
         }
     }
 
@@ -422,7 +437,7 @@ const render = new function () {
             let key = element.dataset.bind;
             delete element.dataset.bind;
 
-            restore_data_bindings.defer(element, key, (element, key) => element.dataset.bind = key);
+            reset.defer(element, key, (element, key) => element.dataset.bind = key);
 
             key = remove_prefix(key_prefix, key);
 
@@ -448,7 +463,7 @@ const render = new function () {
         for (const element of elements) {
             delete element.dataset.bindAttributes;
 
-            restore_data_bindings.defer(element, '', (element, key) => element.dataset.bindAttributes = key);
+            reset.defer(element, '', (element, key) => element.dataset.bindAttributes = key);
 
             const attributes = Array.from(element.attributes)
                   .filter(node => node.nodeName.startsWith(ATTRIBUTE_PREFIX))
@@ -485,7 +500,7 @@ const render = new function () {
     };
 
     return function (data, root, partial) {
-        restore_data_bindings.now();
+        reset.now();
         render_all(data, root, partial || false);
     };
 };
