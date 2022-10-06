@@ -597,7 +597,8 @@
               <my-fancy-icon
                 slot="icon"
                 href="static/icons/symbols.svg#defrost"
-                filler-class="gradient gradient--linear__blue_to_red"></my-fancy-icon>
+                data-bind-attributes
+                data-bind:filler-class="defrost_icon_gradient"></my-fancy-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_defrost_enabled">?</li>
@@ -612,7 +613,8 @@
               <my-fancy-icon
                 slot="icon"
                 href="static/icons/symbols.svg#steer_wheel_heat"
-                filler-class="gradient gradient--linear__blue_to_red"></my-fancy-icon>
+                data-bind-attributes
+                data-bind:filler-class="steer_wheel_heat_icon_gradient"></my-fancy-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_steer_wheel_heat_enabled">?</li>
@@ -627,7 +629,8 @@
               <my-fancy-icon
                 slot="icon"
                 href="static/icons/symbols.svg#air_conditionning"
-                filler-class="gradient gradient--linear__blue_to_red"></my-fancy-icon>
+                data-bind-attributes
+                data-bind:filler-class="air_conditionning_icon_gradient"></my-fancy-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_air_conditionning_enabled">?</li>
@@ -642,7 +645,8 @@
               <my-fancy-icon
                 slot="icon"
                 href="static/icons/symbols.svg#rearview_mirror_heat"
-                filler-class="gradient gradient--linear__blue_to_red"></my-fancy-icon>
+                data-bind-attributes
+                data-bind:filler-class="rearview_mirror_heat_icon_gradient"></my-fancy-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_rearview_mirror_heat_enabled">?</li>
@@ -760,7 +764,6 @@
   <main>
     <section id="things-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-of-things-panel" aria-hidden="false">
       <my-unlocated-things>
-        <!--
         <my-thing>
           <my-meter-thing
             slot="thing"
@@ -815,16 +818,11 @@
             <div slot="meter-gradient" class="gradient gradient--conic__yellow_to_pink"></div>
           </my-meter-thing>
         </my-thing>
-        -->
 
-            <!--
-            data-base="http://192.168.1.128:8096/0"
-            data-forecast-base="http://192.168.1.128:8096/1"
-            -->
         <my-thing>
           <my-weather-thing
             slot="thing"
-            data-base="http://127.0.0.1:8096/0"
+            data-base="http://192.168.1.128:8096/0"
             data-temperature="temperature"
             data-apparent-temperature="apparent_temperature"
             data-condition="condition"
@@ -836,7 +834,7 @@
             data-uv-index="uv_index"
             data-humidity="humidity"
             data-dew-point="dew_point"
-            data-forecast-base="http://127.0.0.1:8096/1"
+            data-forecast-base="http://192.168.1.128:8096/1"
             data-forecast="hourly">
             <span slot="name">Météo</span>
           </my-weather-thing>
@@ -845,7 +843,7 @@
         <my-thing>
           <my-car-thing
             slot="thing"
-            data-json="http://127.0.0.1:8000/foo.json"
+            data-json="http://127.0.0.1:8099/KNAC381AFN5011942"
             data-battery-base="http://192.168.1.128:8092/0"
             data-battery-primary="state_of_charge">
             <span slot="name">Voiture</span>

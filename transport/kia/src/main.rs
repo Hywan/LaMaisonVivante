@@ -91,12 +91,17 @@ async fn main() -> Result<(), Error> {
                     }) {
                         Some(vehicle) => (
                             StatusCode::OK,
+                            [("Access-Control-Allow-Origin", "*")],
                             Json(Some(json!({
                                 "description": vehicle,
                                 "state": vehicle.state().await.unwrap(),
                             }))),
                         ),
-                        None => (StatusCode::NOT_FOUND, Json(None)),
+                        None => (
+                            StatusCode::NOT_FOUND,
+                            [("Access-Control-Allow-Origin", "*")],
+                            Json(None),
+                        ),
                     }
                 }),
             );

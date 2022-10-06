@@ -327,7 +327,7 @@ async function fetch_properties(base, ...property_names) {
     };
 }
 
-const render = new function() {
+const render = new function () {
     const LOOP_REGEX = /^(?<item_name>[a-zA-Z_]+) in (?<set_name>[a-zA-Z_]+(\.[a-zA-Z_]+)?)$/;
     const ATTRIBUTE_PREFIX = 'data-bind:';
     const restore_data_bindings = new function () {
@@ -356,7 +356,7 @@ const render = new function() {
         return value.replace(new RegExp(`^${prefix}`), '');
     }
 
-    function render_bind_loop(data, root, key_prefix) {
+    function render_bind_loop(data, root, partial, key_prefix) {
         let element;
 
         // Handle one loop at a time to allow proper embedded loops
@@ -382,10 +382,11 @@ const render = new function() {
             set_name = remove_prefix(key_prefix, set_name);
 
             if (!(set_name in data)) {
-                console.error(`Set key \`${set_name}\` is absent from the data`, data, element);
-                restore_data_bindings.now();
+                if (!partial) {
+                    console.warn(`Set key \`${set_name}\` is absent from the data`, data, element);
+                }
 
-                return;
+                continue;
             }
 
             if (!(Symbol.iterator in data[set_name])) {
@@ -401,7 +402,7 @@ const render = new function() {
                 const next_root = element.cloneNode(true);
                 const next_key_prefix = `${item_name}.`;
 
-                render_all(datum, next_root, next_key_prefix);
+                render_all(datum, next_root, partial, next_key_prefix);
 
                 children.push(next_root);
             }
@@ -410,7 +411,7 @@ const render = new function() {
         }
     }
 
-    function render_bind(data, root, key_prefix) {
+    function render_bind(data, root, partial, key_prefix) {
         const elements = [...root.querySelectorAll('[data-bind]')];
 
         if (root.dataset && root.dataset.bind) {
@@ -426,17 +427,18 @@ const render = new function() {
             key = remove_prefix(key_prefix, key);
 
             if (!(key in data)) {
-                console.error(`Key \`${key}\` is absent from the data`, data, element);
-                restore_data_bindings.now();
+                if (!partial) {
+                    console.warn(`Key \`${key}\` is absent from the data`, data, element);
+                }
 
-                return;
+                continue;
             }
 
             element.innerHTML = data[key].toString();
         }
     }
 
-    function render_bind_attribute(data, root, key_prefix) {
+    function render_bind_attribute(data, root, partial, key_prefix) {
         const elements = [...root.querySelectorAll('[data-bind-attributes]')];
 
         if (root.dataset && undefined !== root.dataset.bindAttributes) {
@@ -462,10 +464,11 @@ const render = new function() {
                 key = remove_prefix(key_prefix, key);
 
                 if (!(key in data)) {
-                    console.error(`Key \`${key}\` is absent from the data`, data, element);
-                    restore_data_bindings.now();
+                    if (!partial) {
+                        console.warn(`Key \`${key}\` is absent from the data`, data, element);
+                    }
 
-                    return;
+                    continue;
                 }
 
                 element.setAttribute(attribute_name, data[key].toString());
@@ -473,18 +476,22 @@ const render = new function() {
         }
     }
 
-    function render_all(data, root, key_prefix) {
+    function render_all(data, root, partial, key_prefix) {
         key_prefix = key_prefix || '';
 
-        render_bind_loop(data, root, key_prefix);
-        render_bind(data, root, key_prefix);
-        render_bind_attribute(data, root, key_prefix);
+        render_bind_loop(data, root, partial, key_prefix);
+        render_bind(data, root, partial, key_prefix);
+        render_bind_attribute(data, root, partial, key_prefix);
     };
 
-    return function(data, root) {
+    return function (data, root, partial) {
         restore_data_bindings.now();
-        render_all(data, root);
+        render_all(data, root, partial || false);
     };
+};
+
+const partial_render = function (data, root) {
+    return render(data, root, true);
 };
 
 function value_into_range(value, from_range_min, from_range_max, to_range_min, to_range_max) {
@@ -1212,6 +1219,7 @@ window.customElements.define(
                     location_map: `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=14/${latitude}/${longitude}`,
                     targeted_temperature: `${status.targeted_temperature.round(1)}°C`,
                     is_defrost_enabled: status.is_defrost_enabled ? 'activé' : 'désactivé',
+                    defrost_icon_gradient: status.is_defrost_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
                     is_locked: status.is_locked ? 'fermée' : 'ouverte',
                     is_front_left_door_opened: status.doors.is_front_left_opened,
                     is_back_left_door_opened: status.doors.is_back_left_opened,
@@ -1224,8 +1232,11 @@ window.customElements.define(
                     is_trunk_opened: status.is_trunk_opened,
                     is_frunk_opened: status.is_frunk_opened,
                     is_steer_wheel_heat_enabled: status.is_steer_wheel_heat_enabled ? 'chauffant' : 'normal',
+                    steer_wheel_heat_icon_gradient: status.is_steer_wheel_heat_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
                     is_air_conditionning_enabled: status.is_air_conditionning_enabled ? 'activée' : 'désactivée',
+                    air_conditionning_icon_gradient: status.is_air_conditionning_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
                     is_rearview_mirror_heat_enabled: status.is_side_back_window_heat_enabled ? 'chauffants' : 'normaux',
+                    rearview_mirror_heat_icon_gradient: status.is_side_back_window_heat_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
                 },
                 long_thing,
             );
@@ -1297,6 +1308,10 @@ window.customElements.define(
             super();
         }
 
+        static get observedAttributes() {
+            return ['filler-class'];
+        }
+
         connectedCallback() {
             const template = document.getElementById('template--fancy-icon');
             const template_content = template.content.cloneNode(true);
@@ -1304,10 +1319,31 @@ window.customElements.define(
             this.attachShadow({mode: 'open'}).appendChild(template_content);
             const root = this.shadowRoot;
 
+            if (!this.hasAttribute('filler-class')) {
+                this.setAttribute('filler-class', 'gradient gradient--linear__default');
+            }
+
+
             const href = this.getAttribute('href');
-            const filler_class = this.getAttribute('filler-class') || 'gradient gradient--linear__default';
+            const filler_class = this.getAttribute('filler-class');
 
             render({href, filler_class}, root);
+        }
+
+        attributeChangedCallback(name, old_value, new_value) {
+            // Attribute is created, we don't handle that here.
+            if (null === old_value) {
+                return;
+            }
+
+            // Attribute is removed, we don't handdle that neither.
+            if (null === new_value) {
+                return;
+            }
+
+            if ('filler-class' === name) {
+                partial_render({filler_class: new_value}, this.shadowRoot);
+            }
         }
     }
 );
