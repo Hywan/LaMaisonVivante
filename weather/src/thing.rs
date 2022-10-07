@@ -444,7 +444,7 @@ pub fn run(openweathermap_api_key: &str, port: Option<u16>) {
             update_property!(
                 current_weather,
                 "rain",
-                state.rain.as_ref().map_or(0., |r| dbg!(r.one_hour))
+                state.rain.as_ref().map_or(0., |r| r.one_hour)
             );
             update_property!(current_weather, "condition", state.conditions[0].id);
         }
