@@ -354,7 +354,7 @@ class View {
         return value.replace(new RegExp(`^${prefix}`), '');
     }
 
-    #render_bind_loop(data, root, partial, key_prefix) {
+    #render_bind_loop(data, root, partial, key_prefix, can_defer) {
         let element;
 
         // Handle one loop at a time to allow proper embedded loops
@@ -380,7 +380,10 @@ class View {
                 }
 
                 delete element.dataset.bindLoop;
-                this.#defer_reset(element, key, (element, key) => element.dataset.bindLoop = key);
+
+                if (can_defer) {
+                    this.#defer_reset(element, key, (element, key) => element.dataset.bindLoop = key);
+                }
 
                 continue;
             }
@@ -399,31 +402,37 @@ class View {
                 const element_clone = element.cloneNode(true);
                 const next_key_prefix = `${item_name}.`;
 
-                this.#defer_reset(element_clone, null, (element, _) => element.remove());
-                this.#render_all(datum, element_clone, partial, next_key_prefix);
+                if (can_defer) {
+                    this.#defer_reset(element_clone, null, (element, _) => element.remove());
+                }
+
+                this.#render_all(datum, element_clone, partial, next_key_prefix, false);
                 collected_elements.push(element_clone);
             }
 
-            this.#defer_reset(
-                element.cloneNode(true),
-                {
-                    parent: element.parentNode,
-                    element_index: Array.prototype.indexOf.call(element.parentNode.children, element),
-                    key: original_key,
-                },
-                (element, { parent, element_index, key }) => {
-                    parent.insertBefore(
-                        element,
-                        parent.children[element_index] || null,
-                    );
-                    element.dataset.bindLoop = key;
-                }
-            );
+            if (can_defer) {
+                this.#defer_reset(
+                    element.cloneNode(true),
+                    {
+                        parent: element.parentNode,
+                        element_index: Array.prototype.indexOf.call(element.parentNode.children, element),
+                        key: original_key,
+                    },
+                    (element, { parent, element_index, key }) => {
+                        parent.insertBefore(
+                            element,
+                            parent.children[element_index] || null,
+                        );
+                        element.dataset.bindLoop = key;
+                    }
+                );
+            }
+
             element.replaceWith(...collected_elements);
         }
     }
 
-    #render_bind(data, root, partial, key_prefix) {
+    #render_bind(data, root, partial, key_prefix, can_defer) {
         const elements = [...root.querySelectorAll('[data-bind]')];
 
         if (root.dataset && root.dataset.bind) {
@@ -434,7 +443,9 @@ class View {
             let key = element.dataset.bind;
             delete element.dataset.bind;
 
-            this.#defer_reset(element, key, (element, key) => element.dataset.bind = key);
+            if (can_defer) {
+                this.#defer_reset(element, key, (element, key) => element.dataset.bind = key);
+            }
 
             key = this.#remove_prefix(key_prefix, key);
 
@@ -450,7 +461,7 @@ class View {
         }
     }
 
-    #render_bind_attribute(data, root, partial, key_prefix) {
+    #render_bind_attribute(data, root, partial, key_prefix, can_defer) {
         const elements = [...root.querySelectorAll('[data-bind-attributes]')];
 
         if (root.dataset && undefined !== root.dataset.bindAttributes) {
@@ -460,7 +471,9 @@ class View {
         for (const element of elements) {
             delete element.dataset.bindAttributes;
 
-            this.#defer_reset(element, '', (element, key) => element.dataset.bindAttributes = key);
+            if (can_defer) {
+                this.#defer_reset(element, '', (element, key) => element.dataset.bindAttributes = key);
+            }
 
             const attributes = Array.from(element.attributes)
                 .filter(node => node.nodeName.startsWith(View.#ATTRIBUTE_PREFIX))
@@ -488,21 +501,25 @@ class View {
         }
     }
 
-    #render_all(data, root, partial, key_prefix) {
+    #render_all(data, root, partial, key_prefix, can_defer) {
         key_prefix = key_prefix || '';
 
-        this.#render_bind_loop(data, root, partial, key_prefix);
-        this.#render_bind(data, root, partial, key_prefix);
-        this.#render_bind_attribute(data, root, partial, key_prefix);
+        this.#render_bind_loop(data, root, partial, key_prefix, can_defer);
+        this.#render_bind(data, root, partial, key_prefix, can_defer);
+        this.#render_bind_attribute(data, root, partial, key_prefix, can_defer);
+    }
+
+    #_render(data, root, partial) {
+        this.#reset_now();
+        this.#render_all(data, root, partial, true);
     }
 
     render(data, root, partial) {
-        this.#reset_now();
-        this.#render_all(data, root, partial || false);
+        this.#_render(data, root, false);
     }
 
     partial_render(data, root) {
-        return this.render(data, root, true);
+        this.#_render(data, root, true);
     }
 }
 
