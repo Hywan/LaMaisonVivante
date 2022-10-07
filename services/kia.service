@@ -1,0 +1,10 @@
+[Unit]
+Description=The Kia Reader program
+After=network.target
+
+[Service]
+ExecStart=victron --thing-port=8097 --into-thing
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
