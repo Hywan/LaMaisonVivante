@@ -6,6 +6,7 @@ mod errors;
 mod garage;
 mod http;
 mod identity;
+mod thing;
 mod units;
 mod vehicles;
 
@@ -16,10 +17,7 @@ use crate::{
     errors::Error,
     garage::Garage,
 };
-use axum::{extract::path::Path, http::StatusCode, response::Json, routing::get, Router};
 use human_panic::setup_panic;
-use serde_json::{json, Value as JsonValue};
-use std::net::SocketAddr;
 use structopt::StructOpt;
 
 #[tokio::main]
@@ -53,79 +51,28 @@ async fn main() -> Result<(), Error> {
             .expect("No password provided for the Kia Connect account"),
     );
 
-    match options.server_port {
-        None => {
-            println!("Opening the garage…");
+    if options.into_thing {
+        thing::run(auth, options.thing_port.or(configuration.thing_port));
+    } else {
+        println!("Opening the garage…");
 
-            let garage = Garage::new(Region::Europe, Brand::Kia, &auth).await?;
+        let garage = Garage::new(Region::Europe, Brand::Kia, &auth).await?;
 
-            println!("Looking for vehicles…");
+        println!("Looking for vehicles…");
 
-            let vehicles = garage.vehicles().await?;
-            let number_of_vehicles = vehicles.len();
+        let vehicles = garage.vehicles().await?;
+        let number_of_vehicles = vehicles.len();
 
-            println!("Found {} vehicle(s).", number_of_vehicles);
+        println!("Found {} vehicle(s).", number_of_vehicles);
 
-            for vehicle in vehicles.iter() {
-                println!(
-                    "\n## {nickname} ({vin})\n\n{vehicle:#?}\n\nwith state:\n\n{state:#?}",
-                    nickname = vehicle.nickname,
-                    vin = vehicle.vin,
-                    vehicle = vehicle,
-                    state = vehicle.state().await?
-                );
-            }
-        }
-
-        Some(server_port) => {
-            let router = Router::new().route(
-                "/:vehicle",
-                get(|Path(vehicle_vin): Path<String>| async move {
-                    let garage = Garage::new(Region::Europe, Brand::Kia, &auth)
-                        .await
-                        .map_err(|_| -> (StatusCode, Json<Option<JsonValue>>) {
-                            (StatusCode::SERVICE_UNAVAILABLE, Json(None))
-                        })?;
-                    let vehicles = garage.vehicles().await.map_err(
-                        |_| -> (StatusCode, Json<Option<JsonValue>>) {
-                            (StatusCode::SERVICE_UNAVAILABLE, Json(None))
-                        },
-                    )?;
-
-                    let response: Result<_, (StatusCode, Json<Option<JsonValue>>)> =
-                        match vehicles.iter().find_map(|vehicle| {
-                            if vehicle.vin == vehicle_vin {
-                                Some(vehicle)
-                            } else {
-                                None
-                            }
-                        }) {
-                            Some(vehicle) => Ok((
-                                StatusCode::OK,
-                                [("Access-Control-Allow-Origin", "*")],
-                                Json(Some(json!({
-                                    "description": vehicle,
-                                    "state": vehicle.state().await.unwrap(),
-                                }))),
-                            )),
-                            None => Ok((
-                                StatusCode::NOT_FOUND,
-                                [("Access-Control-Allow-Origin", "*")],
-                                Json(None),
-                            )),
-                        };
-
-                    response
-                }),
+        for vehicle in vehicles.iter() {
+            println!(
+                "\n## {nickname} ({vin})\n\n{vehicle:#?}\n\nwith state:\n\n{state:#?}",
+                nickname = vehicle.nickname,
+                vin = vehicle.vin,
+                vehicle = vehicle,
+                state = vehicle.state().await?
             );
-
-            let server_address = SocketAddr::from(([127, 0, 0, 1], server_port));
-            println!("Listening on {}", server_address);
-
-            axum::Server::bind(&server_address)
-                .serve(router.into_make_service())
-                .await
-                .unwrap();
         }
     }
 

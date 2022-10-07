@@ -1239,48 +1239,56 @@ window.customElements.define(
             this.attachShadow({mode: 'open'}).appendChild(template_content);
             const root = this.shadowRoot;
 
-            const { json: json_url } = read_data_attributes(this, 'json');
-            const raw_json = await http_get(json_url);
-            const json = await raw_json.json();
+            const props = await properties_of(this, 'base', 'description', 'state');
 
-            const { description, state } = json;
-            const { status, odometer, location } = state;
-            const { longitude, latitude } = location.coordinates;
+            async function update(next) {
+                // Read all fetched properties.
+                const values = await props.fetch_values();
 
-            self.#view.render(
-                {
-                    vehicle_nickname: description.nickname,
-                    vehicle_vin: description.vin,
-                    battery: status.battery.state_of_charge,
-                    range: status.battery.remaining_range,
-                    is_charging: status.battery.is_charging ? 'en charge' : 'débranché',
-                    estimated_charging_duration: seconds_to_duration(state.status.battery.estimated_charging_duration.secs),
-                    odometer: odometer.round(0),
-                    location_static_map: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l+a12b20(${longitude},${latitude})/${longitude},${latitude},16,0/300x300@2x?access_token=pk.eyJ1IjoiaHl3YW4iLCJhIjoiY2w4cG9sNDcwMTJ0cjNvbzVrYXMyd2VibCJ9.d2BSDWYAxe3w0-w7-tzBZQ`,
-                    location_map: `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=14/${latitude}/${longitude}`,
-                    targeted_temperature: `${status.targeted_temperature.round(1)}°C`,
-                    is_defrost_enabled: status.is_defrost_enabled ? 'activé' : 'désactivé',
-                    defrost_icon_gradient: status.is_defrost_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
-                    is_locked: status.is_locked ? 'fermée' : 'ouverte',
-                    is_front_left_door_opened: status.doors.is_front_left_opened,
-                    is_back_left_door_opened: status.doors.is_back_left_opened,
-                    is_front_right_door_opened: status.doors.is_front_right_opened,
-                    is_back_right_door_opened: status.doors.is_back_right_opened,
-                    is_front_left_window_opened: status.windows.is_front_left_opened,
-                    is_back_left_window_opened: status.windows.is_back_left_opened,
-                    is_front_right_window_opened: status.windows.is_front_right_opened,
-                    is_back_right_window_opened: status.windows.is_back_right_opened,
-                    is_trunk_opened: status.is_trunk_opened,
-                    is_frunk_opened: status.is_frunk_opened,
-                    is_steer_wheel_heat_enabled: status.is_steer_wheel_heat_enabled ? 'chauffant' : 'normal',
-                    steer_wheel_heat_icon_gradient: status.is_steer_wheel_heat_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
-                    is_air_conditionning_enabled: status.is_air_conditionning_enabled ? 'activée' : 'désactivée',
-                    air_conditionning_icon_gradient: status.is_air_conditionning_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
-                    is_rearview_mirror_heat_enabled: status.is_side_back_window_heat_enabled ? 'chauffants' : 'normaux',
-                    rearview_mirror_heat_icon_gradient: status.is_side_back_window_heat_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
-                },
-                long_thing,
-            );
+                // Get values.
+                const { value: description } = values.$get(props.names.description);
+                const { value: state } = values.$get(props.names.state);
+
+                const { status, odometer, location } = state;
+                const { longitude, latitude } = location.coordinates;
+
+                self.#view.render(
+                    {
+                        vehicle_nickname: description.nickname,
+                        vehicle_vin: description.vin,
+                        battery: status.battery.state_of_charge,
+                        range: status.battery.remaining_range,
+                        is_charging: status.battery.is_charging ? 'en charge' : 'débranché',
+                        estimated_charging_duration: seconds_to_duration(state.status.battery.estimated_charging_duration.secs),
+                        odometer: odometer.round(0),
+                        location_static_map: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l+a12b20(${longitude},${latitude})/${longitude},${latitude},16,0/300x300@2x?access_token=pk.eyJ1IjoiaHl3YW4iLCJhIjoiY2w4cG9sNDcwMTJ0cjNvbzVrYXMyd2VibCJ9.d2BSDWYAxe3w0-w7-tzBZQ`,
+                        location_map: `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=14/${latitude}/${longitude}`,
+                        targeted_temperature: `${status.targeted_temperature.round(1)}°C`,
+                        is_defrost_enabled: status.is_defrost_enabled ? 'activé' : 'désactivé',
+                        defrost_icon_gradient: status.is_defrost_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
+                        is_locked: status.is_locked ? 'fermée' : 'ouverte',
+                        is_front_left_door_opened: status.doors.is_front_left_opened,
+                        is_back_left_door_opened: status.doors.is_back_left_opened,
+                        is_front_right_door_opened: status.doors.is_front_right_opened,
+                        is_back_right_door_opened: status.doors.is_back_right_opened,
+                        is_front_left_window_opened: status.windows.is_front_left_opened,
+                        is_back_left_window_opened: status.windows.is_back_left_opened,
+                        is_front_right_window_opened: status.windows.is_front_right_opened,
+                        is_back_right_window_opened: status.windows.is_back_right_opened,
+                        is_trunk_opened: status.is_trunk_opened,
+                        is_frunk_opened: status.is_frunk_opened,
+                        is_steer_wheel_heat_enabled: status.is_steer_wheel_heat_enabled ? 'chauffant' : 'normal',
+                        steer_wheel_heat_icon_gradient: status.is_steer_wheel_heat_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
+                        is_air_conditionning_enabled: status.is_air_conditionning_enabled ? 'activée' : 'désactivée',
+                        air_conditionning_icon_gradient: status.is_air_conditionning_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
+                        is_rearview_mirror_heat_enabled: status.is_side_back_window_heat_enabled ? 'chauffants' : 'normaux',
+                        rearview_mirror_heat_icon_gradient: status.is_side_back_window_heat_enabled ? 'gradient gradient--linear__blue_to_red' : 'gradient gradient--linear__grey',
+                    },
+                    long_thing,
+                );
+            }
+
+            fire(VERY_LONG_REFRESH_RATE, update);
         }
     }
 );

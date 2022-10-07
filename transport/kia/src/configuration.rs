@@ -10,7 +10,7 @@ use std::{
 pub struct Configuration {
     pub username: String,
     pub password: Option<String>,
-    pub server_port: Option<u16>,
+    pub thing_port: Option<u16>,
 }
 
 impl Default for Configuration {
@@ -18,7 +18,7 @@ impl Default for Configuration {
         Self {
             username: "".to_string(),
             password: None,
-            server_port: None,
+            thing_port: None,
         }
     }
 }
