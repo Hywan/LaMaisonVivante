@@ -39,7 +39,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         thing::run(context, options.thing_port.or(configuration.thing_port));
     } else {
         match &options.format {
-            Format::Text => println!("{}", reader::read(&mut context)?),
+            Format::Text => println!("{:#?}", reader::read(&mut context)?),
             Format::Json => println!("{}", to_json(&reader::read(&mut context)?)?),
             Format::Tui => tui::run(&mut context)?,
         }

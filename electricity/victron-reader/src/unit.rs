@@ -50,10 +50,16 @@ impl_unit!(i32);
 
 macro_rules! unit {
     ($name:ident, $display:expr) => {
-        #[derive(Debug, Copy, Clone, Serialize)]
+        #[derive(Copy, Clone, Serialize)]
         pub struct $name(pub f32);
 
         impl fmt::Display for $name {
+            fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                write!(formatter, $display, self.0)
+            }
+        }
+
+        impl fmt::Debug for $name {
             fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
                 write!(formatter, $display, self.0)
             }
