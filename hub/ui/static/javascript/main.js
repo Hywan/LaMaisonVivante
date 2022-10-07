@@ -1326,7 +1326,7 @@ window.customElements.define(
 );
 
 window.customElements.define(
-    'my-fancy-icon',
+    'my-icon',
     class extends HTMLElement {
         #view = new View();
 
@@ -1341,7 +1341,7 @@ window.customElements.define(
         connectedCallback() {
             const self = this;
 
-            const template = document.getElementById('template--fancy-icon');
+            const template = document.getElementById('template--icon');
             const template_content = template.content.cloneNode(true);
 
             this.attachShadow({mode: 'open'}).appendChild(template_content);

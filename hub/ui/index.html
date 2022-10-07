@@ -286,9 +286,9 @@
             <my-text-thing slot="thing">
               <span slot="name">Température</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
-                href="static/icons/symbols.svg#thermometer"></my-fancy-icon>
+                href="static/icons/symbols.svg#thermometer"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li><strong>Mesurée <span data-bind="temperature">?</span></strong></li>
@@ -341,10 +341,10 @@
             <my-text-thing slot="thing">
               <span slot="name">Humidité</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
                 href="static/icons/symbols.svg#drop"
-                filler-class="gradient gradient--conic__yellow_to_pink"></my-fancy-icon>
+                filler-class="gradient gradient--conic__yellow_to_pink"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li><strong><span data-bind="humidity">?</span>H%</strong></li>
@@ -504,10 +504,10 @@
             <my-text-thing slot="thing">
               <span slot="name">Autonomie</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
                 href="static/icons/symbols.svg#battery"
-                filler-class="gradient gradient--linear__green"></my-fancy-icon>
+                filler-class="gradient gradient--linear__green"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li><strong><span data-bind="battery">?</span>%</strong></li>
@@ -535,9 +535,9 @@
             <my-text-thing slot="thing">
               <span slot="name">Charge</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
-                href="static/icons/symbols.svg#charging_station"></my-fancy-icon>
+                href="static/icons/symbols.svg#charging_station"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_charging">?</li>
@@ -550,9 +550,9 @@
             <my-text-thing slot="thing">
               <span slot="name">Odomètre</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
-                href="static/icons/symbols.svg#odometer"></my-fancy-icon>
+                href="static/icons/symbols.svg#odometer"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li><span data-bind="odometer">?</span> km</li>
@@ -564,10 +564,10 @@
             <my-text-thing slot="thing">
               <span slot="name">Température</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
                 href="static/icons/symbols.svg#thermometer"
-                filler-class="gradient gradient--linear__blue_to_red"></my-fancy-icon>
+                filler-class="gradient gradient--linear__blue_to_red"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="targeted_temperature">?</li>
@@ -579,10 +579,10 @@
             <my-text-thing slot="thing">
               <span slot="name">Verrouillage</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
                 href="static/icons/symbols.svg#lock"
-                filler-class="gradient gradient--linear__yellow_to_red"></my-fancy-icon>
+                filler-class="gradient gradient--linear__yellow_to_red"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_locked">?</li>
@@ -594,11 +594,11 @@
             <my-text-thing slot="thing">
               <span slot="name">Dégivrage</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
                 href="static/icons/symbols.svg#defrost"
                 data-bind-attributes
-                data-bind:filler-class="defrost_icon_gradient"></my-fancy-icon>
+                data-bind:filler-class="defrost_icon_gradient"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_defrost_enabled">?</li>
@@ -610,11 +610,11 @@
             <my-text-thing slot="thing">
               <span slot="name">Volant</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
                 href="static/icons/symbols.svg#steer_wheel_heat"
                 data-bind-attributes
-                data-bind:filler-class="steer_wheel_heat_icon_gradient"></my-fancy-icon>
+                data-bind:filler-class="steer_wheel_heat_icon_gradient"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_steer_wheel_heat_enabled">?</li>
@@ -626,11 +626,11 @@
             <my-text-thing slot="thing">
               <span slot="name">A/C</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
                 href="static/icons/symbols.svg#air_conditionning"
                 data-bind-attributes
-                data-bind:filler-class="air_conditionning_icon_gradient"></my-fancy-icon>
+                data-bind:filler-class="air_conditionning_icon_gradient"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_air_conditionning_enabled">?</li>
@@ -642,11 +642,11 @@
             <my-text-thing slot="thing">
               <span slot="name">Rétroviseurs</span>
 
-              <my-fancy-icon
+              <my-icon
                 slot="icon"
                 href="static/icons/symbols.svg#rearview_mirror_heat"
                 data-bind-attributes
-                data-bind:filler-class="rearview_mirror_heat_icon_gradient"></my-fancy-icon>
+                data-bind:filler-class="rearview_mirror_heat_icon_gradient"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_rearview_mirror_heat_enabled">?</li>
@@ -721,7 +721,7 @@
     </svg>
   </template>
 
-  <template id="template--fancy-icon">
+  <template id="template--icon">
     <style>
       @import "static/style/main.css";
     </style>
