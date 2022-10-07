@@ -4,6 +4,12 @@ const REFRESH_RATE = 1000 * 10; // 10 secs
 const LONG_REFRESH_RATE = 1000 * 60; // 1 minute
 const VERY_LONG_REFRESH_RATE = 1000 * 60 * 60; // 1 hour
 
+function dbg(value) {
+    console.log(value);
+
+    return value;
+}
+
 function http_get(url) {
     return fetch(url, {
         method: 'GET',
@@ -502,8 +508,6 @@ class View {
     }
 
     #render_all(data, root, partial, key_prefix, can_defer) {
-        key_prefix = key_prefix || '';
-
         this.#render_bind_loop(data, root, partial, key_prefix, can_defer);
         this.#render_bind(data, root, partial, key_prefix, can_defer);
         this.#render_bind_attribute(data, root, partial, key_prefix, can_defer);
@@ -511,7 +515,7 @@ class View {
 
     #_render(data, root, partial) {
         this.#reset_now();
-        this.#render_all(data, root, partial, true);
+        this.#render_all(data, root, partial, '', true);
     }
 
     render(data, root, partial) {
