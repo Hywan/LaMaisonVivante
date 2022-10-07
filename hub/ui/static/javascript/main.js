@@ -327,28 +327,26 @@ async function fetch_properties(base, ...property_names) {
     };
 }
 
-const render = new function () {
-    const LOOP_REGEX = /^(?<item_name>[a-zA-Z_]+) in (?<set_name>[a-zA-Z_]+(\.[a-zA-Z_]+)?)$/;
-    const ATTRIBUTE_PREFIX = 'data-bind:';
-    const reset = new function () {
-        const deferred = [];
+class View {
+    static #LOOP_REGEX = /^(?<item_name>[a-zA-Z_]+) in (?<set_name>[a-zA-Z_]+(\.[a-zA-Z_]+)?)$/;
+    static #ATTRIBUTE_PREFIX = 'data-bind:';
+    #reset_deferred = [];
 
-        return {
-            defer: function (element, data, func) {
-                deferred.push({element, data, func});
-            },
+    constructor() {}
 
-            now: function () {
-                for (const {element, data, func} of deferred) {
-                    (func)(element, data);
-                }
+    #defer_reset(element, data, func) {
+        this.#reset_deferred.push({element, data, func});
+    }
 
-                deferred.length = 0;
-            },
-        };
-    };
+    #reset_now() {
+        for (const {element, data, func} of this.#reset_deferred) {
+            (func)(element, data);
+        }
 
-    function remove_prefix(prefix, value) {
+        this.#reset_deferred.length = 0;
+    }
+
+    #remove_prefix(prefix, value) {
         if ('' === prefix) {
             return value;
         }
@@ -356,16 +354,16 @@ const render = new function () {
         return value.replace(new RegExp(`^${prefix}`), '');
     }
 
-    function render_bind_loop(data, root, partial, key_prefix) {
+    #render_bind_loop(data, root, partial, key_prefix) {
         let element;
 
         // Handle one loop at a time to allow proper embedded loops
         // computation.
         while (element = root.querySelector('[data-bind-loop]')) {
             let original_key = element.dataset.bindLoop;
-            const key = remove_prefix(key_prefix, original_key);
+            const key = this.#remove_prefix(key_prefix, original_key);
 
-            let match = key.match(LOOP_REGEX);
+            let match = key.match(View.#LOOP_REGEX);
 
             if (null === match) {
                 console.error(`Loop format is invalid: \`${key}\``);
@@ -374,7 +372,7 @@ const render = new function () {
             }
 
             let { item_name, set_name } = match.groups;
-            set_name = remove_prefix(key_prefix, set_name);
+            set_name = this.#remove_prefix(key_prefix, set_name);
 
             if (!(set_name in data)) {
                 if (!partial) {
@@ -382,7 +380,7 @@ const render = new function () {
                 }
 
                 delete element.dataset.bindLoop;
-                reset.defer(element, key, (element, key) => element.dataset.bindLoop = key);
+                this.#defer_reset(element, key, (element, key) => element.dataset.bindLoop = key);
 
                 continue;
             }
@@ -401,17 +399,16 @@ const render = new function () {
                 const element_clone = element.cloneNode(true);
                 const next_key_prefix = `${item_name}.`;
 
-                reset.defer(element_clone, null, (element, _) => element.remove());
-                render_all(datum, element_clone, partial, next_key_prefix);
+                this.#defer_reset(element_clone, null, (element, _) => element.remove());
+                this.#render_all(datum, element_clone, partial, next_key_prefix);
                 collected_elements.push(element_clone);
             }
 
-            const element_index = Array.prototype.indexOf.call(element.parentNode.children, element);
-            reset.defer(
+            this.#defer_reset(
                 element.cloneNode(true),
                 {
                     parent: element.parentNode,
-                    element_index,
+                    element_index: Array.prototype.indexOf.call(element.parentNode.children, element),
                     key: original_key,
                 },
                 (element, { parent, element_index, key }) => {
@@ -426,7 +423,7 @@ const render = new function () {
         }
     }
 
-    function render_bind(data, root, partial, key_prefix) {
+    #render_bind(data, root, partial, key_prefix) {
         const elements = [...root.querySelectorAll('[data-bind]')];
 
         if (root.dataset && root.dataset.bind) {
@@ -437,9 +434,9 @@ const render = new function () {
             let key = element.dataset.bind;
             delete element.dataset.bind;
 
-            reset.defer(element, key, (element, key) => element.dataset.bind = key);
+            this.#defer_reset(element, key, (element, key) => element.dataset.bind = key);
 
-            key = remove_prefix(key_prefix, key);
+            key = this.#remove_prefix(key_prefix, key);
 
             if (!(key in data)) {
                 if (!partial) {
@@ -453,7 +450,7 @@ const render = new function () {
         }
     }
 
-    function render_bind_attribute(data, root, partial, key_prefix) {
+    #render_bind_attribute(data, root, partial, key_prefix) {
         const elements = [...root.querySelectorAll('[data-bind-attributes]')];
 
         if (root.dataset && undefined !== root.dataset.bindAttributes) {
@@ -463,20 +460,20 @@ const render = new function () {
         for (const element of elements) {
             delete element.dataset.bindAttributes;
 
-            reset.defer(element, '', (element, key) => element.dataset.bindAttributes = key);
+            this.#defer_reset(element, '', (element, key) => element.dataset.bindAttributes = key);
 
             const attributes = Array.from(element.attributes)
-                  .filter(node => node.nodeName.startsWith(ATTRIBUTE_PREFIX))
-                  .reduce(
-                      (object, node) => ({
-                          ...object,
-                          [node.nodeName.slice(ATTRIBUTE_PREFIX.length)]: node.nodeValue
-                      }),
-                      {}
-                  );
+                .filter(node => node.nodeName.startsWith(View.#ATTRIBUTE_PREFIX))
+                .reduce(
+                    (object, node) => ({
+                        ...object,
+                        [node.nodeName.slice(View.#ATTRIBUTE_PREFIX.length)]: node.nodeValue
+                    }),
+                    {}
+                );
 
             for (let [attribute_name, key] of Object.entries(attributes)) {
-                key = remove_prefix(key_prefix, key);
+                key = this.#remove_prefix(key_prefix, key);
 
                 if (!(key in data)) {
                     if (!partial) {
@@ -491,23 +488,23 @@ const render = new function () {
         }
     }
 
-    function render_all(data, root, partial, key_prefix) {
+    #render_all(data, root, partial, key_prefix) {
         key_prefix = key_prefix || '';
 
-        render_bind_loop(data, root, partial, key_prefix);
-        render_bind(data, root, partial, key_prefix);
-        render_bind_attribute(data, root, partial, key_prefix);
-    };
+        this.#render_bind_loop(data, root, partial, key_prefix);
+        this.#render_bind(data, root, partial, key_prefix);
+        this.#render_bind_attribute(data, root, partial, key_prefix);
+    }
 
-    return function (data, root, partial) {
-        reset.now();
-        render_all(data, root, partial || false);
-    };
-};
+    render(data, root, partial) {
+        this.#reset_now();
+        this.#render_all(data, root, partial || false);
+    }
 
-const partial_render = function (data, root) {
-    return render(data, root, true);
-};
+    partial_render(data, root) {
+        return this.render(data, root, true);
+    }
+}
 
 function value_into_range(value, from_range_min, from_range_max, to_range_min, to_range_max) {
     let new_value = Math.min(Math.max(value, from_range_min), from_range_max);
@@ -747,11 +744,15 @@ window.customElements.define(
 window.customElements.define(
     'my-solar-pv-thing',
     class extends HTMLElement {
+        #view = new View();
+
         constructor() {
             super();
         }
 
         async connectedCallback() {
+            const self = this;
+
             const template = document.getElementById('template--solar-pv-thing');
             const template_content = template.content.cloneNode(true);
 
@@ -825,7 +826,7 @@ window.customElements.define(
                     data.sun_cy = pos_point.y;
                 }
 
-                render(data, root);
+                self.#view.render(data, root);
 
                 next();
             }
@@ -1052,11 +1053,15 @@ window.customElements.define(
         };
 
         return class extends HTMLElement {
+            #view = new View();
+
             constructor() {
                 super();
             }
 
             async connectedCallback() {
+                const self = this;
+
                 let template = document.getElementById('template--weather-thing');
                 let template_content = template.content.cloneNode(true);
 
@@ -1165,7 +1170,7 @@ window.customElements.define(
                         });
                     }
 
-                    render(
+                    self.#view.render(
                         {
                             temperature,
                             apparent_temperature,
@@ -1195,11 +1200,15 @@ window.customElements.define(
 window.customElements.define(
     'my-car-thing',
     class extends HTMLElement {
+        #view = new View();
+
         constructor() {
             super();
         }
 
         async connectedCallback() {
+            const self = this;
+
             const template = document.getElementById('template--car-thing');
             const template_content = template.content.cloneNode(true);
 
@@ -1208,7 +1217,7 @@ window.customElements.define(
 
             // Set properties of `my-meter-thing` before it's attached to the DOM.
             const data_properties = read_data_attributes(this, 'battery-base', 'battery-primary');
-            render({...data_properties}, short_thing);
+            new View().render({...data_properties}, short_thing);
 
             this.attachShadow({mode: 'open'}).appendChild(template_content);
             const root = this.shadowRoot;
@@ -1221,7 +1230,7 @@ window.customElements.define(
             const { status, odometer, location } = state;
             const { longitude, latitude } = location.coordinates;
 
-            render(
+            self.#view.render(
                 {
                     vehicle_nickname: description.nickname,
                     vehicle_vin: description.vin,
@@ -1319,6 +1328,8 @@ window.customElements.define(
 window.customElements.define(
     'my-fancy-icon',
     class extends HTMLElement {
+        #view = new View();
+
         constructor() {
             super();
         }
@@ -1328,6 +1339,8 @@ window.customElements.define(
         }
 
         connectedCallback() {
+            const self = this;
+
             const template = document.getElementById('template--fancy-icon');
             const template_content = template.content.cloneNode(true);
 
@@ -1342,7 +1355,7 @@ window.customElements.define(
             const href = this.getAttribute('href');
             const filler_class = this.getAttribute('filler-class');
 
-            render({href, filler_class}, root);
+            self.#view.render({href, filler_class}, root);
         }
 
         attributeChangedCallback(name, old_value, new_value) {
@@ -1357,7 +1370,7 @@ window.customElements.define(
             }
 
             if ('filler-class' === name) {
-                partial_render({filler_class: new_value}, this.shadowRoot);
+                this.#view.partial_render({filler_class: new_value}, this.shadowRoot);
             }
         }
     }
