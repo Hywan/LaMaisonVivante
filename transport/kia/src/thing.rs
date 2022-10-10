@@ -6,7 +6,7 @@ use crate::{
 use serde_json::{json, Value};
 use std::{
     sync::{Arc, RwLock, Weak},
-    thread, time,
+    time,
 };
 use webthing::{
     server, Action as ThingAction, BaseProperty, BaseThing, Thing, ThingsType, WebThingServer,

@@ -9,28 +9,52 @@ that are used for the home automation, monitoring etc.
 
 # Navigation
 
-## Blinds
+## 🪟 Blinds
 
 Blinds are controlled by the `blinds.ino` program, that lands in a
-Controllino, along with its companion `blinds-controller`. [Learn
-more](blinds/).
+Controllino, along with its companion `blinds`. [Learn more](blinds/).
 
-## Domestic Hot Water/Ventilation
+## 🚿 Domestic Hot Water and 🌬️ Ventilation
 
 Supplied air, extracted air, temperatures, CO<sub>2</sub>, Domestic
 Hot Water (DHW), Storage Hot Water (SHW) etc. are monitored with the
 `nilan` program. [Learn more](dhw-ventilation/nilan/).
 
-## Electricity
+## ⚡ Electricity
 
 Batteries, PV inverter, and house are monitored with the
 `victron-reader` program. [Learn more](electricity/victron-reader/).
 
-## Lights
+## 💡 Lights
 
 Lights are controlled by the `lights.ino` program, that lands in a
-Controllino, along with its companion `lights-controller`. [Learn
-more](lights/).
+Controllino, along with its companion `lights`. [Learn more](lights/).
+
+## 💧 Water tanks
+
+The house uses rain for everything. Rain is collected inside 2 water
+tanks. The `tanks` program runs in an ESP to calculate the remaining
+water in the tanks. [Learn more](tanks/).
+
+## Transport
+
+The transport is composed of two parts: The (electric) vehicle itself,
+and its charging station:
+
+### 🚗 Electric vehicle
+
+The electric vehicle is a Kia EV6, it has its own program to fetch
+vehicle data via Kia Connect. [Learn more](transport/kia/).
+
+### 🔌 Charging station
+
+The charging station is an Alfen Eve Single S-line, it has its own
+program to fetch and to control it. [Learn more](transport/alfen/).
+
+## 🌤️ Weather
+
+Weather can be requested through the `weather` program. It collects
+and exposes a set of interesting weather data. [Learn more](weather/).
 
 ## Domestic Appliances
 
@@ -38,13 +62,7 @@ Domestic Appliances are used for thiner monitoring. For the moment,
 only the dishwasher is supported with the `vzug-reader`
 program. [Learn more](appliances/dishwasher/vzug-reader/).
 
-## Tanks
-
-The house uses rain for everything. Rain is collected inside 2 water
-tanks. The `tanks` program runs in an ESP to calculate the remaining
-water in the tanks. [Learn more](tanks/).
-
-## Hub
+## 🎨 Hub
 
 The hub contains several programs:
 
@@ -75,7 +93,7 @@ and the blinds. [Learn more](hub/ui/).
   </tbody>
 </table>
 
-### The Database
+### 💾 The Database
 
 The Database is based on [PostgreSQL](https://www.postgresql.org/) +
 [Timescale](https://www.timescale.com/). It contains time-series of
@@ -96,7 +114,7 @@ The Event Automator is an attempt to automate certain actions in the
 house, by looking at the data in the Database to _trigger_ some
 WebThing'_actions_. [Learn more](hub/event-automator/).
 
-## Services
+## 🐧 Services
 
 The `services/` directory contains all service definitions ready to be
 consumed by `systemctl`. [Learn more](services/).

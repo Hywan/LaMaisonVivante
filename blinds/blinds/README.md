@@ -74,7 +74,7 @@ Gateway](https://iot.mozilla.org/gateway/) to interact with the
 blinds. Enjoy!
 
 ```sh
-$ ./target/release/blinds --address 192.168.1.42:23 --into-thing --thing-port 8085
+$ ./target/release/blinds --address 192.168.1.42:24 --into-thing --thing-port 8085
 Starting the Things server (port 8085)…
 ```
 

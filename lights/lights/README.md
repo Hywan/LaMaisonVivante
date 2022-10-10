@@ -1,4 +1,4 @@
-# Lights Controller
+# Lights
 
 This program aims at controlling the lights in our house, by talking
 to the `lights.ino` program that lands in a Controllino. To learn more
@@ -13,7 +13,7 @@ clone the program, and run:
 $ cargo build --release
 ```
 
-The executable binary is located in `./target/release/lights`.
+The executable binary is located in `/target/release/lights`.
 
 ## Usage
 
@@ -75,6 +75,6 @@ Gateway](https://iot.mozilla.org/gateway/) to interact with the
 lights. Enjoy!
 
 ```sh
-$ ./target/release/lights --address 192.168.1.125:23 --into-thing --thing-port 8081
+$ /target/release/lights --address 192.168.1.125:23 --into-thing --thing-port 8081
 Starting the Things server (port 8081)…
 ```

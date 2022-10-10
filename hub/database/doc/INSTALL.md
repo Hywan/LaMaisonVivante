@@ -114,9 +114,3 @@ $ diesel migration \
       --migration-dir path/to/hub/database/migrations \
       run
 ```
-
-## 
-
-# Misc
-
-https://stackoverflow.com/questions/32222889/how-to-calculate-power-consumption-from-power-records

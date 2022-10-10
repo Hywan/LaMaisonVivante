@@ -19,7 +19,7 @@ clone the program, and run:
 $ cargo build --release
 ```
 
-The executable binary is located in `./target/release/vzug-reader`.
+The executable binary is located in `/target/release/vzug-reader`.
 
 ## Usage
 

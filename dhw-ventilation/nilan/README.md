@@ -50,7 +50,7 @@ clone the program, and run:
 $ cargo build --release
 ```
 
-The executable binary is located in `./target/release/nilan`.
+The executable binary is located in `/target/release/nilan`.
 
 ## Usage
 
@@ -189,7 +189,7 @@ State {
 #### [JSON](https://www.json.org/json-en.html)
 
 JSON can be used in a Web environment. Example with `nilan read --address
-<addr< --format json` (formatted with `… | python -m json.tool`):
+<addr> --format json` (formatted with `… | python -m json.tool`):
 
 ```json
 {
@@ -235,7 +235,7 @@ Gateway](https://iot.mozilla.org/gateway/) to interact with the Nilan
 device. Enjoy!
 
 ```sh
-$ ./target/release/nilan read --address 192.168.1.122:502 --into-thing --thing-port 8083
+$ /target/release/nilan read --address 192.168.1.122:502 --into-thing --thing-port 8083
 Starting the Things server (port 8083)…
 ```
 

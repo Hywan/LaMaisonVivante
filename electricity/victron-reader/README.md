@@ -1,10 +1,10 @@
 # Victron Reader
 
 This program aims at reading information from a [Victron
-CCGX](https://www.victronenergy.com/panel-systems-remote-monitoring/color-control) device. In our
-house, this device is connected to the batteries, the PV inverter, and
-the house (which includes the charging/discharging station for the
-electric vehicle).
+CCGX](https://www.victronenergy.com/panel-systems-remote-monitoring/color-control)
+device. In our house, this device is connected to the batteries, the
+PV inverter, and the house (which includes the charging/discharging
+station for the electric vehicle).
 
 Data are read through [Modbus
 TCP](https://en.wikipedia.org/wiki/Modbus). An IP address is then
@@ -12,13 +12,14 @@ required to reach the Victron CCGX. The port 502 must be opened.
 
 ## Installation
 
-The program is written in [Rust](https://www.rust-lang.org/). Just clone the program, and run:
+The program is written in [Rust](https://www.rust-lang.org/). Just
+clone the program, and run:
 
 ```shell
 $ cargo build --release
 ```
 
-The executable binary is located in `./target/release/victron-reader`.
+The executable binary is located in `/target/release/victron-reader`.
 
 ## Usage
 
@@ -159,7 +160,7 @@ Gateway](https://iot.mozilla.org/gateway/) to interact with the Victron
 device. Enjoy!
 
 ```sh
-$ ./target/release/victron-reader --address 192.168.1.117:502 --into-thing --thing-port 8082
+$ /target/release/victron-reader --address 192.168.1.117:502 --into-thing --thing-port 8082
 Starting the Things server (port 8082)…
 ```
 

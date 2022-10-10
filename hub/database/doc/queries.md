@@ -136,14 +136,13 @@ SELECT
 FROM (
   SELECT
     time as t,
-    ROUND(EXTRACT(EPOCH FROM (lag(time) OVER () - time)::interval)) as i,
+    ROUND(EXTRACT(EPOCH FROM (time - lag(time) OVER ())::interval)) as i,
     (house_power + lag(house_power) OVER ()) / 2 as p
   FROM
     electricity_consumption
   WHERE
     house_power > 0 AND
     $__timeFilter("time")
-  ORDER BY time DESC
 ) AS s
 GROUP BY time
 ORDER BY time DESC
@@ -158,14 +157,13 @@ SELECT
 FROM (
   SELECT
     time as t,
-    ROUND(EXTRACT(EPOCH FROM (lag(time) OVER () - time)::interval)) as i,
+    ROUND(EXTRACT(EPOCH FROM (time - lag(time) OVER ())::interval)) as i,
     (power + lag(power) OVER ()) / 2 as p
   FROM
     electricity_production
   WHERE
     power > 0 AND
     $__timeFilter("time")
-  ORDER BY time DESC
 ) AS s
 GROUP BY time
 ORDER BY time DESC
