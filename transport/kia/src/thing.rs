@@ -136,7 +136,7 @@ pub fn run(auth: Authentification, port: Option<u16>) {
                 update_property!(vehicle, "state", state);
             }
 
-            thread::sleep(time::Duration::from_secs(60));
+            tokio::time::sleep(time::Duration::from_secs(60)).await;
         }
     });
 
