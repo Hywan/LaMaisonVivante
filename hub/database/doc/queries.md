@@ -143,6 +143,7 @@ FROM (
   WHERE
     house_power > 0 AND
     $__timeFilter("time")
+  ORDER BY time ASC
 ) AS s
 GROUP BY time
 ORDER BY time DESC
@@ -164,6 +165,7 @@ FROM (
   WHERE
     power > 0 AND
     $__timeFilter("time")
+  ORDER BY time ASC
 ) AS s
 GROUP BY time
 ORDER BY time DESC
