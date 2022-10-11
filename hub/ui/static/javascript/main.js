@@ -340,17 +340,21 @@ class View {
 
     constructor() {}
 
-    #defer_reset(element, data, func) {
-        this.#reset_deferred.push({element, data, func});
-    }
+    #reset = new class {
+        #deferred = [];
 
-    #reset_now() {
-        for (const {element, data, func} of this.#reset_deferred) {
-            (func)(element, data);
+        defer(element, data, func) {
+            this.#deferred.push({element, data, func});
         }
 
-        this.#reset_deferred.length = 0;
-    }
+        now() {
+            for (const {element, data, func} of this.#deferred) {
+                (func)(element, data);
+            }
+
+            this.#deferred.length = 0;
+        }
+    };
 
     #remove_prefix(prefix, value) {
         if ('' === prefix) {
@@ -388,7 +392,7 @@ class View {
                 delete element.dataset.bindLoop;
 
                 if (can_defer) {
-                    this.#defer_reset(element, key, (element, key) => element.dataset.bindLoop = key);
+                    this.#reset.defer(element, key, (element, key) => element.dataset.bindLoop = key);
                 }
 
                 continue;
@@ -409,7 +413,7 @@ class View {
                 const next_key_prefix = `${item_name}.`;
 
                 if (can_defer) {
-                    this.#defer_reset(element_clone, null, (element, _) => element.remove());
+                    this.#reset.defer(element_clone, null, (element, _) => element.remove());
                 }
 
                 this.#render_all(datum, element_clone, partial, next_key_prefix, false);
@@ -417,7 +421,7 @@ class View {
             }
 
             if (can_defer) {
-                this.#defer_reset(
+                this.#reset.defer(
                     element.cloneNode(true),
                     {
                         parent: element.parentNode,
@@ -450,7 +454,7 @@ class View {
             delete element.dataset.bind;
 
             if (can_defer) {
-                this.#defer_reset(element, key, (element, key) => element.dataset.bind = key);
+                this.#reset.defer(element, key, (element, key) => element.dataset.bind = key);
             }
 
             key = this.#remove_prefix(key_prefix, key);
@@ -478,7 +482,7 @@ class View {
             delete element.dataset.bindAttributes;
 
             if (can_defer) {
-                this.#defer_reset(element, '', (element, key) => element.dataset.bindAttributes = key);
+                this.#reset.defer(element, '', (element, key) => element.dataset.bindAttributes = key);
             }
 
             const attributes = Array.from(element.attributes)
@@ -514,7 +518,7 @@ class View {
     }
 
     #_render(data, root, partial) {
-        this.#reset_now();
+        this.#reset.now();
         this.#render_all(data, root, partial, '', true);
     }
 
