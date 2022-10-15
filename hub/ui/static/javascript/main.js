@@ -1191,7 +1191,7 @@ window.customElements.define(
                             dew_point: f.dew_point.round(1),
                             wind: f.wind_speed.round(1),
                             wind_gust: f.wind_gust.round(1),
-                            wind_degree: `transform: rotate(${f.wind_degree}deg)`,
+                            wind_degree: `transform: rotate(${(f.wind_degree - 180)}deg)`,
                         });
                     }
 
