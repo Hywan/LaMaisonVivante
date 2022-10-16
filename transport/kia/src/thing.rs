@@ -116,24 +116,23 @@ pub fn run(auth: Authentification, port: Option<u16>) {
 
     tokio::spawn(async move {
         loop {
-            let garage = Garage::new(Region::Europe, Brand::Kia, &auth)
-                .await
-                .unwrap();
-            let vehicles = garage.vehicles().await.unwrap();
-            let vehicle0 = vehicles.iter().nth(0).unwrap();
+            if let Ok(garage) = Garage::new(Region::Europe, Brand::Kia, &auth).await {
+                if let Ok(vehicles) = garage.vehicles().await {
+                    if let Some(vehicle0) = vehicles.iter().nth(0) {
+                        // Vehicle status.
+                        if let Ok(state) = vehicle0.state().await {
+                            let vehicle = vehicle.clone();
 
-            // Vehicle status.
-            {
-                let state = vehicle0.state().await.unwrap();
-                let vehicle = vehicle.clone();
-
-                update_property!(
-                    vehicle,
-                    "state_of_charge",
-                    state.status.battery.state_of_charge,
-                );
-                update_property!(vehicle, "description", vehicle0);
-                update_property!(vehicle, "state", state);
+                            update_property!(
+                                vehicle,
+                                "state_of_charge",
+                                state.status.battery.state_of_charge,
+                            );
+                            update_property!(vehicle, "description", vehicle0);
+                            update_property!(vehicle, "state", state);
+                        }
+                    }
+                }
             }
 
             tokio::time::sleep(time::Duration::from_secs(60)).await;
