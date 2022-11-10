@@ -24,6 +24,20 @@ pub fn toggle_ventilation(context: &mut sync::Context, current_state: &State) ->
     }
 }
 
+pub fn set_ventilation_mode(
+    context: &mut sync::Context,
+    current_state: &State,
+    mode: VentilationMode,
+) -> Result<()> {
+    context.set_slave(Slave(1));
+
+    if current_state.ventilation.mode == mode {
+        return Ok(());
+    }
+
+    context.write_single_register(VENTILATION_MODE, mode.into())
+}
+
 pub fn toggle_hot_water(context: &mut sync::Context, current_state: &State) -> Result<()> {
     if current_state
         .domestic_hot_water

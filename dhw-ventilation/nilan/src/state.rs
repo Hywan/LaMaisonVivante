@@ -1,6 +1,7 @@
 use crate::unit::*;
 use serde::Serialize;
 use std::convert::TryFrom;
+use structopt::clap::arg_enum;
 
 #[derive(Debug, Clone, Serialize)]
 pub enum VentilationState {
@@ -35,11 +36,13 @@ impl Into<u16> for VentilationState {
     }
 }
 
-#[derive(Debug, Serialize)]
-pub enum VentilationMode {
-    Auto,
-    Cooling,
-    Heating,
+arg_enum! {
+    #[derive(Debug, Serialize, PartialEq, Eq)]
+    pub enum VentilationMode {
+        Auto,
+        Cooling,
+        Heating,
+    }
 }
 
 impl Default for VentilationMode {

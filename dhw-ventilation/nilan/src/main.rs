@@ -64,6 +64,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if write_command.toggle_hot_water {
                 writer::toggle_hot_water(&mut context, &current_state)?;
             }
+
+            if let Some(ventilation_mode) = write_command.ventilation_mode {
+                writer::set_ventilation_mode(&mut context, &current_state, ventilation_mode)?;
+            }
         }
 
         _ => panic!("Must precise a command kind (like `read` or `write`)."),

@@ -1,3 +1,4 @@
+use crate::state::VentilationMode;
 use std::net::SocketAddr;
 use structopt::{clap::arg_enum, StructOpt};
 
@@ -69,6 +70,15 @@ pub struct WriteCommand {
     /// Toggle the ventilation.
     #[structopt(short = "v", long = "toggle-ventilation")]
     pub toggle_ventilation: bool,
+
+    /// Change the ventilation mode.
+    #[structopt(
+        short = "m",
+        long = "ventilation-mode",
+        possible_values = &VentilationMode::variants(),
+        case_insensitive = true,
+    )]
+    pub ventilation_mode: Option<VentilationMode>,
 
     /// Toggle boiling hot water by playing with the anti-legionna
     /// program.

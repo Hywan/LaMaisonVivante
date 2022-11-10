@@ -2,7 +2,7 @@
 pub const VENTILATION_STATE: u16 = 20100;
 
 /// Ventilation mode.
-pub const VENTILATION_MODE: u16 = 21770;
+pub const VENTILATION_MODE: u16 = 20120;
 
 /// Fan speed for supplied air.
 pub const SUPPLIED_AIR_FAN_SPEED: u16 = 21771;
