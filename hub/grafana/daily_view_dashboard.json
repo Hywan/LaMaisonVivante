@@ -31,53 +31,251 @@
       "type": "row"
     },
     {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": null,
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Production per 1h"
+            },
+            "properties": [
+              {
+                "id": "custom.drawStyle",
+                "value": "bars"
+              },
+              {
+                "id": "custom.barAlignment",
+                "value": 0
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Consumption per 1h"
+            },
+            "properties": [
+              {
+                "id": "custom.drawStyle",
+                "value": "bars"
+              },
+              {
+                "id": "custom.barAlignment",
+                "value": 0
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Consumption"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Production"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
-        "h": 8,
+        "h": 12,
         "w": 24,
         "x": 0,
         "y": 1
       },
-      "hiddenSeries": false,
-      "id": 2,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
+      "id": 12,
       "options": {
-        "alertThreshold": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
       },
-      "percentage": false,
       "pluginVersion": "8.0.4",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time_bucket('1 hour', s.t) + interval '20 minutes' as time,\n  ROUND((sum(s.i * s.p) / 3600 / 1000)::numeric, 3) as \"Consumption per 1h\"\nFROM (\n  SELECT\n    time as t,\n    ROUND(EXTRACT(EPOCH FROM (time - lag(time) OVER ())::interval)) as i,\n    (house_power + lag(house_power) OVER ()) / 2 as p\n  FROM\n    electricity_consumption\n  WHERE\n    $__timeFilter(\"time\")\n  ORDER BY time ASC\n) AS s\nGROUP BY time\nORDER BY time DESC",
+          "refId": "Consumption per 1h",
+          "select": [
+            [
+              {
+                "params": [
+                  "ongoing_power"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "electricity_storage",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time_bucket('1 hour', s.t) as time,\n  ROUND((sum(s.i * s.p) / 3600 / 1000)::numeric, 3) as \"Production per 1h\"\nFROM (\n  SELECT\n    time as t,\n    ROUND(EXTRACT(EPOCH FROM (time - lag(time) OVER ())::interval)) as i,\n    (power + lag(power) OVER ()) / 2 as p\n  FROM\n    electricity_production\n  WHERE\n    $__timeFilter(\"time\")\n  ORDER BY time ASC\n) AS s\nGROUP BY time\nORDER BY time DESC",
+          "refId": "Production per 1h",
+          "select": [
+            [
+              {
+                "params": [
+                  "ongoing_power"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "electricity_storage",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
         {
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time_bucket('1 day', s.t) as time,\n  ROUND((sum(s.i * s.p) / 3600 / 1000)::numeric, 3) as \"Production\"\nFROM (\n  SELECT\n    time as t,\n    ROUND(EXTRACT(EPOCH FROM (lag(time) OVER () - time)::interval)) as i,\n    (power + lag(power) OVER ()) / 2 as p\n  FROM\n    electricity_production\n  WHERE\n    power > 0 AND\n    $__timeFilter(\"time\")\n  ORDER BY time DESC\n) AS s\nGROUP BY time\nORDER BY time DESC",
-          "refId": "A",
+          "rawSql": "SELECT\n  time_bucket('1 day', s.t) + interval '12 hours' as time,\n  ROUND((sum(s.i * s.p) / 3600 / 1000)::numeric, 3) as \"Production\"\nFROM (\n  SELECT\n    time as t,\n    ROUND(EXTRACT(EPOCH FROM (time - lag(time) OVER ())::interval)) as i,\n    (power + lag(power) OVER ()) / 2 as p\n  FROM\n    electricity_production\n  WHERE\n    $__timeFilter(\"time\")\n  ORDER BY time ASC\n) AS s\nGROUP BY time\nORDER BY time DESC",
+          "refId": "Production",
+          "select": [
+            [
+              {
+                "params": [
+                  "ongoing_power"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "electricity_storage",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time_bucket('1 day', s.t) + interval '12 hours' as time,\n  ROUND((sum(s.i * s.p) / 3600 / 1000)::numeric, 3) as \"Consumption\"\nFROM (\n  SELECT\n    time as t,\n    ROUND(EXTRACT(EPOCH FROM (time - lag(time) OVER ())::interval)) as i,\n    (house_power + lag(house_power) OVER ()) / 2 as p\n  FROM\n    electricity_consumption\n  WHERE\n    $__timeFilter(\"time\")\n  ORDER BY time ASC\n) AS s\nGROUP BY time\nORDER BY time DESC",
+          "refId": "Consumption",
           "select": [
             [
               {
@@ -100,220 +298,194 @@
           ]
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "Production",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
+      "title": "Production vs. Consumption",
       "transparent": true,
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:299",
-          "format": "kwatt",
-          "label": null,
-          "logBase": 1,
-          "max": "50",
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:300",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 9
-      },
-      "hiddenSeries": false,
-      "id": 4,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": false
-      },
-      "percentage": false,
-      "pluginVersion": "8.0.4",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  time_bucket('1 day', s.t) as time,\n  ROUND((sum(s.i * s.p) / 3600 / 1000)::numeric, 3) as \"Consumption\"\nFROM (\n  SELECT\n    time as t,\n    ROUND(EXTRACT(EPOCH FROM (lag(time) OVER () - time)::interval)) as i,\n    (house_power + lag(house_power) OVER ()) / 2 as p\n  FROM\n    electricity_consumption\n  WHERE\n    house_power > 0 AND\n    $__timeFilter(\"time\")\n  ORDER BY time DESC\n) AS s\nGROUP BY time\nORDER BY time DESC",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "ongoing_power"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "electricity_storage",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Consumption",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "transparent": true,
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:299",
-          "format": "kwatt",
-          "label": null,
-          "logBase": 1,
-          "max": "50",
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:300",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": null,
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "semi-dark-orange",
+                "value": 20
+              },
+              {
+                "color": "light-green",
+                "value": 50
+              },
+              {
+                "color": "dark-green",
+                "value": 88
+              }
+            ]
+          },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max"
+            },
+            "properties": [
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Min"
+            },
+            "properties": [
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max"
+            },
+            "properties": [
+              {
+                "id": "custom.fillBelowTo",
+                "value": "Min"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Average per 2h"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 13
       },
-      "hiddenSeries": false,
       "id": 7,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
-      "percentage": false,
       "pluginVersion": "8.0.4",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
           "format": "time_series",
           "group": [],
+          "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  bucket_time as time,\n  max_soc as \"Maximum SOC\",\n  min_soc as \"Minimum SOC\"\nFROM (\n  SELECT\n    time_bucket('1 day', time) as bucket_time,\n    min(state_of_charge) as min_soc,\n    max(state_of_charge) as max_soc\n  FROM electricity_storage\n  WHERE\n    $__timeFilter(\"time\")\n  GROUP BY bucket_time\n  ORDER BY bucket_time DESC\n) AS s\n",
-          "refId": "A",
+          "rawSql": "SELECT\n  bucket_time as time,\n  soc as \"Average per day\",\n  max_soc as \"Max\",\n  min_soc as \"Min\"\nFROM (\n  SELECT\n    time_bucket('1 day', time) + interval '12 hours' as bucket_time,\n    avg(state_of_charge) as soc,\n    max(state_of_charge) as max_soc,\n    min(state_of_charge) as min_soc\n  FROM electricity_storage\n  WHERE\n    state_of_charge > 0 AND\n    $__timeFilter(\"time\")\n  GROUP BY bucket_time\n  ORDER BY bucket_time DESC\n) AS s\n",
+          "refId": "Aggregations",
+          "select": [
+            [
+              {
+                "params": [
+                  "ongoing_power"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "electricity_storage",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  bucket_time as time,\n  soc as \"Average per 2h\"\nFROM (\n  SELECT\n    time_bucket('2h', time) as bucket_time,\n    avg(state_of_charge) as soc\n  FROM electricity_storage\n  WHERE\n    state_of_charge > 0 AND\n    $__timeFilter(\"time\")\n  GROUP BY bucket_time\n  ORDER BY bucket_time DESC\n) AS s\n",
+          "refId": "B",
           "select": [
             [
               {
@@ -336,61 +508,11 @@
           ]
         }
       ],
-      "thresholds": [
-        {
-          "$$hashKey": "object:1317",
-          "colorMode": "critical",
-          "fill": false,
-          "fillColor": "rgba(51, 162, 229, 0.2)",
-          "line": true,
-          "lineColor": "rgba(31, 96, 196, 0.6)",
-          "op": "lt",
-          "value": 20,
-          "yaxis": "left"
-        }
-      ],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "Battery State of Charge",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transparent": true,
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:101",
-          "format": "percent",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:102",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -399,7 +521,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 21
       },
       "id": 9,
       "panels": [],
@@ -407,58 +529,85 @@
       "type": "row"
     },
     {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": null,
+      "description": "",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "mappings": [],
+          "min": 5,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "transparent",
+                "value": 19
+              }
+            ]
+          },
           "unit": "celsius"
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 22
       },
-      "hiddenSeries": false,
       "id": 6,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
       },
-      "percentage": false,
       "pluginVersion": "8.0.4",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  bucket_time as time,\n  avg_extracted as \"Average of extracted air\",\n  avg_supplied as \"Average of supplied air\"\nFROM (\n  SELECT\n    time_bucket('1 day', time) as bucket_time,\n    avg(extracted_temperature) as avg_extracted,\n    avg(supplied_temperature_after_heat_recovery_exchanger) as avg_supplied\n  FROM air\n  WHERE\n    $__timeFilter(\"time\")\n  GROUP BY bucket_time\n  ORDER BY bucket_time DESC\n) AS s\n",
+          "rawSql": "SELECT\n  bucket_time as time,\n  avg_extracted as \"Extracted air\",\n  avg_supplied_after_heat_recovery as \"Supplied after heat recovery\",\n  avg_supplied_after_ground as \"Supplied air after ground\"\nFROM (\n  SELECT\n    time_bucket('1 day', time) + interval '12 hours' as bucket_time,\n    avg(extracted_temperature) as avg_extracted,\n    avg(supplied_temperature_after_heat_recovery_exchanger) as avg_supplied_after_heat_recovery,\n    avg(supplied_temperature_after_ground_coupled_heat_exchanger) as avg_supplied_after_ground\n  FROM air\n  WHERE\n    $__timeFilter(\"time\")\n  GROUP BY bucket_time\n  ORDER BY bucket_time DESC\n) AS s\n",
           "refId": "A",
           "select": [
             [
@@ -482,61 +631,128 @@
           ]
         }
       ],
-      "thresholds": [
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Average temperatures",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "mappings": [],
+          "max": 70,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 30
+              },
+              {
+                "color": "#EAB839",
+                "value": 40
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.0.4",
+      "targets": [
         {
-          "$$hashKey": "object:1317",
-          "colorMode": "critical",
-          "fill": false,
-          "fillColor": "rgba(51, 162, 229, 0.2)",
-          "line": true,
-          "lineColor": "rgba(31, 96, 196, 0.6)",
-          "op": "lt",
-          "value": 19,
-          "yaxis": "left"
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  bucket_time as time,\n  average_temp as \"Average temperature\"\nFROM (\n  SELECT\n    time_bucket('1 day', time) + interval '12 hours' as bucket_time,\n    avg((top_of_the_tank_temperature + bottom_of_the_tank_temperature) / 2) as average_temp\n  FROM domestic_hot_water\n  WHERE\n    $__timeFilter(\"time\")\n  GROUP BY bucket_time\n  ORDER BY bucket_time DESC\n) AS s\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "ongoing_power"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "electricity_storage",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "Temperatures",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
+      "title": "Domestic Hot Water Temperatures",
       "transparent": true,
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:101",
-          "format": "celsius",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:102",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     }
   ],
   "refresh": "",
@@ -547,12 +763,12 @@
     "list": []
   },
   "time": {
-    "from": "now-30d",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Daily View",
   "uid": "gosssXkgz",
-  "version": 32
+  "version": 75
 }

@@ -92,7 +92,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  house_power as \"Total\",\n  house_l1_power as \"Power #1\",\n  house_l2_power as \"Power #2\",\n  house_l3_power as \"Power #3\"\nFROM electricity_consumption\nWHERE\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  house_power as \"Total\",\n  house_l1_power as \"Power #1\",\n  house_l2_power as \"Power #2\",\n  house_l3_power as \"Power #3\"\nFROM electricity_consumption\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -125,7 +125,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-RdYlGr"
+            "mode": "thresholds"
           },
           "mappings": [],
           "thresholds": {
@@ -174,7 +174,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  state_of_charge\nFROM electricity_storage\nWHERE\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  state_of_charge\nFROM electricity_storage\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -198,7 +198,7 @@
           ]
         }
       ],
-      "title": "State of Charge over time",
+      "title": "State of Charge",
       "transparent": true,
       "type": "stat"
     },
@@ -212,8 +212,6 @@
             "mode": "continuous-RdYlGr"
           },
           "mappings": [],
-          "max": 12000,
-          "min": -8000,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -260,7 +258,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  ongoing_power as \"Ongoing Power\"\nFROM electricity_storage\nWHERE\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  ongoing_power as \"Ongoing Power\"\nFROM electricity_storage\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -324,7 +322,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 14,
         "x": 0,
         "y": 9
@@ -352,7 +350,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  power as \"Total\",\n  l1_power as \"Phase #1\",\n  l2_power as \"Phase #2\",\n  l3_power as \"Phase #3\"\nFROM electricity_production\nWHERE\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  power as \"Power\"\nFROM electricity_production\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -436,7 +434,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  frequency as \"Frequency\"\nFROM electricity_production\nWHERE\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  frequency as \"Frequency\"\nFROM electricity_production\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time\nLIMIT 1",
           "refId": "A",
           "select": [
             [
@@ -525,7 +523,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  temperature\nFROM electricity_storage\nWHERE\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  temperature\nFROM electricity_storage\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time\nLIMIT 1",
           "refId": "A",
           "select": [
             [
@@ -560,7 +558,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 16
       },
       "id": 16,
       "panels": [],
@@ -575,8 +573,6 @@
             "mode": "continuous-BlYlRd"
           },
           "mappings": [],
-          "max": 35,
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -594,7 +590,7 @@
         "h": 8,
         "w": 14,
         "x": 0,
-        "y": 18
+        "y": 17
       },
       "id": 20,
       "options": {
@@ -619,7 +615,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  supplied_temperature_after_ground_coupled_heat_exchanger as \"Supplied after ground-coupled heat exchanger\",\n  supplied_temperature_after_heat_recovery_exchanger as \"Supplied after heat recovery exchanger\",\n  extracted_temperature as \"Extracted\",\n  discharged_temperature as \"Discharged\"\nFROM air\nWHERE\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  supplied_temperature_after_ground_coupled_heat_exchanger as \"Supplied after ground-coupled heat exchanger\",\n  supplied_temperature_after_heat_recovery_exchanger as \"Supplied after heat recovery exchanger\",\n  extracted_temperature as \"Extracted\",\n  discharged_temperature as \"Discharged\"\nFROM air\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -676,7 +672,7 @@
         "h": 5,
         "w": 5,
         "x": 14,
-        "y": 18
+        "y": 17
       },
       "id": 24,
       "options": {
@@ -701,7 +697,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  inside_humidity as \"humidity\"\nFROM air\nWHERE\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  inside_humidity as \"humidity\"\nFROM air\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -736,7 +732,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 25
       },
       "id": 18,
       "panels": [],
@@ -752,7 +748,7 @@
             "mode": "continuous-BlYlRd"
           },
           "mappings": [],
-          "max": 65,
+          "max": 68,
           "min": 10,
           "thresholds": {
             "mode": "absolute",
@@ -775,7 +771,7 @@
         "h": 4,
         "w": 14,
         "x": 0,
-        "y": 27
+        "y": 26
       },
       "id": 22,
       "options": {
@@ -800,7 +796,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  top_of_the_tank_temperature as \"Top of the tank\",\n  bottom_of_the_tank_temperature as \"Bottom of the tank\"\nFROM domestic_hot_water\nWHERE\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  top_of_the_tank_temperature as \"Top of the tank\",\n  bottom_of_the_tank_temperature as \"Bottom of the tank\"\nFROM domestic_hot_water\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -837,12 +833,12 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-18h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "Europe/Zurich",
   "title": "Live",
   "uid": "Mxk-7RWgk",
-  "version": 22
+  "version": 42
 }
