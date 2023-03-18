@@ -141,7 +141,6 @@ FROM (
   FROM
     electricity_consumption
   WHERE
-    house_power > 0 AND
     $__timeFilter("time")
   ORDER BY time ASC
 ) AS s
@@ -163,7 +162,6 @@ FROM (
   FROM
     electricity_production
   WHERE
-    power > 0 AND
     $__timeFilter("time")
   ORDER BY time ASC
 ) AS s
