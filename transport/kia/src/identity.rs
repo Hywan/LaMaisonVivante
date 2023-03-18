@@ -64,6 +64,10 @@ impl DeviceId {
 
         let mut http_request_headers = reqwest::header::HeaderMap::with_capacity(3);
         http_request_headers.insert("ccsp-service-id", brand.client_id().parse().unwrap());
+        http_request_headers.insert(
+            "ccsp-application-id",
+            brand.application_id().parse().unwrap(),
+        );
         http_request_headers.insert("Content-Type", "application/json".parse().unwrap());
         http_request_headers.insert("Stamp", stamp.parse().unwrap());
 
