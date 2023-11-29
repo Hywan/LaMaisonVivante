@@ -4,7 +4,7 @@ In our house, lights are behind [latching
 switches](https://en.wikipedia.org/wiki/Latching_switch). Then, any
 button in the house can change the state of any lights, but a
 microcontroller can do the same! A
-[Controllino](https://www.controllino.biz/) is positionned as inputs
+[Controllino](https://www.controllino.com/) is positionned as inputs
 of the latching switches, just like regular buttons.
 
 The `lights.ino` Arduino program lands in the Controllino. It sets up
