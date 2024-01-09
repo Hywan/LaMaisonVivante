@@ -1173,7 +1173,13 @@ window.customElements.define(
                             formatted_octas += 's';
                         }
 
-                        const precipitations = (f.rain || f.snow || {one_hour: 0}).one_hour;
+                        let precipitations = 0;
+
+                        if (f.rain) {
+                            precipitations = f.rain.one_hour.round(2);
+                        } else if (f.snow) {
+                            precipitations = (f.snow.one_hour * 12).round(1); // 1mm of “rain” ~= 12mm of snow here.
+                        }
 
                         forecast_view_data.push({
                             temperature_category: Math.round(value_into_range(f.temperature, 0, 30, 0, 5)),
@@ -1182,7 +1188,7 @@ window.customElements.define(
                             condition_icon: `static/icons/weather/symbols.svg#${conditions.icon}`,
                             condition: conditions.text,
                             octas: formatted_octas,
-                            precipitations: precipitations.round(2),
+                            precipitations,
                             uv_index: f.uv_index.round(1),
                             temperature: f.temperature.round(1),
                             apparent_temperature: f.apparent_temperature.round(1),
@@ -1195,13 +1201,21 @@ window.customElements.define(
                         });
                     }
 
+                    let precipitation = 0;
+
+                    if (rain) {
+                        precipitation = rain.round(2);
+                    } else if (snow) {
+                        precipitation = (snow * 12.0).round(1);
+                    }
+
                     self.#view.render(
                         {
                             temperature,
                             apparent_temperature,
                             condition: weather_condition.text,
                             condition_icon: `static/icons/weather/symbols.svg#${weather_condition.icon}`,
-                            precipitation: (rain + snow).round(2),
+                            precipitation,
                             uv_index: uv_index.round(1),
                             wind: wind_speed.round(1),
                             wind_gust: wind_gust.round(0),
