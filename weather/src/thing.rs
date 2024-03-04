@@ -1,7 +1,6 @@
 use crate::reader;
 use serde_json::{json, Value};
 use std::{
-    cmp::PartialOrd,
     sync::{Arc, RwLock, Weak},
     thread, time,
 };

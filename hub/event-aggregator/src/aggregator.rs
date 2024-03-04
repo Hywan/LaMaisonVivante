@@ -3,19 +3,13 @@ use crate::{
     database::{self, enums::AirState},
     thing::{generic, identified::*},
 };
-use diesel::{pg::PgConnection, prelude::*};
+use diesel::prelude::*;
 use std::{
     collections::HashMap,
-    convert::TryInto,
     sync::mpsc::channel,
     thread,
     time::{Duration, SystemTime},
 };
-
-#[derive(Debug)]
-struct Message {
-    things: Vec<generic::Thing>,
-}
 
 pub fn aggregate(addresses: Vec<AddressWithRefreshRate>, database_connection: PgConnection) {
     let (tx, rx) = channel();

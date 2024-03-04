@@ -132,8 +132,9 @@ fn read_station_information(context: &mut sync::Context) -> Result<StationInform
         platform_type: read_holding_register::<FixedString<17>>(context, PLATFORM_TYPE)?,
         serial_number: read_holding_register::<FixedString<11>>(context, STATION_SERIAL_NUMBER)?,
         firmware_version: read_holding_register::<FixedString<17>>(context, FIRMWARE_VERSION)?,
-        date: FixedOffset::east(read_holding_register::<i16>(context, TIMEZONE)?.into())
-            .ymd(
+        date: FixedOffset::east_opt(read_holding_register::<i16>(context, TIMEZONE)?.into())
+            .unwrap()
+            .with_ymd_and_hms(
                 read_holding_register::<i16>(context, DATE_YEAR)?
                     .try_into()
                     .unwrap(),
@@ -143,8 +144,6 @@ fn read_station_information(context: &mut sync::Context) -> Result<StationInform
                 read_holding_register::<i16>(context, DATE_DAY)?
                     .try_into()
                     .unwrap(),
-            )
-            .and_hms(
                 read_holding_register::<i16>(context, TIME_HOUR)?
                     .try_into()
                     .unwrap(),
@@ -154,7 +153,8 @@ fn read_station_information(context: &mut sync::Context) -> Result<StationInform
                 read_holding_register::<i16>(context, TIME_SECOND)?
                     .try_into()
                     .unwrap(),
-            ),
+            )
+            .unwrap(),
         uptime: Duration::from_millis(read_holding_register::<u64>(context, UPTIME)?),
     })
 }

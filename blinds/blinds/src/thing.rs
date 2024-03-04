@@ -4,7 +4,6 @@ use crate::{
 };
 use serde_json::{json, Map, Value};
 use std::{
-    marker::{Send, Sync},
     net::{TcpStream, ToSocketAddrs},
     str::FromStr,
     sync::{Arc, RwLock, Weak},

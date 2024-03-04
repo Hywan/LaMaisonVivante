@@ -3,7 +3,6 @@ use crate::{
     unit::*,
 };
 use regex::Regex;
-use reqwest;
 use std::{collections::HashMap, net::SocketAddr, str::FromStr};
 
 pub async fn read(address: &SocketAddr) -> Result<State, Box<dyn std::error::Error>> {
@@ -22,20 +21,14 @@ pub async fn read(address: &SocketAddr) -> Result<State, Box<dyn std::error::Err
         address = address
     );
 
-    let current_program_url = format!(
-        "http://{address}/hh?command=getProgram",
-        address = address
-    );
+    let current_program_url = format!("http://{address}/hh?command=getProgram", address = address);
 
     let device_info = reqwest::get(&device_info_url);
     let total_consumption = reqwest::get(&total_consumption_url);
     let average_consumption = reqwest::get(&average_consumption_url);
     let current_program = reqwest::get(&current_program_url);
 
-    let device = device_info
-        .await?
-        .json::<Device>()
-        .await?;
+    let device = device_info.await?.json::<Device>().await?;
     let total_consumption = total_consumption
         .await?
         .json::<HashMap<String, String>>()
@@ -44,10 +37,7 @@ pub async fn read(address: &SocketAddr) -> Result<State, Box<dyn std::error::Err
         .await?
         .json::<HashMap<String, String>>()
         .await?;
-    let current_program = current_program
-        .await?
-        .json::<Vec<Program>>()
-        .await?;
+    let current_program = current_program.await?.json::<Vec<Program>>().await?;
 
     let regex = Regex::new("(?P<kwh>[0-9,]+) kWh.+?(?P<l>[0-9]+) ℓ").unwrap();
     let captured = regex

@@ -1,6 +1,5 @@
 use crate::unit::*;
 use serde::Serialize;
-use std::convert::TryFrom;
 use structopt::clap::arg_enum;
 
 #[derive(Debug, Clone, Serialize)]

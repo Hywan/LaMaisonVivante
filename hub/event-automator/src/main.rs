@@ -10,7 +10,7 @@ mod state;
 extern crate diesel;
 
 use crate::command::Options;
-use diesel::{pg::PgConnection, prelude::*};
+use diesel::prelude::*;
 use human_panic::setup_panic;
 use structopt::StructOpt;
 

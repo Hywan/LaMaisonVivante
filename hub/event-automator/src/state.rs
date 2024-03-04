@@ -2,8 +2,7 @@ pub use crate::database::enums::AirState as VentilationState;
 use crate::database::models::*;
 use crate::events::Event;
 use chrono::prelude::*;
-use diesel::{pg::PgConnection, prelude::*, sql_query};
-use sunrise;
+use diesel::{prelude::*, sql_query};
 
 pub struct Context {
     pub database_connection: PgConnection,
@@ -70,7 +69,7 @@ impl UpdateState for Sun {
 
 #[derive(Debug, Default)]
 pub struct Ventilation {
-    state: VentilationState,
+    _state: VentilationState,
 }
 
 impl UpdateState for Ventilation {
@@ -82,7 +81,7 @@ impl UpdateState for Ventilation {
         new_events.push(Event::VentilationStatePersist);
 
         Self {
-            state: result[0].state.clone().unwrap_or_default(),
+            _state: result[0].state.clone().unwrap_or_default(),
         }
     }
 }

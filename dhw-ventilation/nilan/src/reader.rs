@@ -1,5 +1,5 @@
 use crate::{modbus::*, state::*, unit::*};
-use std::{convert::TryInto, io::Result};
+use std::io::Result;
 use tokio_modbus::prelude::*;
 
 fn read_holding_register(context: &mut sync::Context, address: u16) -> Result<u16> {

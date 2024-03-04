@@ -1,8 +1,6 @@
-use confy;
 use directories_next::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use std::{
-    default::Default,
     net::SocketAddr,
     path::{Path, PathBuf},
 };

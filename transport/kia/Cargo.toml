@@ -4,19 +4,19 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-structopt = "0.3"
-human-panic = "1.0"
-confy = "0.4"
-directories-next = "2.0"
-async-trait = "0.1.57"
-reqwest = { version = "0.11.11", features = ["json", "rustls-tls", "rustls-tls-native-roots", "cookies"] }
-scraper = "0.13.0"
-serde = { version = "1.0.143", features = ["serde_derive"] }
-serde_json = "1.0.85"
-serde_repr = "0.1.9"
-thiserror = "1.0.32"
-tokio = { version = "1.20.1", features = ["rt", "tokio-macros", "full"] }
-uuid = { version = "1.1.2", features = ["v4", "fast-rng"] }
-webthing = "0.12"
+async-trait = { workspace = true }
 base64 = "0.22.0"
+confy = { workspace = true }
+human-panic = { workspace = true }
+directories-next = { workspace = true }
 rand = "0.8.5"
+reqwest = { workspace = true, features = ["rustls-tls", "rustls-tls-native-roots", "cookies"] }
+scraper = "0.13.0"
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_repr = { workspace = true }
+structopt = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+uuid = { workspace = true, features = ["v4", "fast-rng"] }
+webthing = { workspace = true }

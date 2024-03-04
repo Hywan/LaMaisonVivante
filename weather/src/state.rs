@@ -44,8 +44,23 @@ pub struct Weather {
 impl Default for Weather {
     fn default() -> Self {
         Self {
+            clouds: Default::default(),
             datetime: Utc::now(),
-            ..Default::default()
+            temperature: Default::default(),
+            apparent_temperature: Default::default(),
+            humidity: Default::default(),
+            dew_point: Default::default(),
+            pressure: Default::default(),
+            sunrise: Default::default(),
+            sunset: Default::default(),
+            uv_index: Default::default(),
+            visibility: Default::default(),
+            wind_degree: Default::default(),
+            wind_speed: Default::default(),
+            wind_gust: Default::default(),
+            snow: Default::default(),
+            rain: Default::default(),
+            conditions: Default::default(),
         }
     }
 }
@@ -147,9 +162,12 @@ pub struct Alert {
 impl Default for Alert {
     fn default() -> Self {
         Self {
+            description: Default::default(),
             start: Utc::now(),
             end: Utc::now(),
-            ..Default::default()
+            sender: Default::default(),
+            event: Default::default(),
+            tags: Default::default(),
         }
     }
 }

@@ -1,5 +1,4 @@
 use crate::thing::generic;
-use std::convert::TryFrom;
 
 #[derive(Debug)]
 pub enum Thing {

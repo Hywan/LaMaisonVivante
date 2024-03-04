@@ -6,7 +6,6 @@ pub trait Unit {
     fn to_volt(&self) -> Volt;
     fn to_amp(&self) -> Amp;
     fn to_watt(&self) -> Watt;
-    fn to_kwh(&self) -> KWh;
     fn to_degree(&self) -> Degree;
     fn to_hertz(&self) -> Hertz;
 }
@@ -28,10 +27,6 @@ macro_rules! impl_unit {
 
             fn to_watt(&self) -> Watt {
                 Watt((*self) as f32)
-            }
-
-            fn to_kwh(&self) -> KWh {
-                KWh(*self as f32)
             }
 
             fn to_degree(&self) -> Degree {
