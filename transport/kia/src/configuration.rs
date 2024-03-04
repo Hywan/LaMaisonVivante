@@ -1,10 +1,6 @@
-use confy;
 use directories_next::ProjectDirs;
 use serde::{Deserialize, Serialize};
-use std::{
-    default::Default,
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Configuration {

@@ -12,3 +12,4 @@ members = [
     "tanks/tanks-controller/",
     "weather/",
 ]
+resolver = "2"

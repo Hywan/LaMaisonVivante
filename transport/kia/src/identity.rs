@@ -4,9 +4,13 @@ use crate::{
     errors::Error,
     http::Client,
 };
-use chrono::{DateTime, Utc};
+use base64::prelude::*;
 use serde::Deserialize;
-use std::{collections::HashMap, ops::Deref};
+use std::{
+    collections::HashMap,
+    ops::Deref,
+    time::{SystemTime, UNIX_EPOCH},
+};
 use uuid::Uuid;
 
 const REGISTER_URL: &'static str = "/api/v1/spa/notifications/register";
@@ -17,28 +21,35 @@ const USER_SILENT_LOGIN_URL: &'static str = "/api/v1/user/silentsignin";
 const USER_TOKEN_URL: &'static str = "/api/v1/user/oauth2/token";
 const USER_TOKEN_REDIRECT_URL: &'static str = "/api/v1/user/oauth2/redirect";
 
-#[derive(Debug, Deserialize)]
-pub struct Stamps {
-    pub stamps: Vec<String>,
-    pub generated: DateTime<Utc>,
-    pub frequency: u64,
-}
+#[repr(transparent)]
+#[derive(Debug)]
+pub struct Stamp(String);
 
-impl Stamps {
-    pub async fn new(brand: Brand) -> Result<Self, Error> {
-        let url = format!(
-            "https://raw.githubusercontent.com/neoPix/bluelinky-stamps/master/{brand_id}-{brand_application_id}.v2.json",
-            brand_id = brand.as_id(),
-            brand_application_id = brand.application_id(),
-        );
+impl Stamp {
+    pub fn new(brand: Brand) -> Self {
+        let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
 
-        Client::get(url)?
-            .send()
-            .await
-            .map_err(Error::Http)?
-            .json()
-            .await
-            .map_err(Error::Http)
+        let raw_data = format!("{app_id}:{now}", app_id = brand.application_id());
+        let cfb = BASE64_STANDARD.decode(brand.cfb()).unwrap();
+
+        let bytes = cfb
+            .into_iter()
+            .zip(raw_data.into_bytes().into_iter())
+            .map(|(b1, b2)| b1 ^ b2)
+            .collect::<Vec<u8>>();
+
+        Self(BASE64_STANDARD.encode(bytes))
+    }
+
+    fn as_str(&self) -> &str {
+        &self.0
+    }
+
+    fn to_string(self) -> String {
+        self.0
     }
 }
 
@@ -53,14 +64,12 @@ impl DeviceId {
         brand: Brand,
         brand_configuration: &BrandConfiguration,
     ) -> Result<Self, Error> {
-        let stamp = {
-            let stamps = Stamps::new(brand).await?;
-            let now = Utc::now();
-            let time_elapsed = now.signed_duration_since(stamps.generated).num_seconds() as u64;
-            let position = (time_elapsed * 1000 / stamps.frequency) as usize;
+        let stamp = Stamp::new(brand);
 
-            stamps.stamps[position].clone()
-        };
+        let push_reg_id = (0..64)
+            .into_iter()
+            .map(|_| rand::random::<char>())
+            .collect::<String>();
 
         let mut http_request_headers = reqwest::header::HeaderMap::with_capacity(3);
         http_request_headers.insert("ccsp-service-id", brand.client_id().parse().unwrap());
@@ -69,12 +78,12 @@ impl DeviceId {
             brand.application_id().parse().unwrap(),
         );
         http_request_headers.insert("Content-Type", "application/json".parse().unwrap());
-        http_request_headers.insert("Stamp", stamp.parse().unwrap());
+        http_request_headers.insert("Stamp", stamp.as_str().parse().unwrap());
 
         let uuid = Uuid::new_v4().to_string();
         let mut http_request_body = HashMap::with_capacity(3);
-        http_request_body.insert("pushRegId", "1");
-        http_request_body.insert("pushType", "GCM");
+        http_request_body.insert("pushRegId", push_reg_id.as_str());
+        http_request_body.insert("pushType", "APNS");
         http_request_body.insert("uuid", &uuid);
 
         #[derive(Debug, Deserialize)]
@@ -130,7 +139,7 @@ impl<'a> LoginClient<'a> {
         brand: Brand,
         brand_configuration: &'a BrandConfiguration,
     ) -> Result<LoginClient<'a>, Error> {
-        let client = Client::new().cookie_store(true).redirect(false).build()?;
+        let client = Client::new().cookie_store(true).redirect(true).build()?;
 
         // Authorization.
         {
@@ -229,7 +238,7 @@ impl<'a> LoginClient<'a> {
         };
 
         // Step 3, send data to the form's action received in Step 2.
-        let form_url = {
+        {
             let http_form_data: [(&str, &str); 4] = [
                 ("username", &auth.username),
                 ("password", &auth.password),
@@ -237,111 +246,21 @@ impl<'a> LoginClient<'a> {
                 ("rememberMe", "on"),
             ];
 
-            let response = self
-                .client
+            self.client
                 .post(form_url)
                 .form(&http_form_data)
                 .send()
                 .await
                 .map_err(Error::Http)?;
+        }
 
-            if response.status() != reqwest::StatusCode::FOUND {
-                panic!("not found");
-            }
-
-            let next_location = response
-                .headers()
-                .get(reqwest::header::LOCATION)
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_owned();
-
-            let response = self
-                .client
-                .get(next_location)
-                .send()
-                .await
-                .map_err(Error::Http)?;
-
-            let html_response = response.text().await.map_err(Error::Http)?;
-            let html_document = scraper::Html::parse_document(&html_response);
-            let form_selector =
-                scraper::Selector::parse(r#"form[action*="account-find-link"]"#).unwrap();
-
-            html_document
-                .select(&form_selector)
-                .next()
-                .ok_or_else(|| Error::Login("Cannot find the form's action".to_string()))?
-                .value()
-                .attr("action")
-                .unwrap()
-                .to_string()
-        };
-
-        // Step 4, get the user ID.
-        let user_id = {
-            let http_form_data: [(&str, &str); 3] = [
-                ("actionType", "FIND"),
-                ("createToUVO", "UVO"),
-                ("email", ""),
-            ];
-
-            let response = self
-                .client
-                .post(form_url)
-                .form(&http_form_data)
-                .send()
-                .await
-                .map_err(Error::Http)?;
-
-            if response.status() != reqwest::StatusCode::FOUND {
-                panic!("not found again");
-            }
-
-            let next_location = response
-                .headers()
-                .get(reqwest::header::LOCATION)
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_owned();
-
-            let response = self
-                .client
-                .get(next_location)
-                .send()
-                .await
-                .map_err(Error::Http)?;
-
-            let next_location = response
-                .headers()
-                .get(reqwest::header::LOCATION)
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_owned();
-
-            reqwest::Url::parse(&next_location)
-                .map_err(|_| Error::Login("failed to parse the `Location`".to_string()))?
-                .query_pairs()
-                .find_map(|(name, value)| {
-                    if name == "int_user_id" {
-                        Some(value.to_string())
-                    } else {
-                        None
-                    }
-                })
-                .ok_or_else(|| Error::Login("failed to find the `int_user_id`".to_string()))?
-        };
-
-        // Step 5, silent sign in and get the code!
+        // Step 4, silent sign in and get the code!
         let code = {
             let mut http_request_headers = reqwest::header::HeaderMap::with_capacity(1);
             http_request_headers.insert("ccsp-service-id", self.brand.client_id().parse().unwrap());
 
             let mut http_request_body = HashMap::with_capacity(1);
-            http_request_body.insert("intUserId", user_id);
+            http_request_body.insert("intUserId", "0");
 
             #[derive(Debug, Deserialize)]
             struct Response {
@@ -382,7 +301,7 @@ impl<'a> LoginClient<'a> {
                 })?
         };
 
-        // Step 6, get the access token!
+        // Step 5, get the access token!
         let (access_token, refresh_code) = {
             let http_form_data: [(&str, &str); 3] = [
                 ("grant_type", "authorization_code"),
@@ -431,10 +350,10 @@ impl<'a> LoginClient<'a> {
             )
         };
 
-        // Step 7, get device ID.
+        // Step 6, get device ID.
         let device_id = DeviceId::new(self.brand, self.brand_configuration).await?;
 
-        // Step 8, get the refresh token!
+        // Step 7, get the refresh token!
         let refresh_token = {
             let mut http_request_headers = reqwest::header::HeaderMap::with_capacity(1);
             http_request_headers.insert("Stamp", device_id.stamp.parse().unwrap());

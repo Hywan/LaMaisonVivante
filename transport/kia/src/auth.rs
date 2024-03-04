@@ -13,12 +13,4 @@ impl Authentification {
             pin: None,
         }
     }
-
-    /*
-    pub fn pin(mut self, pin: String) -> Self {
-        self.pin = Some(pin);
-
-        self
-    }
-    */
 }
