@@ -190,7 +190,7 @@
           </svg>
         </div>
       </div>
-      <div slot="long-thing">
+      <div slot="long-thing" class="content-grid">
         <div class="things">
           <div class="things--list">
             <div class="thing--frame thing--text">
@@ -278,7 +278,7 @@
           </div>
         </div>
       </div>
-      <div slot="long-thing">
+      <div slot="long-thing" class="content-grid">
         <h4>Données actuelles</h4>
 
         <my-unlocated-things>
@@ -379,7 +379,7 @@
           <div class="thing--weather-one-forecast" data-bind-loop="forecast in forecasts" data-bind-attributes data-bind:data-temperature-category="forecast.temperature_category">
             <h5 class="thing--weather-one-forecast--datetime"><span data-bind="forecast.date_hour">(?)</span>h<span data-bind="forecast.date_extra">(?)</span></h5>
 
-            <h6 class="thing--weather-one-forecast--title"><span>Ciel</span></h6>
+            <h6 class="thing--weather-one-forecast--title"><span><span>Ciel</span></span></h6>
 
             <div class="thing--weather-one-forecast--condition-icon"><svg><use data-bind-attributes data-bind:href="forecast.condition_icon" /></svg></div>
             <div class="thing--weather-one-forecast--condition" data-bind="forecast.condition">(?)</div>
@@ -387,18 +387,18 @@
             <div class="thing--weather-one-forecast--precipitations"><span data-bind="forecast.precipitations">(?)</span>mm</div>
             <div class="thing--weather-one-forecast--uv-index"><span data-bind="forecast.uv_index">(?)</span>UV<sub>ix</sub></div>
 
-            <h6 class="thing--weather-one-forecast--title"><span>Températures</span></h6>
+            <h6 class="thing--weather-one-forecast--title"><span><span>Températures</span></span></h6>
 
             <div class="thing--weather-one-forecast--temperature"><span data-bind="forecast.temperature">(?)</span>°C</div>
             <div class="thing--weather-one-forecast--apparent-temperature">(<span data-bind="forecast.apparent_temperature">(?)</span>°C)</div>
 
-            <h6 class="thing--weather-one-forecast--title"><span>Air</span></h6>
+            <h6 class="thing--weather-one-forecast--title"><span><span>Air</span></span></h6>
 
             <div class="thing--weather-one-forecast--humidity"><span data-bind="forecast.humidity">(?)</span>%H</div>
             <div class="thing--weather-one-forecast--pressure"><span data-bind="forecast.pressure">(?)</span>hPa</div>
             <div class="thing--weather-one-forecast--dew-point"><span data-bind="forecast.dew_point">(?)></span>°C</div>
 
-            <h6 class="thing--weather-one-forecast--title"><span>Vent</span></h6>
+            <h6 class="thing--weather-one-forecast--title"><span><span>Vent</span></span></h6>
 
             <div class="thing--weather-one-forecast--wind-speed"><span data-bind="forecast.wind">(?)</span>m/s</div>
             <div class="thing--weather-one-forecast--wind-gust">(<span data-bind="forecast.wind_gust">(?)</span>m/s)</div>
@@ -431,7 +431,7 @@
           <div slot="meter-gradient" class="gradient gradient--conic__yellow_to_green"></div>
         </my-meter-thing>
       </my-thing>
-      <div slot="long-thing">
+      <div slot="long-thing" class="content-grid">
         <h4><span data-bind="vehicle_nickname">?</span> <small class="label" data-bind="vehicle_vin">?</small></h4>
 
         <svg viewBox="0 0 340 150.4" class="thing--car--car">
@@ -710,8 +710,8 @@
   <script src="static/javascript/sunrise.js" defer></script>
   <script src="static/javascript/main.js" defer></script>
 </head>
-<body>
-  <header class="header--container">
+<body class="content-grid">
+  <header class="full-width content-grid header--container">
     <div class="header">
       <my-nav id="nav" role="nav">
         <span slot="root">La Maison Vivante</span>
