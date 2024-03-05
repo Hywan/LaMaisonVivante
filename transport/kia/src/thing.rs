@@ -135,7 +135,7 @@ pub fn run(auth: Authentification, port: Option<u16>) {
                 }
             }
 
-            tokio::time::sleep(time::Duration::from_secs(3600)).await;
+            tokio::time::sleep(time::Duration::from_secs(600)).await;
         }
     });
 
