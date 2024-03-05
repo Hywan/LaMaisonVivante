@@ -1,7 +1,7 @@
 # Blinds
 
 In our house, blinds are directly plugged in a
-[Controllino](https://www.controllino.biz/). It means that physical
+[Controllino](https://www.controllino.com/). It means that physical
 buttons are inputs of the Controllino.
 
 Hence, blinds are fully controlled by the `blinds.ino` Arduino
