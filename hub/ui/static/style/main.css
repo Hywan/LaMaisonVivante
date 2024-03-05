@@ -146,16 +146,10 @@ body {
     position: absolute;
     z-index: -1;
     inset: 0;
-    background: var(--color-light-000-transparent);
+    backdrop-filter: blur(var(--backdrop-blur));
+    -webkit-backdrop-filter: blur(var(--backdrop-blur));
+    background: transparent;
 }
-
-    @supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)) {
-        .header--container::before {
-            backdrop-filter: blur(var(--backdrop-blur));
-            -webkit-backdrop-filter: blur(var(--backdrop-blur));
-            background: transparent;
-        }
-    }
 
 .header {
     display: grid;
@@ -369,7 +363,9 @@ body {
             transform var(--transition-duration) var(--transition-bezier),
             opacity var(--transition-duration) var(--transition-bezier);
 
-        background: var(--color-light-000-transparent);
+        backdrop-filter: blur(var(--backdrop-blur));
+        -webkit-backdrop-filter: blur(var(--backdrop-blur));
+        background: transparent;
     }
 
 .thing--meter {}
