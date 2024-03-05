@@ -55,13 +55,13 @@ function seconds_to_duration(seconds) {
     let output = '';
 
     if (hours > 0) {
-        output = `${hours}h `;
+        output += `${hours}h `;
     }
 
-    output = `${minutes}min`;
+    output += `${minutes}min`;
 
     if (seconds > 0) {
-        let output = ` ${seconds}s`;
+        output += ` ${seconds}s`;
     }
 
     return output;
@@ -125,7 +125,7 @@ async function properties_of(element, property_name_of_base, ...attributes) {
 function read_data_attributes(element, ...attributes) {
     const out = {};
 
-    for (attribute of attributes) {
+    for (const attribute of attributes) {
         out[attribute.replace(/-/g, '_')] = element.getAttribute(`data-${attribute}`);
     }
 
@@ -336,7 +336,6 @@ async function fetch_properties(base, ...property_names) {
 class View {
     static #LOOP_REGEX = /^(?<item_name>[a-zA-Z_]+) in (?<set_name>[a-zA-Z_]+(\.[a-zA-Z_]+)?)$/;
     static #ATTRIBUTE_PREFIX = 'data-bind:';
-    #reset_deferred = [];
 
     constructor() {}
 
@@ -522,7 +521,7 @@ class View {
         this.#render_all(data, root, partial, '', true);
     }
 
-    render(data, root, partial) {
+    render(data, root) {
         this.#_render(data, root, false);
     }
 
@@ -558,8 +557,7 @@ window.customElements.define(
             let template = document.getElementById('template--nav');
             let template_content = template.content.cloneNode(true);
 
-            this.attachShadow({mode: 'open'})
-                .appendChild(template_content);
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
         }
 
         enter(name, onclick) {
@@ -598,8 +596,7 @@ window.customElements.define(
             let template = document.getElementById('template--things');
             let template_content = template.content.cloneNode(true);
 
-            this.attachShadow({mode: 'closed'})
-                .appendChild(template_content);
+            this.attachShadow({mode: 'closed'}).appendChild(template_content);
         }
     }
 );
@@ -615,8 +612,7 @@ window.customElements.define(
             let template = document.getElementById('template--unlocated-things');
             let template_content = template.content.cloneNode(true);
 
-            this.attachShadow({mode: 'closed'})
-                .appendChild(template_content);
+            this.attachShadow({mode: 'closed'}).appendChild(template_content);
         }
     }
 );
@@ -639,8 +635,7 @@ window.customElements.define(
                 thing.setAttribute('id', 'thing-' + thing_index);
                 thing_index += 1;
 
-                const shadow_root = this.attachShadow({mode: 'open'})
-                      .appendChild(template_content);
+                this.attachShadow({mode: 'open'}).appendChild(template_content);
             }
         };
     }
@@ -659,10 +654,7 @@ window.customElements.define(
 
             const thing = template_content.querySelector('.thing--expandable');
 
-            const shadow_root = this.attachShadow({mode: 'open'})
-                  .appendChild(template_content);
-
-            const self = this;
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
 
             thing.querySelector('.thing--expandable-summary').addEventListener(
                 'click',
@@ -714,8 +706,7 @@ window.customElements.define(
             const thing_secondary_value_element = template_content.querySelector('.thing--meter-secondary-value');
             const thing_meter_circle_element = template_content.querySelector('.thing--meter-meter .meter');
 
-            const shadow_root = this.attachShadow({mode: 'open'})
-                  .appendChild(template_content);
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
 
             const circle_length = thing_meter_circle_element.getTotalLength();
 
@@ -878,8 +869,7 @@ window.customElements.define(
             const thing_anti_legionella_started_manually_value_element = template_content.querySelector('.thing--dhw-anti-legionella-started-manually-value');
             const thing_anti_legionella_schedule_value_element = template_content.querySelector('.thing--dhw-anti-legionella-schedule-value');
 
-            const shadow_root = this.attachShadow({mode: 'open'})
-                  .appendChild(template_content);
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
 
             const props = await properties_of(
                 this,
@@ -944,8 +934,7 @@ window.customElements.define(
             const thing_after_heat_recovery_exchanger_meter_element = template_content.querySelector('.meter--ventilation-after-heat-recovery-exchanger');
             const thing_extracted_meter_element = template_content.querySelector('.meter--ventilation-extracted');
 
-            const shadow_root = this.attachShadow({mode: 'open'})
-                  .appendChild(template_content);
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
 
             const props = await properties_of(
                 this,
@@ -1105,8 +1094,6 @@ window.customElements.define(
                     });
                 }
 
-                const thing_frame = template_content.querySelector('.thing--frame');
-
                 this.attachShadow({mode: 'open'}).appendChild(template_content);
                 const root = this.shadowRoot;
 
@@ -1259,7 +1246,6 @@ window.customElements.define(
             new View().render({...data_properties}, short_thing);
 
             this.attachShadow({mode: 'open'}).appendChild(template_content);
-            const root = this.shadowRoot;
 
             const props = await properties_of(this, 'base', 'description', 'state');
 
@@ -1308,6 +1294,8 @@ window.customElements.define(
                     },
                     long_thing,
                 );
+
+                next();
             }
 
             fire(VERY_LONG_REFRESH_RATE, update);
@@ -1326,8 +1314,7 @@ window.customElements.define(
             const template = document.getElementById('template--actionable-thing');
             const template_content = template.content.cloneNode(true);
 
-            const shadow_root = this.attachShadow({mode: 'open'})
-                  .appendChild(template_content);
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
         }
     }
 );
@@ -1345,8 +1332,7 @@ window.customElements.define(
 
             const button = template_content.querySelector('.thing--pulse');
 
-            const shadow_root = this.attachShadow({mode: 'open'})
-                  .appendChild(template_content);
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
 
             const self = this;
             const base = self.getAttribute('data-base').replace(/\/+$/, '');
@@ -1438,8 +1424,7 @@ window.customElements.define(
             const stop_button = template_content.querySelector('.thing--blind-stop');
             const close_button = template_content.querySelector('.thing--blind-close');
 
-            const shadow_root = this.attachShadow({mode: 'open'})
-                  .appendChild(template_content);
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
 
             const self = this;
             const base = self.getAttribute('data-base').replace(/\/+$/, '');
