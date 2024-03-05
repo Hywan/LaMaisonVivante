@@ -368,18 +368,18 @@ body {
         background: transparent;
     }
 
-.thing--meter {}
+.thing--progress {}
 
-    .thing--meter > .thing--frame-content {
+    .thing--progress > .thing--frame-content {
         position: relative;
     }
 
-    .thing--meter > .thing--frame-content > .thing--meter-meter {
+    .thing--progress > .thing--frame-content > .thing--progress-progress {
         width: 100%;
         vertical-align: bottom;
     }
 
-    .thing--meter > .thing--frame-content > .thing--meter-primary-value {
+    .thing--progress > .thing--frame-content > .thing--progress-primary-value {
         --this-height: 1.5rem;
 
         position: absolute;
@@ -391,11 +391,11 @@ body {
         font-size: var(--thing--frame--font-size-primary);
     }
 
-    .thing--meter > .thing--frame-content > .thing--meter-primary-value.thing--meter-primary-value-large {
+    .thing--progress > .thing--frame-content > .thing--progress-primary-value.thing--progress-primary-value-large {
         top: calc(50% - var(--this-height) / 2);
     }
 
-    .thing--meter > .thing--frame-content > .thing--meter-secondary-value {
+    .thing--progress > .thing--frame-content > .thing--progress-secondary-value {
         --this-height: 1.5rem;
 
         position: absolute;

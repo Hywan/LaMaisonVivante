@@ -692,23 +692,23 @@ window.customElements.define(
 );
 
 window.customElements.define(
-    'my-meter-thing',
+    'my-progress-thing',
     class extends HTMLElement {
         constructor() {
             super();
         }
 
         async connectedCallback() {
-            const template = document.getElementById('template--meter-thing');
+            const template = document.getElementById('template--progress-thing');
             const template_content = template.content.cloneNode(true);
 
-            const thing_primary_value_element = template_content.querySelector('.thing--meter-primary-value');
-            const thing_secondary_value_element = template_content.querySelector('.thing--meter-secondary-value');
-            const thing_meter_circle_element = template_content.querySelector('.thing--meter-meter .meter');
+            const thing_primary_value_element = template_content.querySelector('.thing--progress-primary-value');
+            const thing_secondary_value_element = template_content.querySelector('.thing--progress-secondary-value');
+            const thing_progress_circle_element = template_content.querySelector('.thing--progress-progress .progress');
 
             this.attachShadow({mode: 'open'}).appendChild(template_content);
 
-            const circle_length = thing_meter_circle_element.getTotalLength();
+            const circle_length = thing_progress_circle_element.getTotalLength();
 
             const props = await properties_of(this, 'base', 'primary', 'secondary');
 
@@ -719,7 +719,7 @@ window.customElements.define(
                 async function subupdate(
                     property_name,
                     thing_value_element,
-                    do_update_thing_meter_circle_element
+                    do_update_thing_progress_circle_element
                 ) {
                     const prop = values[property_name];
 
@@ -727,12 +727,12 @@ window.customElements.define(
                     const {value, formatted_value} = (prop.value_reader)();
                     thing_value_element.innerHTML = formatted_value;
 
-                    if (do_update_thing_meter_circle_element) {
+                    if (do_update_thing_progress_circle_element) {
                         if (null != max) {
                             const percent = (value * circle_length) / max;
-                            thing_meter_circle_element.style.strokeDasharray = percent + ' 100';
+                            thing_progress_circle_element.style.strokeDasharray = percent + ' 100';
                         } else {
-                            thing_meter_circle_element.style.strokeDasharray = '100 100';
+                            thing_progress_circle_element.style.strokeDasharray = '100 100';
                         }
                     }
                 }
@@ -751,7 +751,7 @@ window.customElements.define(
             fire(REFRESH_RATE, update);
 
             if (undefined == props.names.secondary) {
-                thing_primary_value_element.classList.add('thing--meter-primary-value-large');
+                thing_primary_value_element.classList.add('thing--progress-primary-value-large');
             }
         }
     }
