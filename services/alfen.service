@@ -1,0 +1,10 @@
+[Unit]
+Description=The Alfen program
+After=network.target
+
+[Service]
+ExecStart=alfen --thing-port=8098 --into-thing
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
