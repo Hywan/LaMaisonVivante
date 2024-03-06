@@ -3,7 +3,7 @@ Description=The Alfen program
 After=network.target
 
 [Service]
-ExecStart=alfen --thing-port=8098 --into-thing
+ExecStart=alfen --address 192.168.1.7:502 read --thing-port=8098 --into-thing
 Type=simple
 
 [Install]
