@@ -360,6 +360,8 @@ body {
         transform: translateY(0);
         overflow: auto;
 
+        padding-block-start: var(--space);
+
         transition:
             transform var(--transition-duration) var(--transition-bezier),
             opacity var(--transition-duration) var(--transition-bezier);
