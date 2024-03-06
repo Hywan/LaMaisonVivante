@@ -625,6 +625,57 @@
     </my-expandable-thing>
   </template>
 
+  <template id="template--charging-station-thing">
+    <style>
+      @import "static/style/main.css";
+    </style>
+
+    <my-expandable-thing>
+      <my-thing slot="short-thing">
+        <my-text-thing slot="thing">
+          <slot name="name" slot="name">?</slot>
+
+          <my-icon
+            slot="icon"
+            href="static/icons/symbols.svg#charging_station"
+            data-bind-attributes
+            data-bind:filler-class="charging_station_icon_gradient"></my-icon>
+
+          <ul slot="content" class="thing--text-list">
+            <li data-bind="socket_power">?</li>
+          </ul>
+        </my-text-thing>
+      </my-thing>
+      <div slot="long-thing" class="content-grid">
+        <my-unlocated-things>
+          <my-thing>
+            <my-text-thing slot="thing">
+              <span slot="name">Courant</span>
+
+              <my-icon slot="icon" href="static/icons/symbols.svg#electricity"></my-icon>
+
+              <ul slot="content" class="thing--text-list">
+                <li data-bind="socket_current">?</li>
+                <li>Max: <span data-bind="max_current">?</span></li>
+              </ul>
+            </my-text-thing>
+          </my-thing>
+
+          <my-thing>
+            <my-text-thing slot="thing">
+              <span slot="name">Température</span>
+
+              <my-icon slot="icon" href="static/icons/symbols.svg#thermometer"></my-icon>
+
+              <ul slot="content" class="thing--text-list">
+                <li data-bind="temperature">?</li>
+              </ul>
+            </my-text-thing>
+          </my-thing>
+        </my-unlocated-thing>
+      </div>
+  </template>
+
   <template id="template--actionable-thing">
     <style>
       @import "static/style/main.css";
@@ -815,6 +866,19 @@
             data-battery-base="http://192.168.1.128:8097/0"
             data-battery-primary="state_of_charge">
             <span slot="name">Voiture</span>
+          </my-car-thing>
+        </my-thing>
+
+        <my-thing>
+          <my-charging-station-thing
+            slot="thing"
+            data-base="http://192.168.1.128:8098/0"
+            data-socket-power="socket_power"
+            data-socket-charging="socket_charging"
+            data-socket-current="socket_current"
+            data-max-current="max_current"
+            data-temperature="station_temperature">
+            <span slot="name">Borne</span>
           </my-car-thing>
         </my-thing>
       </my-unlocated-things>

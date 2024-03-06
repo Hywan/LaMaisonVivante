@@ -19,6 +19,7 @@
     --color-pink-600: hsl(331, 64%, 64%);
     --color-green-300: hsl(114, 57%, 70%);
     --color-green-600: hsl(114, 57%, 48%);
+    --color-green-900: hsl(114, 57%, 35%);
     --color-red-300: hsl(11, 100%, 62%);
     --color-red-600: hsl(11, 100%, 55%);
     --color-dark-100: hsl(0, 0%, 78%);
@@ -1075,6 +1076,14 @@ button {
             var(--light-direction),
             var(--color-green-300) 40%,
             var(--color-green-600) 100%
+        );
+    }
+
+    .gradient--linear__dark_green {
+        background: linear-gradient(
+            var(--light-direction),
+            var(--color-green-600) 40%,
+            var(--color-green-900) 100%
         );
     }
 

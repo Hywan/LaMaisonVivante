@@ -1241,7 +1241,7 @@ window.customElements.define(
             const short_thing = template_content.querySelector('[slot="short-thing"]');
             const long_thing = template_content.querySelector('[slot="long-thing"]');
 
-            // Set properties of `my-meter-thing` before it's attached to the DOM.
+            // Set properties of `my-progress-thing` before it's attached to the DOM.
             const data_properties = read_data_attributes(this, 'battery-base', 'battery-primary');
             new View().render({...data_properties}, short_thing);
 
@@ -1299,6 +1299,76 @@ window.customElements.define(
             }
 
             fire(VERY_LONG_REFRESH_RATE, update);
+        }
+    }
+);
+
+window.customElements.define(
+    'my-charging-station-thing',
+    class extends HTMLElement {
+        #view = new View();
+
+        constructor() {
+            super();
+        }
+
+        async connectedCallback() {
+            const self = this;
+
+            const template = document.getElementById('template--charging-station-thing');
+            const template_content = template.content.cloneNode(true);
+
+            const short_thing = template_content.querySelector('[slot="short-thing"]');
+            const long_thing = template_content.querySelector('[slot="long-thing"]');
+
+            this.attachShadow({mode: 'open'}).appendChild(template_content);
+
+            const short_thing_frame = short_thing.querySelector('my-text-thing').shadowRoot.querySelector('.thing--frame');
+
+            const props = await properties_of(
+                this,
+                'base',
+                'socket-power',
+                'socket-charging',
+                'socket-current',
+                'max-current',
+                'temperature',
+            );
+
+            async function update(next) {
+                // Read all fetched properties.
+                const values = await props.fetch_values();
+
+                // Get values.
+                let { value: is_socket_charging } = values.$get(props.names.socket_charging);
+                const { formatted_value: socket_power } = values.$get(props.names.socket_power);
+                const { formatted_value: socket_current } = values.$get(props.names.socket_current);
+                const { formatted_value: max_current } = values.$get(props.names.max_current);
+                const { formatted_value: temperature } = values.$get(props.names.temperature);
+
+                short_thing_frame.setAttribute('aria-disabled', !is_socket_charging);
+
+                self.#view.render(
+                    {
+                        socket_power,
+                        charging_station_icon_gradient: is_socket_charging ? 'gradient gradient--linear__dark_green' : 'gradient gradient--linear__grey',
+                    },
+                    short_thing,
+                );
+
+                self.#view.render(
+                    {
+                        socket_current,
+                        max_current,
+                        temperature,
+                    },
+                    long_thing,
+                )
+
+                next();
+            }
+
+            fire(REFRESH_RATE, update);
         }
     }
 );
