@@ -17,6 +17,7 @@
     --color-pink-300: hsl(324, 77%, 88%);
     --color-pink-500: hsl(324, 77%, 75%);
     --color-pink-600: hsl(331, 64%, 64%);
+    --color-green-100: hsl(114, 57%, 90%);
     --color-green-300: hsl(114, 57%, 70%);
     --color-green-600: hsl(114, 57%, 48%);
     --color-green-900: hsl(114, 57%, 35%);
@@ -339,6 +340,19 @@ body {
 
     .thing--expandable > .thing--expandable-summary {
         cursor: pointer;
+        position: relative;
+    }
+
+    .thing--expandable > .thing--expandable-summary::after {
+        content: '';
+        position: absolute;
+        bottom: var(--space-small);
+        left: 50%;
+        transform: translateX(-50%);
+        width: var(--space);
+        height: 3px;
+        background: var(--color-green-100);
+        border-radius: 10px;
     }
 
     .thing--expandable[aria-expanded = "false"] > .thing--expandable-long {
