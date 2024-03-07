@@ -916,33 +916,38 @@ window.customElements.define(
 window.customElements.define(
     'my-ventilation-thing',
     class extends HTMLElement {
+        #view = new View();
+
         constructor() {
             super();
         }
 
         async connectedCallback() {
+            const self = this;
+
             const template = document.getElementById('template--ventilation-thing');
             const template_content = template.content.cloneNode(true);
 
-            const thing_frame = template_content.querySelector('.thing--frame');
-
-            const thing_after_ground_coupled_heat_exchanger_element = template_content.querySelector('.thing--ventilation-after-ground-coupled-heat-exchanger');
-            const thing_after_heat_recovery_exchanger_element = template_content.querySelector('.thing--ventilation-after-heat-recovery-exchanger');
-            const thing_extracted_element = template_content.querySelector('.thing--ventilation-extracted');
-
-            const thing_after_ground_coupled_heat_exchanger_meter_element = template_content.querySelector('.meter--ventilation-after-ground-coupled-heat-exchanger');
-            const thing_after_heat_recovery_exchanger_meter_element = template_content.querySelector('.meter--ventilation-after-heat-recovery-exchanger');
-            const thing_extracted_meter_element = template_content.querySelector('.meter--ventilation-extracted');
+            const short_thing = template_content.querySelector('[slot="short-thing"]');
+            const long_thing = template_content.querySelector('[slot="long-thing"]');
 
             this.attachShadow({mode: 'open'}).appendChild(template_content);
+
+            const thing_after_ground_coupled_heat_exchanger_meter_element = short_thing.querySelector('.meter--ventilation-after-ground-coupled-heat-exchanger');
+            const thing_after_heat_recovery_exchanger_meter_element = short_thing.querySelector('.meter--ventilation-after-heat-recovery-exchanger');
+            const thing_extracted_meter_element = short_thing.querySelector('.meter--ventilation-extracted');
 
             const props = await properties_of(
                 this,
                 'base',
                 'state',
+                'mode',
                 'after-ground-coupled-heat-exchanger',
                 'after-heat-recovery-exchanger',
                 'extracted',
+                'discharged',
+                'wanted',
+                'humidity',
             );
 
             const MAX_TEMPERATURE = 25;
@@ -952,10 +957,7 @@ window.customElements.define(
                 // Read all properties.
                 const values = await props.fetch_values();
 
-                async function subupdate(property_name, element, meter_element) {
-                    let {value, formatted_value} = values.$get(property_name);
-                    element.innerHTML = formatted_value;
-
+                async function update_meter({ value, formatted_value }, meter_element) {
                     value = Math.min(value, MAX_TEMPERATURE);
                     let max_length = meter_element.getTotalLength();
 
@@ -964,31 +966,59 @@ window.customElements.define(
 
                 // Update values.
 
-                subupdate(
-                    props.names.after_ground_coupled_heat_exchanger,
-                    thing_after_ground_coupled_heat_exchanger_element,
+                let { value: state } = values.$get(props.names.state);
+                let { value: mode } = values.$get(props.names.mode);
+                let { formatted_value: wanted } = values.$get(props.names.wanted);
+                let { formatted_value: humidity } = values.$get(props.names.humidity);
+                let after_ground_coupled_heat_exchanger = values.$get(props.names.after_ground_coupled_heat_exchanger);
+                let after_heat_recovery_exchanger = values.$get(props.names.after_heat_recovery_exchanger);
+                let extracted = values.$get(props.names.extracted);
+                let { formatted_value: discharged } = values.$get(props.names.discharged);
+
+                if ('paused' == state) {
+                    short_thing.setAttribute('aria-disabled', true);
+                } else {
+                    short_thing.setAttribute('aria-disabled', false);
+                }
+
+                update_meter(
+                    after_ground_coupled_heat_exchanger,
                     thing_after_ground_coupled_heat_exchanger_meter_element,
                 );
 
-                subupdate(
-                    props.names.after_heat_recovery_exchanger,
-                    thing_after_heat_recovery_exchanger_element,
+                update_meter(
+                    after_heat_recovery_exchanger,
                     thing_after_heat_recovery_exchanger_meter_element,
                 );
 
-                subupdate(
-                    props.names.extracted,
-                    thing_extracted_element,
+                update_meter(
+                    extracted,
                     thing_extracted_meter_element,
                 );
 
-                let { value: state } = values.$get(props.names.state);
+                self.#view.render(
+                    {
+                        after_ground_coupled_heat_exchanger: after_ground_coupled_heat_exchanger.formatted_value,
+                        after_heat_recovery_exchanger: after_heat_recovery_exchanger.formatted_value,
+                        extracted: extracted.formatted_value,
+                    },
+                    short_thing,
+                )
 
-                if ('paused' == state) {
-                    thing_frame.setAttribute('aria-disabled', true);
-                } else {
-                    thing_frame.setAttribute('aria-disabled', false);
-                }
+                self.#view.render(
+                    dbg({
+                        wanted,
+                        humidity,
+                        after_ground_coupled_heat_exchanger: after_ground_coupled_heat_exchanger.formatted_value,
+                        after_heat_recovery_exchanger: after_heat_recovery_exchanger.formatted_value,
+                        extracted: extracted.formatted_value,
+                        discharged,
+                        mode_auto: mode == 'auto' ? 'true' : 'false',
+                        mode_cool: mode == 'cool' ? 'true' : 'false',
+                        mode_heat: mode == 'heat' ? 'true' : 'false',
+                    }),
+                    long_thing,
+                );
 
                 next();
             }
@@ -1451,9 +1481,8 @@ window.customElements.define(
             const root = this.shadowRoot;
 
             if (!this.hasAttribute('filler-class')) {
-                this.setAttribute('filler-class', 'gradient gradient--linear__default');
+                this.setAttribute('filler-class', '');
             }
-
 
             const href = this.getAttribute('href');
             const filler_class = this.getAttribute('filler-class');

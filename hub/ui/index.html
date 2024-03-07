@@ -108,7 +108,7 @@
         <div class="thing--progress-primary-value">?</div>
         <div class="thing--progress-secondary-value"></div>
 
-        <svg class="thing--progress-progress" viewBox="0 0 38 38">
+        <svg class="thing--progress-progress blender--container" viewBox="0 0 38 38">
           <g class="blender">
             <foreignObject x="0" y="0" width="38" height="38">
               <slot name="progress-gradient"><div class="gradient gradient--conic__default"></div></slot>
@@ -137,7 +137,7 @@
         <div class="thing--solar-pv-sunrise" data-bind="sunrise">?</div>
         <div class="thing--solar-pv-sunset" data-bind="sunset">?</div>
 
-        <svg class="thing--solar-pv-meter" viewBox="0 0 38 38">
+        <svg class="thing--solar-pv-meter blender--container" viewBox="0 0 38 38">
           <g class="blender">
             <foreignObject x="0" y="0" width="38" height="38">
               <div class="gradient gradient--conic__sky"></div>
@@ -230,27 +230,82 @@
       @import "static/style/main.css";
     </style>
 
-    <div class="thing--frame thing--ventilation">
-      <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
+    <my-expandable-thing>
+      <div slot="short-thing" class="thing--frame thing--ventilation">
+        <h3 class="thing--frame-name"><slot name="name">(unnamed)</slot></h3>
 
-      <div class="thing--frame-content">
-        <div class="thing--ventilation-after-ground-coupled-heat-exchanger">?</div>
-        <div class="thing--ventilation-after-heat-recovery-exchanger">?</div>
-        <div class="thing--ventilation-extracted">?</div>
+        <div class="thing--frame-content">
+          <div class="thing--ventilation-after-ground-coupled-heat-exchanger" data-bind="after_ground_coupled_heat_exchanger">?</div>
+          <div class="thing--ventilation-after-heat-recovery-exchanger" data-bind="after_heat_recovery_exchanger">?</div>
+          <div class="thing--ventilation-extracted" data-bind="extracted">?</div>
 
-        <svg class="thing--ventilation-meters" viewBox="0 0 38 38">
-          <g class="blender">
-            <foreignObject x="0" y="0" width="38" height="38">
-              <div class="gradient gradient--conic__ventilation"></div>
-            </foreignObject>
+          <svg class="thing--ventilation-meters blender--container" viewBox="0 0 38 38">
+            <g class="blender">
+              <foreignObject x="0" y="0" width="38" height="38">
+                <div class="gradient gradient--conic__ventilation"></div>
+              </foreignObject>
 
-            <g class="blender--subject">
-              <rect x="0" y="0" width="38" height="38" fill="#fff" />
-              <circle class="meter stroked meter--ventilation-after-ground-coupled-heat-exchanger" r="9" cx="19" cy="19" />
-              <circle class="meter stroked meter--ventilation-after-heat-recovery-exchanger" r="12.5" cx="19" cy="19" />
-              <circle class="meter stroked meter--ventilation-extracted" r="16" cx="19" cy="19" />
+              <g class="blender--subject">
+                <rect x="0" y="0" width="38" height="38" fill="#fff" />
+                <circle class="meter stroked meter--ventilation-after-ground-coupled-heat-exchanger" r="9" cx="19" cy="19" />
+                <circle class="meter stroked meter--ventilation-after-heat-recovery-exchanger" r="12.5" cx="19" cy="19" />
+                <circle class="meter stroked meter--ventilation-extracted" r="16" cx="19" cy="19" />
+              </g>
             </g>
-          </g>
+          </svg>
+        </div>
+      </div>
+      <div slot="long-thing" class="content-grid">
+        <fieldset>
+          <legend><h4>Mode de ventilation</h4></legend>
+
+          <input type="radio" id="ventilation_mode_cool" name="ventilation_mode" value="cool" class="hidden" data-bind-attributes data-bind:aria-checked="mode_cool" />
+          <label for="ventilation_mode_cool" class="button">
+            <my-icon
+              href="static/icons/symbols.svg#snowflake"></my-icon>
+            Froid
+          </label>
+
+          <input type="radio" id="ventilation_mode_auto" name="ventilation_mode" value="auto" class="hidden" data-bind-attributes data-bind:aria-checked="mode_auto" />
+          <label for="ventilation_mode_auto" class="button">
+            <my-icon
+              href="static/icons/symbols.svg#snowflake_sun"></my-icon>
+            Auto
+          </label>
+
+          <input type="radio" id="ventilation_mode_heat" name="ventilation_mode" value="heat" class="hidden" data-bind-attributes data-bind:aria-checked="mode_heat" />
+          <label for="ventilation_mode_heat" class="button">
+            <my-icon
+              href="static/icons/symbols.svg#sun"></my-icon>
+            Chaud
+          </label>
+        </fieldset>
+
+        <h4>Détails</h4>
+
+        <ul>
+          <li>Cible: <span data-bind="wanted">?</span></li>
+          <li>Humidité: <span data-bind="humidity">?</span></li>
+          <li>Après l'échangeur air-sol: <span data-bind="after_ground_coupled_heat_exchanger">?</span></li>
+          <li>Après l'échangeur air-air: <span data-bind="after_heat_recovery_exchanger">?</span></li>
+          <li>Extrait: <span data-bind="extracted">?</span></li>
+          <li>Déchargée: <span data-bind="discharged">?</span></li>
+        </ul>
+
+        <svg viewBox="0 0 64.968 64.765">
+          <path style="fill:#a05a2c;fill-opacity:.103175;stroke:#000;stroke-width:.264583px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" d="m82.272 87.5-25.98 15L25.98 85l25.98-15Z" transform="translate(-24.116 -37.868)"/>
+          <path style="fill:#deaa87;stroke:#000;stroke-width:.264583px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" d="m25.98 85-1.731-1V54l1.732 1z" transform="translate(-24.116 -37.868)"/>
+          <path style="fill:#f4e3d7;stroke:#000;stroke-width:.264583px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" d="m25.98 55 25.982-15 30.31 17.5 1.732-1L51.962 38 24.249 54Z" transform="translate(-24.116 -37.868)"/>
+          <path style="fill:#e9c6af;stroke:#000;stroke-width:.264583px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" d="M84.004 56.5v30l-1.732 1v-30ZM51.962 40v30L25.98 85V55Z" transform="translate(-24.116 -37.868)"/>
+          <path style="fill:#deaa87;stroke:#000;stroke-width:.264583px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" d="m51.962 40 30.31 17.5v30L51.962 70z" transform="translate(-24.116 -37.868)"/>
+          <path style="fill:#f4e3d7;stroke:#000;stroke-width:.265;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" d="m51.962 45 12.99 7.5-12.99 7.5-12.99-7.5Z" transform="translate(-24.116 -37.868)"/>
+          <path style="fill:#e9c6af;stroke:#000;stroke-width:.265;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" d="M51.962 60v25l12.99-7.5v-25z" transform="translate(-24.116 -37.868)"/>
+          <path style="fill:#deaa87;stroke:#000;stroke-width:.265;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" d="M38.971 52.5v25l12.99 7.5V60l-12.99-7.5" transform="translate(-24.116 -37.868)"/>
+          <path style="fill:none;stroke:#dedede;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:.579365" d="M88.335 81v5L52.828 65.5l-20.785 12v-9l3.464 2" transform="translate(-24.116 -37.868)"/>
+          <path style="display:inline;fill:none;stroke:#000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" d="m35.507 70.5 6.062 3.5 4.33-2.5v0" transform="translate(-24.116 -37.868)"/>
+          <path style="display:inline;fill:none;stroke:#000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1" d="m69.282 68-11.258-6.5v0" transform="translate(-24.116 -37.868)"/>
+          <path style="display:inline;fill:none;stroke:#000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" d="M45.9 61.5 41.57 64l-6.063-3.5" transform="translate(-24.116 -37.868)"/>
+          <path style="display:inline;fill:none;stroke:#000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1" d="M58.024 71.5 69.282 78" transform="translate(-24.116 -37.868)"/>
         </svg>
       </div>
     </div>
@@ -288,7 +343,8 @@
 
               <my-icon
                 slot="icon"
-                href="static/icons/symbols.svg#thermometer"></my-icon>
+                href="static/icons/symbols.svg#thermometer"
+                filler-class="gradient gradient--linear__default"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li><strong>Mesurée <span data-bind="temperature">?</span></strong></li>
@@ -504,7 +560,8 @@
 
               <my-icon
                 slot="icon"
-                href="static/icons/symbols.svg#charging_station"></my-icon>
+                href="static/icons/symbols.svg#charging_station"
+                filler-class="gradient gradient--linear__default"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="is_charging">?</li>
@@ -519,7 +576,8 @@
 
               <my-icon
                 slot="icon"
-                href="static/icons/symbols.svg#odometer"></my-icon>
+                href="static/icons/symbols.svg#odometer"
+                filler-class="gradient gradient--linear__default"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li><span data-bind="odometer">?</span> km</li>
@@ -652,7 +710,10 @@
             <my-text-thing slot="thing">
               <span slot="name">Courant</span>
 
-              <my-icon slot="icon" href="static/icons/symbols.svg#electricity"></my-icon>
+              <my-icon
+                slot="icon"
+                href="static/icons/symbols.svg#electricity"
+                filler-class="gradient gradient--linear__default"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="socket_current">?</li>
@@ -665,7 +726,10 @@
             <my-text-thing slot="thing">
               <span slot="name">Température</span>
 
-              <my-icon slot="icon" href="static/icons/symbols.svg#thermometer"></my-icon>
+              <my-icon
+                slot="icon"
+                href="static/icons/symbols.svg#thermometer"
+                filler-class="gradient gradient--linear__default"></my-icon>
 
               <ul slot="content" class="thing--text-list">
                 <li data-bind="temperature">?</li>
@@ -702,15 +766,8 @@
     </style>
 
     <div class="thing--actions">
-      <button class="thing--pulse" title="Pulse"><slot name="button"><svg class="icon"><use href="#icon-power" /></svg></slot></button>
+      <button class="thing--pulse" title="Pulse"><slot name="button"><my-icon href="static/icons/symbols.svg#power"></my-icon></slot></button>
     </div>
-
-    <svg class="svg--symbols">
-      <symbol id="icon-power" viewBox="0 0 500 560">
-        <path fill="currentColor" d="M250 560A253 253 0 0 1 0 305a255 255 0 0 1 99-204 35 35 0 0 1 49 7 36 36 0 0 1-6 51 183 183 0 0 0-71 146c0 101 80 183 179 183s180-82 180-183a183 183 0 0 0-71-146 36 36 0 0 1-7-51 35 35 0 0 1 49-7 255 255 0 0 1 99 204c0 141-112 255-250 255z" />
-        <path fill="currentColor" d="M250 330a37 37 0 0 1-35-39V38a37 37 0 0 1 35-38 37 37 0 0 1 35 38v253a37 37 0 0 1-35 39z" />
-      </symbol>
-    </svg>
   </template>
 
   <template id="template--thing-blind">
@@ -719,24 +776,10 @@
     </style>
 
     <div class="thing--actions">
-      <button class="thing--blind thing--blind-open" title="Open"><svg class="icon"><use href="#icon-up" /></svg></button>
-      <button class="thing--blind thing--blind-stop" title="Stop"><svg class="icon"><use href="#icon-stop" /></svg></button>
-      <button class="thing--blind thing--blind-close" title="Close"><svg class="icon"><use href="#icon-down" /></svg></button>
+      <button class="thing--blind thing--blind-open" title="Open"><my-icon href="static/icons/symbols.svg#up"></my-icon></button>
+      <button class="thing--blind thing--blind-stop" title="Stop"><my-icon href="static/icons/symbols.svg#stop"></my-icon></button>
+      <button class="thing--blind thing--blind-close" title="Close"><my-icon href="static/icons/symbols.svg#down"></my-icon></button>
     </div>
-
-    <svg class="svg--symbols">
-      <symbol id="icon-up" viewBox="0 0 35 32">
-        <path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="6" d="m18 4 6 12 7 12H4l7-12z" />
-      </symbol>
-
-      <symbol id="icon-down" viewBox="0 0 35 32">
-        <path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="6" d="m18 28 6-12 7-12H4l7 12z" />
-      </symbol>
-
-      <symbol id="icon-stop" viewBox="0 0 35 32">
-        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="7" d="M23 4v23h0M12 4v23h0" />
-      </symbol>
-    </svg>
   </template>
 
   <template id="template--icon">
@@ -744,7 +787,7 @@
       @import "static/style/main.css";
     </style>
 
-    <svg viewBox="0 0 500 500">
+    <svg viewBox="0 0 500 500" class="blender--container">
       <g class="blender">
         <foreignObject x="0" y="0" width="500" height="500">
           <div data-bind-attributes data-bind:class="filler_class"></div>
@@ -821,19 +864,13 @@
             data-state="state"
             data-after-ground-coupled-heat-exchanger="supplied_air_after_ground_coupled_heat_exchanger"
             data-after-heat-recovery-exchanger="supplied_air_after_heat_recovery_exchanger"
-            data-extracted="extracted_air">
+            data-extracted="extracted_air"
+            data-discharged="discharged_air"
+            data-mode="mode"
+            data-wanted="wanted_air_inside"
+            data-humidity="inside_air_humidity">
             <span slot="name">Ventilation</span>
           </my-ventilation-thing>
-        </my-thing>
-
-        <my-thing>
-          <my-progress-thing
-            slot="thing"
-            data-base="http://192.168.1.128:8093/1"
-            data-primary="inside_air_humidity">
-            <span slot="name">Humidité</span>
-            <div slot="progress-gradient" class="gradient gradient--conic__yellow_to_pink"></div>
-          </my-progress-thing>
         </my-thing>
 
         <my-thing>

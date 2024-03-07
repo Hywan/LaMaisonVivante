@@ -140,7 +140,7 @@ body {
     position: sticky;
     z-index: calc(infinity);
     top: 0;
-    margin-bottom: var(--space-large);
+    margin-block-end: var(--space-large);
 }
 
 .header--container::before {
@@ -197,7 +197,7 @@ body {
     }
 
     .header--details[role="tablist"] > [role="tab"] {
-        margin-left: var(--space);
+        margin-inline-start: var(--space);
     }
 
     .header--details[role="tablist"] > [role="tab"][aria-selected="true"]::before {
@@ -211,7 +211,7 @@ body {
         background: var(--color-yellow-500);
     }
 
-[aria-hidden="true"] {
+[aria-hidden="true"], .hidden {
     display: none;
 }
 
@@ -235,8 +235,8 @@ body {
     gap: var(--space);
     justify-items: center;
 
-    margin-bottom: var(--space-very-very-large);
-    padding-top: var(--space-large);
+    margin-block-end: var(--space-very-very-large);
+    padding-block-start: var(--space-large);
 }
 
 .thing--frame {
@@ -312,7 +312,6 @@ body {
             opacity var(--transition-duration) ease,
             transform var(--transition-duration) ease,
             filter var(--transition-duration) ease;
-
     }
 
     .thing--frame[aria-disabled="true"] > .thing--frame-content {
@@ -329,7 +328,7 @@ body {
     display: flex;
     flex-flow: row wrap;
     gap: .5rem;
-    margin-top: var(--space);
+    margin-block-start: var(--space);
 }
 
     .thing--actions > * {
@@ -448,8 +447,10 @@ body {
         font-size: var(--thing--frame--font-size-primary);
     }
 
-    .thing--solar-pv > .thing--frame-content > .thing--solar-pv-sunrise,
-    .thing--solar-pv > .thing--frame-content > .thing--solar-pv-sunset {
+    .thing--solar-pv > .thing--frame-content > :is(
+        .thing--solar-pv-sunrise,
+        .thing--solar-pv-sunset
+    ) {
         --this-height: 1.5rem;
         --solar-pv-sunrise-sunset-width: 2rem;
 
@@ -494,11 +495,13 @@ body {
     .thing--dhw > .thing--frame-content > .thing--dhw-boiler {
         height: 5.5rem;
         vertical-align: bottom;
-        margin-bottom: var(--space-very-small);
+        margin-block-end: var(--space-very-small);
     }
 
-    .thing--dhw > .thing--frame-content > .thing--dhw-top-value,
-    .thing--dhw > .thing--frame-content > .thing--dhw-bottom-value {
+    .thing--dhw > .thing--frame-content > :is(
+        .thing--dhw-top-value,
+        .thing--dhw-bottom-value
+    ) {
         --this-height: 1.5rem;
 
         position: absolute;
@@ -506,7 +509,7 @@ body {
         line-height: var(--this-height);
         text-align: center;
         font-size: var(--thing--frame--font-size-primary);
-        padding-left: .4rem;
+        padding-inline-start: .4rem;
         border-radius: .5rem;
         background: var(--color-light-000);
     }
@@ -530,9 +533,11 @@ body {
         vertical-align: bottom;
     }
 
-    .thing--ventilation > .thing--frame-content > .thing--ventilation-after-ground-coupled-heat-exchanger,
-    .thing--ventilation > .thing--frame-content > .thing--ventilation-after-heat-recovery-exchanger,
-    .thing--ventilation > .thing--frame-content > .thing--ventilation-extracted {
+    .thing--ventilation > .thing--frame-content > :is(
+        .thing--ventilation-after-ground-coupled-heat-exchanger,
+        .thing--ventilation-after-heat-recovery-exchanger,
+        .thing--ventilation-extracted
+    ) {
         --this-height: 1.5rem;
 
         position: absolute;
@@ -598,7 +603,7 @@ body {
         place-self: center;
         width: 2.6rem;
         max-height: calc(var(--thing--frame--height) / 2);
-        margin-right: var(--space-small);
+        margin-inline-end: var(--space-small);
         filter: invert(50%) sepia(100%) saturate(200%) hue-rotate(218deg) drop-shadow(0 0 1px var(--color-light-300));
     }
 
@@ -610,8 +615,7 @@ body {
         place-items: center;
     }
 
-    .thing--weather-wind > .thing--frame-content > .thing--weather-wind-compass,
-    .thing--weather-wind > .thing--frame-content > .thing--weather-wind-text {
+    .thing--weather-wind > .thing--frame-content > :is(.thing--weather-wind-compass, .thing--weather-wind-text) {
         position: absolute;
     }
 
@@ -733,13 +737,12 @@ body {
         text-align: center;
     }
 
-    .thing--weather-forecast .thing--weather-one-forecast--condition,
-    .thing--weather-forecast .thing--weather-one-forecast--condition-icon {
+    .thing--weather-forecast :is(.thing--weather-one-forecast--condition, .thing--weather-one-forecast--condition-icon) {
         flex: 3;
         font-size: var(--font-size-tertiary);
         line-height: 1;
         text-align: center;
-        margin-bottom: var(--space-small);
+        margin-block-end: var(--space-small);
     }
 
     .thing--weather-forecast .thing--weather-one-forecast--condition-icon {
@@ -844,18 +847,11 @@ body {
 
 .thing--pulse,
 .thing--blind {
-    display: flex;
-    align-items: center;
-    border-radius: calc(var(--thing--action-size) / 2);
-    height: var(--thing--action-size);
+    --button-size: var(--thing--action-size);
 }
 
-    .thing--pulse .icon {
-        height: calc(var(--thing--action-size) - 1rem);
-    }
-
-    .thing--blind .icon {
-        height: calc(var(--thing--action-size) - 1.4rem);
+    .thing--pulse > * {
+        height: calc(var(--button-size) - .85rem);
     }
 
 .label {
@@ -906,7 +902,7 @@ a {
 }
 
 ul {
-    margin-left: var(--space);
+    margin-inline-start: var(--space);
 }
 
     ul > li::marker {
@@ -914,30 +910,42 @@ ul {
     }
 
     h4 ~ ul {
-        margin-top: var(--space);
+        margin-block-start: var(--space);
     }
 
 strong {
     font-weight: 600;
 }
 
-button {
+button, .button {
     appeareance: none;
     cursor: pointer;
 
     color: var(--color-green-600);
     font: inherit;
-    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-small);
+    border-radius: calc(var(--button-size, 2rem) / 2);
+    height: var(--button-size, 2rem);
+    width: 100%;
 
     border: none;
     background: var(--color-light-010);
-    box-shadow: inset 1px 1px 3px #e9e9e9,
+    --_box-shadow: #e9e9e9;
+    box-shadow: inset 1px 1px 3px var(--_box-shadow),
                 inset -1px -1px 3px #ffffff;
 
     transition:
         opacity var(--transition-duration) ease-in-out,
         filter var(--transition-duration) ease-in-out;
 }
+
+    :is(button, .button) > my-icon {
+        height: 60%;
+    }
 
     button[disabled] {
         opacity: 70%;
@@ -949,6 +957,34 @@ button {
     button:not([disabled]):focus {
         background: var(--color-light-000);
     }
+
+fieldset {
+    border: none;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(calc(var(--content-max-width) / 3 - var(--space)), 1fr));
+    gap: var(--space);
+    justify-items: center;
+
+}
+
+legend {
+    margin-block-end: var(--space);
+}
+
+label {
+    cursor: pointer;
+}
+
+    :is(input:checked, input[aria-checked="true"]) + label.button {
+        outline: 2px var(--color-green-600) solid;
+        --_box-shadow: var(--color-green-100);
+    }
+
+my-icon {
+    display: inline-block;
+    height: inherit;
+}
 
 .icon {
     max-width: 100%;
@@ -999,6 +1035,10 @@ button {
 
     .blender--subject {
         mix-blend-mode: lighten;
+    }
+
+    .blender--container {
+        mix-blend-mode: multiply; /* remove the white background of the blender */
     }
 
     .stroked {
