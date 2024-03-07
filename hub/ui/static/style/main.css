@@ -945,6 +945,7 @@ button, .button {
 
     :is(button, .button) > my-icon {
         height: 60%;
+        aspect-ratio: 1;
     }
 
     button[disabled] {
