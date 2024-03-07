@@ -913,6 +913,10 @@ ul {
         margin-block-start: var(--space);
     }
 
+h4:not(:first-child) {
+    margin-block-start: var(--space);
+}
+
 strong {
     font-weight: 600;
 }
@@ -1176,6 +1180,10 @@ svg {
     .svg--symbols {
         height: 0;
         width: 0;
+    }
+
+    .svg--spaced {
+        margin-block: var(--space-small);
     }
 
 abbr {

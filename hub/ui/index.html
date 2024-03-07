@@ -281,31 +281,65 @@
           </label>
         </fieldset>
 
-        <h4>Détails</h4>
+        <h4>Flux</h4>
 
-        <ul>
-          <li>Cible: <span data-bind="wanted">?</span></li>
-          <li>Humidité: <span data-bind="humidity">?</span></li>
-          <li>Après l'échangeur air-sol: <span data-bind="after_ground_coupled_heat_exchanger">?</span></li>
-          <li>Après l'échangeur air-air: <span data-bind="after_heat_recovery_exchanger">?</span></li>
-          <li>Extrait: <span data-bind="extracted">?</span></li>
-          <li>Déchargée: <span data-bind="discharged">?</span></li>
-        </ul>
+        <p>Température souhaitée : <span data-bind="wanted">?</span>.</p>
 
-        <svg viewBox="0 0 64.968 64.765">
-          <path style="fill:#a05a2c;fill-opacity:.103175;stroke:#000;stroke-width:.264583px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" d="m82.272 87.5-25.98 15L25.98 85l25.98-15Z" transform="translate(-24.116 -37.868)"/>
-          <path style="fill:#deaa87;stroke:#000;stroke-width:.264583px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" d="m25.98 85-1.731-1V54l1.732 1z" transform="translate(-24.116 -37.868)"/>
-          <path style="fill:#f4e3d7;stroke:#000;stroke-width:.264583px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" d="m25.98 55 25.982-15 30.31 17.5 1.732-1L51.962 38 24.249 54Z" transform="translate(-24.116 -37.868)"/>
-          <path style="fill:#e9c6af;stroke:#000;stroke-width:.264583px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" d="M84.004 56.5v30l-1.732 1v-30ZM51.962 40v30L25.98 85V55Z" transform="translate(-24.116 -37.868)"/>
-          <path style="fill:#deaa87;stroke:#000;stroke-width:.264583px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" d="m51.962 40 30.31 17.5v30L51.962 70z" transform="translate(-24.116 -37.868)"/>
-          <path style="fill:#f4e3d7;stroke:#000;stroke-width:.265;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" d="m51.962 45 12.99 7.5-12.99 7.5-12.99-7.5Z" transform="translate(-24.116 -37.868)"/>
-          <path style="fill:#e9c6af;stroke:#000;stroke-width:.265;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" d="M51.962 60v25l12.99-7.5v-25z" transform="translate(-24.116 -37.868)"/>
-          <path style="fill:#deaa87;stroke:#000;stroke-width:.265;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" d="M38.971 52.5v25l12.99 7.5V60l-12.99-7.5" transform="translate(-24.116 -37.868)"/>
-          <path style="fill:none;stroke:#dedede;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:.579365" d="M88.335 81v5L52.828 65.5l-20.785 12v-9l3.464 2" transform="translate(-24.116 -37.868)"/>
-          <path style="display:inline;fill:none;stroke:#000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" d="m35.507 70.5 6.062 3.5 4.33-2.5v0" transform="translate(-24.116 -37.868)"/>
-          <path style="display:inline;fill:none;stroke:#000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1" d="m69.282 68-11.258-6.5v0" transform="translate(-24.116 -37.868)"/>
-          <path style="display:inline;fill:none;stroke:#000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" d="M45.9 61.5 41.57 64l-6.063-3.5" transform="translate(-24.116 -37.868)"/>
-          <path style="display:inline;fill:none;stroke:#000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1" d="M58.024 71.5 69.282 78" transform="translate(-24.116 -37.868)"/>
+        <svg viewBox="0 0 64.968 64.765" class="svg--spaced" style="max-width: 500px; margin-inline: auto">
+          <style>
+            path {
+              fill: none;
+              stroke: var(--color-green-300);
+              stroke-width: 0.22;
+              stroke-linecap: round;
+              stroke-linejoin: round;
+              transform: translate(-18.1pt, -29pt);
+            }
+
+            path.device { fill: var(--color-light-100) }
+            path.ground { fill: var(--color-light-200) }
+            path.pipe { stroke-width: 1.5 }
+            path.underground-pipe { stroke: var(--color-dark-100); stroke-opacity: 0.5 }
+            path.cold { stroke: var(--color-blue-600) }
+            path.colder { stroke: var(--color-blue-500) }
+            path.hot { stroke: var(--color-red-300) }
+            path.hotter { stroke: var(--color-red-600) }
+
+            text { font-size: .12rem }
+
+            @media (max-width: 400px) {
+              text { font-size: .15rem }
+            }
+          </style>
+
+          <!-- ground -->
+          <path class="ground" d="m82.272 87.5-25.98 15L25.98 85l25.98-15Z"/>
+          <!-- wall left -->
+          <path class="wall" d="m25.98 85-1.731-1V54l1.732 1z"/>
+          <!-- wall top -->
+          <path class="wall" d="m25.98 55 25.982-15 30.31 17.5 1.732-1L51.962 38 24.249 54Z"/>
+          <!-- ground pipe -->
+          <path class="pipe underground-pipe" d="M88.335 81v5L52.828 65.5l-20.785 12v-9l3.464 2"/>
+          <!-- wall right -->
+          <path class="wall" d="M84.004 56.5v30l-1.732 1v-30Z"/>
+          <!-- wall back -->
+          <path class="wall" d="M51.962 40v30L25.98 85V55ZM51.962 40l30.31 17.5v30L51.962 70z"/>
+          <!-- device -->
+          <path class="device" d="m51.962 45 12.99 7.5-12.99 7.5-12.99-7.5ZM51.962 60v25l12.99-7.5v-25zM38.971 52.5v25l12.99 7.5V60l-12.99-7.5"/>
+          <!-- pipe from ground to device -->
+          <path class="pipe colder" d="m35.507 70.5 6.062 3.5 4.33-2.5v0"/>
+          <!-- pipe from house to device -->
+          <path class="pipe hotter" d="m69.282 68-11.258-6.5v0"/>
+          <!-- pipe from device to outside -->
+          <path class="pipe cold" d="M45.9 61.5 41.57 64l-6.063-3.5"/>
+          <!-- pipe from device to house -->
+          <path class="pipe hot" d="M58.024 71.5 69.282 78"/>
+
+          <text x="26" y="54">Humidité: <tspan data-bind="humidity"></tspan></text>
+          <text x="22" y="37" data-bind="after_ground_coupled_heat_exchanger">?</text>
+          <text x="47" y="42" data-bind="after_heat_recovery_exchanger">?</text>
+          <text x="47" y="32" data-bind="extracted">?</text>
+          <text x="5.5" y="22" data-bind="discharged">?</text>
         </svg>
       </div>
     </div>
