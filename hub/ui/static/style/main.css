@@ -981,7 +981,7 @@ label {
     cursor: pointer;
 }
 
-    :is(input:checked, input[aria-checked="true"]) + label.button {
+    input:checked + label.button {
         outline: 2px var(--color-green-600) solid;
         --_box-shadow: var(--color-green-100);
     }

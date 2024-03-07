@@ -103,8 +103,11 @@ function fire(timeout, func, ...args) {
         }
     );
 
-    // Fire `func` immediately.
+    // Fire `func` immediately, and pass `next` for another firing.
     func(next, ...args);
+
+    // Also return `next` in case one wants to fire outside `func`.
+    next
 }
 
 async function properties_of(element, property_name_of_base, ...attributes) {
@@ -505,7 +508,18 @@ class View {
                     continue;
                 }
 
-                element.setAttribute(attribute_name, data[key].toString());
+                const value = data[key];
+
+                // Handle boolean attribute.
+                if (typeof value === 'boolean') {
+                    if (value) {
+                        element.setAttribute(attribute_name, true);
+                    } else {
+                        element.removeAttribute(attribute_name);
+                    }
+                } else {
+                    element.setAttribute(attribute_name, data[key].toString());
+                }
             }
         }
     }
