@@ -869,19 +869,20 @@ window.customElements.define(
 window.customElements.define(
     'my-dhw-thing',
     class extends HTMLElement {
+        #view = new View();
+
         constructor() {
             super();
         }
 
         async connectedCallback() {
+            const self = this;
+
             const template = document.getElementById('template--dhw-thing');
             const template_content = template.content.cloneNode(true);
 
-            const thing_top_value_element = template_content.querySelector('.thing--dhw-top-value');
-            const thing_bottom_value_element = template_content.querySelector('.thing--dhw-bottom-value');
-            const thing_wanted_value_element = template_content.querySelector('.thing--dhw-wanted-value');
-            const thing_anti_legionella_started_manually_value_element = template_content.querySelector('.thing--dhw-anti-legionella-started-manually-value');
-            const thing_anti_legionella_schedule_value_element = template_content.querySelector('.thing--dhw-anti-legionella-schedule-value');
+            const short_thing = template_content.querySelector('[slot="short-thing"]');
+            const long_thing = template_content.querySelector('[slot="long-thing"]');
 
             this.attachShadow({mode: 'open'}).appendChild(template_content);
 
@@ -900,24 +901,32 @@ window.customElements.define(
                 const values = await props.fetch_values();
 
                 // Get formatted values.
-                const { formatted_value: top_formatted } = values.$get(props.names.top);
-                const { formatted_value: bottom_formatted } = values.$get(props.names.bottom);
-                const { formatted_value: wanted_formatted } = values.$get(props.names.wanted);
+                const { formatted_value: top } = values.$get(props.names.top);
+                const { formatted_value: bottom} = values.$get(props.names.bottom);
+                const { formatted_value: wanted } = values.$get(props.names.wanted);
                 const { value: anti_legionella_started_manually } = values.$get(props.names.anti_legionella_started_manually);
                 const { formatted_value: anti_legionella_schedule } = values.$get(props.names.anti_legionella_schedule);
 
                 // Update values.
-                thing_top_value_element.innerHTML = top_formatted;
-                thing_bottom_value_element.innerHTML = bottom_formatted;
-                thing_wanted_value_element.innerHTML = wanted_formatted;
 
-                if (anti_legionella_started_manually) {
-                    thing_anti_legionella_started_manually_value_element.innerHTML = 'oui';
-                } else {
-                    thing_anti_legionella_started_manually_value_element.innerHTML = 'non';
-                }
+                self.#view.render(
+                    {
+                        top,
+                        bottom,
+                    },
+                    short_thing,
+                );
 
-                thing_anti_legionella_schedule_value_element.innerHTML = anti_legionella_schedule;
+                self.#view.render(
+                    {
+                        top,
+                        bottom,
+                        wanted,
+                        anti_legionella_start_manually: anti_legionella_started_manually ? 'oui' : 'non',
+                        anti_legionella_schedule,
+                    },
+                    long_thing,
+                )
 
                 next();
             }
@@ -1017,7 +1026,7 @@ window.customElements.define(
                         extracted: extracted.formatted_value,
                     },
                     short_thing,
-                )
+                );
 
                 self.#view.render(
                     dbg({
