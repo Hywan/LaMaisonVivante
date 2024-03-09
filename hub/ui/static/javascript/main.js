@@ -922,7 +922,10 @@ window.customElements.define(
                         top,
                         bottom,
                         wanted,
-                        anti_legionella_start_manually: anti_legionella_started_manually ? 'oui' : 'non',
+                        anti_legionella_start_manually:
+                            anti_legionella_started_manually
+                                ? '🟢 Démarré manuellement'
+                                : '🔴 Inactif',
                         anti_legionella_schedule,
                     },
                     long_thing,

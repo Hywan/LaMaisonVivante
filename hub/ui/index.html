@@ -191,16 +191,18 @@
         </div>
       </div>
       <div slot="long-thing" class="content-grid">
-        <svg viewBox="0 0 47.96 80.96" class="svg--boiler" style="max-width: 150px; margin-inline: auto">
+        <h4>Températures</h4>
+
+        <svg viewBox="0 0 47.96 80.96" class="svg--spaced svg--boiler" style="max-width: 150px; margin-inline: auto">
           <style>
             .svg--boiler path {
               transform: translate(-47.47pt, -68.45pt)
             }
 
             .svg--boiler path.middle { fill: url("#boiler-gradient") }
-            .svg--boiler path.water { fill: url("#boiler-water-gradient"); stroke: var(--color-dark-300); stroke-width: 0.3 }
-            .svg--boiler :is(path.top, path.bottom) { fill: var(--color-dark-500) }
-            .svg--boiler path.hat { fill: var(--color-dark-400); transform: translate(-47.47pt, -68.40pt) }
+            .svg--boiler path.water { fill: url("#boiler-water-gradient"); stroke: var(--color-dark-100); stroke-width: 0.3 }
+            .svg--boiler :is(path.top, path.bottom) { fill: var(--color-dark-400) }
+            .svg--boiler path.hat { fill: var(--color-dark-350); transform: translate(-47.47pt, -68.40pt) }
 
             .svg--boiler text { font-size: .3rem }
           </style>
@@ -214,8 +216,8 @@
             </linearGradient>
 
             <linearGradient id="boiler-water-gradient" gradientTransform="rotate(90)">
-              <stop offset="0%" stop-color="#fc3d13" />
-              <stop offset="100%" stop-color="#6333b1" />
+              <stop offset="0%" stop-color="var(--color-pink-600)" />
+              <stop offset="100%" stop-color="var(--color-blue-500)" />
             </linearGradient>
           </defs>
 
@@ -237,8 +239,8 @@
         <h4>Cycles anti-légionellose (<a href="https://fr.wikipedia.org/wiki/L%C3%A9gionellose">en savois plus</a>)</h4>
 
         <ul>
-          <li>Démarré manuellement : <span data-bind="anti_legionella_start_manually">?</span></li>
-          <li>Démarrage automatique : <span data-bind="anti_legionella_schedule">?</span></li>
+          <li data-bind="anti_legionella_start_manually">?</li>
+          <li>Démarrage automatique <em data-bind="anti_legionella_schedule">?</em></li>
         </ul>
 
         <div class="things">
