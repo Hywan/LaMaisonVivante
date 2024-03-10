@@ -770,7 +770,7 @@ body {
         max-width: 450px;
     }
 
-    .thing--car--car [data-opened="false"] {
+    .thing--car--car :not([data-opened]) {
         fill: none;
     }
 
