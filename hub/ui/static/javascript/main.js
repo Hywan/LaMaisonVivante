@@ -1262,7 +1262,7 @@ window.customElements.define(
                             uv_index: uv_index.round(1),
                             wind: wind_speed.round(1),
                             wind_gust: wind_gust.round(0),
-                            wind_degree: `transform: rotate(${wind_degree + 180}deg) transform-origin: 50% 50%`,
+                            wind_degree: `transform: rotate(${wind_degree + 180}deg); transform-origin: 50% 50%`,
                             humidity: humidity.round(0),
                             dew_point: dew_point.round(1),
                             forecasts: forecast_view_data,
