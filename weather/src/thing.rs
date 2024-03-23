@@ -427,7 +427,11 @@ pub fn run(openweathermap_api_key: &str, port: Option<u16>) {
             );
             update_property!(current_weather, "sunset", state.sunset.unwrap_or_default());
             update_property!(current_weather, "uv_index", min(state.uv_index, 12.));
-            update_property!(current_weather, "visibility", state.visibility);
+            update_property!(
+                current_weather,
+                "visibility",
+                state.visibility.unwrap_or_default()
+            );
             update_property!(current_weather, "wind_degree", state.wind_degree);
             update_property!(current_weather, "wind_speed", state.wind_speed);
             update_property!(

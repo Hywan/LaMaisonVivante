@@ -30,7 +30,7 @@ pub struct Weather {
     pub sunset: Option<i32>,
     #[serde(rename(deserialize = "uvi"))]
     pub uv_index: f32,
-    pub visibility: i32,
+    pub visibility: Option<i32>,
     #[serde(rename(deserialize = "wind_deg"))]
     pub wind_degree: i32,
     pub wind_speed: f32,
