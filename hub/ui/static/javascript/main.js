@@ -1032,17 +1032,17 @@ window.customElements.define(
                 );
 
                 self.#view.render(
-                    dbg({
+                    {
                         wanted,
                         humidity,
                         after_ground_coupled_heat_exchanger: after_ground_coupled_heat_exchanger.formatted_value,
                         after_heat_recovery_exchanger: after_heat_recovery_exchanger.formatted_value,
                         extracted: extracted.formatted_value,
                         discharged,
-                        mode_auto: mode == 'auto' ? 'true' : 'false',
-                        mode_cool: mode == 'cool' ? 'true' : 'false',
-                        mode_heat: mode == 'heat' ? 'true' : 'false',
-                    }),
+                        mode_auto: mode == 'auto' ? true : false,
+                        mode_cool: mode == 'cool' ? true : false,
+                        mode_heat: mode == 'heat' ? true : false,
+                    },
                     long_thing,
                 );
 
