@@ -591,8 +591,9 @@ body {
     .thing--weather > .thing--frame-content > .thing--weather-condition {
         grid-area: condition;
         justify-self: center;
-        font-size: var(--thing--frame--font-size-primary);
+        font-size: var(--thing--frame--font-size-secondary);
         line-height: 1;
+        text-align: center;
     }
 
     .thing--weather > .thing--frame-content > .thing--weather-condition-icon {
